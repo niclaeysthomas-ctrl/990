@@ -223,6 +223,7 @@ function matureCount() {
 /* ---------- Déblocage leçons ---------- */
 function lessonUnlocked(idx) {
   if (idx === 0) return true;
+  if (LESSONS[idx] && LESSONS[idx].always) return true;   // modules avancés (toujours accessibles)
   const prev = LESSONS[idx - 1];
   return S.lessons[prev.id] && S.lessons[prev.id].done;
 }
@@ -443,6 +444,12 @@ function renderHome() {
       <div class="ic a">✨</div>
       <div class="body"><div class="t">Anglais soutenu</div><div class="d">Élever le registre : du neutre vers l'élégant</div></div>
       <div class="badge zero">${REGISTER.length}</div>
+    </button>
+
+    <button class="tile" onclick="renderReadingHome()">
+      <div class="ic l">📖</div>
+      <div class="body"><div class="t">Lecture du jour</div><div class="d">${_readingOfDay().title} · texte bilingue EN ⇄ FR</div></div>
+      <div class="badge zero">${READINGS.length}</div>
     </button>
 
     ${scoreCard}
@@ -996,21 +1003,31 @@ function pickItems(pool, n, diff) {
 }
 
 /* Construit un examen. kind = 'placement' | 'blanc' ; diff = 1|2|3|null */
+/* Sélection « dure » stricte : uniquement diff 3, repli sur diff 2 si le vivier manque */
+function pickHard(pool, n) {
+  let hard = shuffle(pool.filter(x => x._d >= 3));
+  if (hard.length < n) hard = hard.concat(shuffle(pool.filter(x => x._d === 2)));
+  return hard.slice(0, n);
+}
 function buildExam(kind, diff) {
   const cfg = kind === 'placement'
     ? { L: 8, G: 8, P: 4, mins: 15 }
-    : { L: 15, G: 15, P: 10, mins: 30 };
+    : kind === 'defi'
+      ? { L: 6, G: 18, P: 6, mins: 20 }
+      : { L: 15, G: 15, P: 10, mins: 30 };
+  const hard = kind === 'defi';
 
   // Écoute
   const listenPool = EXAM_LISTEN.map(a => ({ _d: a[3], section: 'L', audio: a[0], opts: a[1], correct: a[2] }));
-  const listen = pickItems(listenPool, cfg.L, diff);
+  const listen = hard ? pickHard(listenPool, cfg.L) : pickItems(listenPool, cfg.L, diff);
 
   // Grammaire / complétion (Reading)
   const gPool = EXAM_GRAMMAR.map(a => ({ _d: a[4], section: 'R', stem: a[0], opts: a[1], correct: a[2], expl: a[3] }));
-  const grammar = pickItems(gPool, cfg.G, diff);
+  const grammar = hard ? pickHard(gPool, cfg.G) : pickItems(gPool, cfg.G, diff);
 
   // Lecture Part 7 : on tire des passages entiers jusqu'au quota de questions
-  const passages = shuffle(READING.slice());
+  // (en mode Défi, on privilégie les passages les plus durs)
+  const passages = hard ? shuffle(READING.slice()).sort((a, b) => b.diff - a.diff) : shuffle(READING.slice());
   const reading = [];
   for (const p of passages) {
     if (reading.length >= cfg.P) break;
@@ -1205,7 +1222,7 @@ function renderExamHome() {
     `<button class="${cur === d ? 'on' : ''}" onclick="setExamDiff(${d})" data-d="${d}">${name}<small>${sub}</small></button>`;
   const histRows = S.history.slice().reverse().slice(0, 8).map(r => `
     <div class="hist">
-      <div><b>${r.total}</b> <span class="sub">/990</span><div class="d">${r.kind === 'placement' ? 'Test de niveau' : 'Examen blanc'} · ${r.date}</div></div>
+      <div><b>${r.total}</b> <span class="sub">/990</span><div class="d">${r.kind === 'placement' ? 'Test de niveau' : r.kind === 'defi' ? '🔥 Défi C2' : 'Examen blanc'} · ${r.date}</div></div>
       <div class="sub" style="text-align:right">É ${r.L} · L ${r.R}<div class="d">${r.mins}′</div></div>
     </div>`).join('');
 
@@ -1226,6 +1243,12 @@ function renderExamHome() {
         ${segBtn(3, 'Difficile', 'B2–C1')}
       </div>
       <button class="btn" onclick="startExam('blanc')">Démarrer l'examen blanc</button>
+    </div>
+
+    <div class="card" style="border:1px solid var(--accent)">
+      <h2 style="font-size:16px">🔥 Défi C2 — le mur</h2>
+      <div class="sub">30 questions, <b>uniquement les items les plus durs</b> : inversions, subjonctif, prépositions fines, accords pièges, lecture d'inférence. Chronométré (20 min). Le vrai test quand le 990 est déjà acquis — vise le sans-faute.</div>
+      <button class="btn" onclick="startExam('defi',3)">Relever le Défi C2</button>
     </div>
 
     ${histRows ? `<div class="card"><h2 style="font-size:16px">Historique</h2><div class="mt">${histRows}</div></div>` : ''}
