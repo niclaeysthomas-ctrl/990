@@ -469,6 +469,64 @@ function renderHome() {
 }
 
 /* ---------- GRAMMAIRE : liste ---------- */
+/* ---------- DRILL « 0 FAUTES » AU RÉFLEXE (a/an, indénombrables, pièges) ---------- */
+let ERD=null;
+const ERD_LABEL={all:'0 fautes · mix', 'a/an':'A / An', 'indénombrables':'Indénombrables', 'pièges':'Pièges de calque'};
+function errPool(cat){
+  const all=(typeof ERR_DRILL!=='undefined')?ERR_DRILL:[];
+  const src=cat==='all'?all:all.filter(it=>it[4]===cat);
+  return src.map(it=>({stem:it[0],opts:[it[1],it[2]],correct:0,expl:it[3],cat:it[4]}));
+}
+function startErr(cat){
+  const pool=errPool(cat);
+  if(!pool.length){ toast('Rien ici 🙂'); return; }
+  ERD={cat,pool,bag:[],n:0,ok:0,streak:0,best:0,answered:false,live:true};
+  renderErr();
+}
+function renderErr(){
+  window.scrollTo(0,0);
+  if(!ERD.bag.length) ERD.bag=shuffle(ERD.pool.slice());
+  const it=ERD.cur=ERD.bag.pop(); ERD.answered=false;
+  let opts=it.opts, correct=it.correct;
+  if(Math.random()<0.5){ opts=[it.opts[1],it.opts[0]]; correct=1; }
+  ERD.dispOpts=opts; ERD.dispCorrect=correct;
+  const stemHtml=it.stem.replace('______','<span class="blank">______</span>');
+  const acc=ERD.n?Math.round(100*ERD.ok/ERD.n):0;
+  app.innerHTML=`
+    <div class="qmeta"><span>${ERD_LABEL[ERD.cat]} · réflexe</span><span>🔥 ${ERD.streak}${ERD.best>ERD.streak?' · rec '+ERD.best:''}</span></div>
+    <div class="pbar mb"><i style="width:${acc}%"></i></div>
+    <div class="sub" style="margin-bottom:10px">${ERD.n?acc+'% · '+ERD.n+' faites — vite, au feeling':'Choisis vite : c\'est le réflexe qu\'on installe, pas la réflexion.'}</div>
+    <div class="stem">${stemHtml}</div>
+    <div class="row2" id="erdopts">
+      ${opts.map((o,k)=>`<button class="opt" style="text-align:center;font-size:19px;font-weight:800;padding:16px" onclick="errAnswer(${k})">${o}</button>`).join('')}
+    </div>
+    <div id="erdafter"></div>
+    <button class="btn ghost mt" onclick="finishErr()">■ Stop &amp; bilan</button>
+  `;
+}
+function errAnswer(k){
+  if(!ERD||ERD.answered) return; ERD.answered=true;
+  const it=ERD.cur, correct=ERD.dispCorrect, ok=(k===correct);
+  document.querySelectorAll('#erdopts .opt').forEach((b,idx)=>{ b.setAttribute('disabled',''); if(idx===correct)b.classList.add('good'); else if(idx===k)b.classList.add('bad'); else b.classList.add('dim'); });
+  ERD.n++;
+  if(ok){ ERD.ok++; ERD.streak++; if(ERD.streak>ERD.best)ERD.best=ERD.streak; }
+  else { ERD.streak=0; recordMistake({kind:'gram',q:it.stem,opts:it.opts,correct:it.correct,expl:it.expl,cat:'0 fautes · '+it.cat}); }
+  document.getElementById('erdafter').innerHTML=`<div class="expl ${ok?'ok':'no'}" style="margin-top:10px">${ok?'✓ ':'✗ '+ERD.dispOpts[correct]+'. '}${it.expl}</div>`;
+  setTimeout(()=>{ if(ERD&&ERD.live&&ERD.answered) renderErr(); }, ok?600:1900);
+}
+function finishErr(){
+  if(!ERD) return; ERD.live=false;
+  const acc=ERD.n?Math.round(100*ERD.ok/ERD.n):0, xp=Math.min(80,ERD.ok*2);
+  markStudy(); if(xp) addXp(xp); save(); if(typeof checkAchievements==='function') checkAchievements();
+  const msg=ERD.n>=25?'Ça, c\'est du volume — c\'est là que les fautes disparaissent.':ERD.n>=10?'Bien. La répétition rend le bon choix automatique : reviens-y.':'Court — enchaîne beaucoup, souvent : c\'est comme ça qu\'on vise le 0 faute.';
+  app.innerHTML=`
+    <div class="card big"><div class="em">${acc>=85?'🎉':acc>=60?'💪':'📚'}</div>
+      <div class="score" style="color:${acc>=70?'var(--good)':'var(--accent)'}">${acc}%</div>
+      <div class="lab">${ERD.ok}/${ERD.n} · meilleure série ${ERD.best}</div>
+      <div class="mt sub">${msg} +${xp} XP</div></div>
+    <button class="btn" onclick="startErr('${ERD.cat}')">↻ Encore</button>
+    <button class="btn ghost mt" onclick="setView('grammar')">← Grammaire</button>`;
+}
 function renderGrammarList() {
   const rows = LESSONS.map((l, idx) => {
     const st = S.lessons[l.id];
@@ -486,6 +544,16 @@ function renderGrammarList() {
     <div class="card">
       <h2>Grammaire — Part 5</h2>
       <div class="sub">Valide une leçon (≥ 70 %) pour débloquer la suivante. Chaque bonne réponse rapporte de l'XP.</div>
+    </div>
+    <div class="card" style="border-color:var(--good)">
+      <h2 style="font-size:16px">⚡ Drill « 0 fautes » · au réflexe</h2>
+      <div class="sub">Pour ne plus jamais trébucher sur les petits pièges : <b style="color:var(--txt)">a/an</b>, <b style="color:var(--txt)">indénombrables</b> (the news is), articles, calques du français. 2 boutons, correction immédiate, en boucle.</div>
+      <button class="btn mt" onclick="startErr('all')">Tout mélanger</button>
+      <div class="row2 mt">
+        <button class="btn sec" onclick="startErr('a/an')">A / An</button>
+        <button class="btn sec" onclick="startErr('indénombrables')">Indénombrables</button>
+      </div>
+      <button class="btn sec mt" onclick="startErr('pièges')">Pièges de calque</button>
     </div>
     ${rows}
   `;

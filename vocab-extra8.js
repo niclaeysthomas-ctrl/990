@@ -1,0 +1,66 @@
+/* ============================================================
+   990 — Vocabulaire du QUOTIDIEN CONCRET (objets, rue, nature, bricolage)
+   [EN, FR, exemple, thème]. Concaténé À LA FIN de VOCAB (indices SRS stables).
+   ============================================================ */
+window.VOCAB = window.VOCAB.concat([
+  // Cuisine & maison
+  ["a ladle", "une louche", "She served the soup with a ladle.", "Quotidien"],
+  ["a whisk", "un fouet", "Beat the eggs with a whisk.", "Quotidien"],
+  ["a peeler", "un économe, un éplucheur", "Use a peeler for the potatoes.", "Quotidien"],
+  ["a sink", "un évier, un lavabo", "The dishes are piled in the sink.", "Quotidien"],
+  ["a tap", "un robinet (GB)", "Please turn off the tap.", "Quotidien"],
+  ["a bin", "une poubelle", "Throw the wrapper in the bin.", "Quotidien"],
+  ["a broom", "un balai", "She swept the floor with a broom.", "Quotidien"],
+  ["a bucket", "un seau", "Fill the bucket with water.", "Quotidien"],
+  ["a hanger", "un cintre", "Hang your coat on a hanger.", "Quotidien"],
+  ["a drawer", "un tiroir", "The forks are in the top drawer.", "Quotidien"],
+  ["a shelf", "une étagère", "Put the book back on the shelf.", "Quotidien"],
+  ["a blanket", "une couverture", "She pulled the blanket over her shoulders.", "Quotidien"],
+  ["a pillow", "un oreiller", "This pillow is far too soft.", "Quotidien"],
+  ["a towel", "une serviette", "Dry your hands with the towel.", "Quotidien"],
+  ["the ceiling", "le plafond", "There's a crack in the ceiling.", "Quotidien"],
+  ["a plug", "une prise (mâle), un bouchon", "Put the plug into the socket.", "Quotidien"],
+  ["a socket", "une prise (murale)", "There's no free socket in the room.", "Quotidien"],
+  ["a switch", "un interrupteur", "Flick the light switch on your way out.", "Quotidien"],
+  ["a doorbell", "une sonnette", "The doorbell rang twice.", "Quotidien"],
+  // Ville & rue
+  ["a bus shelter", "un abribus", "We waited under the bus shelter.", "Ville"],
+  ["a crane", "une grue (chantier)", "A crane lifted the steel beams.", "Ville"],
+  ["a slope", "une pente", "The road has a steep slope.", "Ville"],
+  ["the pavement", "le trottoir (GB)", "Keep to the pavement, not the road.", "Ville"],
+  ["the kerb", "le bord du trottoir", "Mind the kerb when you step off.", "Ville"],
+  ["a crossroads", "un carrefour", "Turn left at the next crossroads.", "Ville"],
+  ["a roundabout", "un rond-point", "Take the second exit at the roundabout.", "Ville"],
+  ["a lane", "une voie, une ruelle", "Stay in the right-hand lane.", "Ville"],
+  ["a fence", "une clôture, une barrière", "He repainted the garden fence.", "Ville"],
+  ["a gate", "un portail, une grille", "Please close the gate behind you.", "Ville"],
+  ["a shed", "un abri de jardin, un cabanon", "The tools are in the shed.", "Ville"],
+  ["scaffolding", "un échafaudage", "Scaffolding covered the whole building.", "Ville"],
+  ["a puddle", "une flaque", "She stepped straight into a puddle.", "Ville"],
+  ["a gutter", "une gouttière, un caniveau", "Dead leaves clogged the gutter.", "Ville"],
+  // Nature & dehors
+  ["a hill", "une colline", "We climbed the hill before lunch.", "Nature"],
+  ["a cliff", "une falaise", "The path runs along the cliff.", "Nature"],
+  ["a stream", "un ruisseau", "A stream runs through the woods.", "Nature"],
+  ["a hedge", "une haie", "He trimmed the garden hedge.", "Nature"],
+  ["a branch", "une branche", "A branch had fallen across the road.", "Nature"],
+  ["a twig", "une brindille", "She lit the fire with dry twigs.", "Nature"],
+  ["a pebble", "un galet, un caillou", "The beach was covered in pebbles.", "Nature"],
+  ["gravel", "le gravier", "The driveway is covered with gravel.", "Nature"],
+  ["a wheelbarrow", "une brouette", "He wheeled a barrow of soil across the yard.", "Bricolage"],
+  // Outils & bricolage
+  ["a ladder", "une échelle", "He climbed the ladder to the roof.", "Bricolage"],
+  ["a rope", "une corde", "Tie the boat with a rope.", "Bricolage"],
+  ["a nail", "un clou", "Hammer the nail into the plank.", "Bricolage"],
+  ["a screw", "une vis", "Tighten this screw a little more.", "Bricolage"],
+  ["a screwdriver", "un tournevis", "Pass me the screwdriver, please.", "Bricolage"],
+  ["a hammer", "un marteau", "Hit it gently with a hammer.", "Bricolage"],
+  ["a spanner", "une clé à écrous (GB)", "Loosen the bolt with a spanner.", "Bricolage"],
+  ["string", "de la ficelle", "Tie the parcel with string.", "Bricolage"],
+  ["a torch", "une lampe torche (GB)", "Bring a torch, the cellar is dark.", "Bricolage"],
+  // Vêtements (détails)
+  ["a sleeve", "une manche", "He rolled up his sleeves and got to work.", "Quotidien"],
+  ["a collar", "un col", "Straighten your collar before the interview.", "Quotidien"],
+  ["a zip", "une fermeture éclair (GB)", "The zip on my jacket is stuck.", "Quotidien"],
+  ["a shoelace", "un lacet", "Tie your shoelaces before you trip.", "Quotidien"]
+]);
