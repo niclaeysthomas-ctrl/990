@@ -32,6 +32,7 @@ const DEFAULT = {
   longDone: 0,          // sessions d'écoute Part 3/4 terminées
   perfectDays: 0,       // jours où l'objectif du jour a été atteint
   slowAudio: false,     // vitesse d'écoute réduite
+  verbs: {},            // deck Anki à part : verbes irréguliers (index -> état SM-2)
   firstRun: true
 };
 
@@ -420,6 +421,12 @@ function renderHome() {
       <div class="ic a">🃏</div>
       <div class="body"><div class="t">Réviser les cartes</div><div class="d">${due} révision(s) · ${news} nouvelle(s)</div></div>
       <div class="badge ${(due+news)===0?'zero':''}">${due + news}</div>
+    </button>
+
+    <button class="tile" onclick="renderVerbsHome()">
+      <div class="ic" style="background:linear-gradient(135deg,#ff5c6c33,#ffb02011);color:var(--bad)">⚡</div>
+      <div class="body"><div class="t">Verbes irréguliers</div><div class="d">Deck Anki à part · prétérit + participe · l'oral qui pardonne pas</div></div>
+      <div class="badge ${buildVerbQueue('Tous').length===0?'zero':''}">${buildVerbQueue('Tous').length}</div>
     </button>
 
     <button class="tile" onclick="setView('grammar')">
@@ -1780,6 +1787,7 @@ function finishReg() {
 
 /* ---------- Boot ---------- */
 if (!S.badges) S.badges = [];
+if (!S.verbs) S.verbs = {};   // deck verbes irréguliers (ancienne progression sans cette clé)
 // Migration silencieuse : si des trophées sont déjà mérités mais jamais enregistrés, on les scelle sans notifier.
 if (S.badges.length === 0) { const pre = earnedIds(); if (pre.length) { S.badges = pre; save(); } }
 touchDay();
