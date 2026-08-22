@@ -527,6 +527,64 @@ function finishErr(){
     <button class="btn" onclick="startErr('${ERD.cat}')">↻ Encore</button>
     <button class="btn ghost mt" onclick="setView('grammar')">← Grammaire</button>`;
 }
+/* ---------- DRILL PRÉPOSITIONS AU RÉFLEXE (N options : in/on/at, +prép, phrasal) ---------- */
+let PRP=null;
+const PRP_LABEL={all:'Prépositions · mix', temps:'Temps (in/on/at)', lieu:'Lieu (in/on/at)', verbes:'Verbes + prép.', phrasal:'Phrasal verbs'};
+function prepPool(cat){
+  const all=(typeof PREP_DRILL!=='undefined')?PREP_DRILL:[];
+  const src=cat==='all'?all:all.filter(it=>it[4]===cat);
+  return src.map(it=>({stem:it[0],opts:it[1],correct:it[2],expl:it[3],cat:it[4]}));
+}
+function startPrep(cat){
+  const pool=prepPool(cat);
+  if(!pool.length){ toast('Rien ici 🙂'); return; }
+  PRP={cat,pool,bag:[],n:0,ok:0,streak:0,best:0,answered:false,live:true};
+  renderPrep();
+}
+function renderPrep(){
+  window.scrollTo(0,0);
+  if(!PRP.bag.length) PRP.bag=shuffle(PRP.pool.slice());
+  const it=PRP.cur=PRP.bag.pop(); PRP.answered=false;
+  const order=shuffle(it.opts.map((o,i)=>i));
+  PRP.dispOpts=order.map(i=>it.opts[i]);
+  PRP.dispCorrect=order.indexOf(it.correct);
+  const stemHtml=it.stem.replace('______','<span class="blank">______</span>');
+  const acc=PRP.n?Math.round(100*PRP.ok/PRP.n):0;
+  app.innerHTML=`
+    <div class="qmeta"><span>${PRP_LABEL[PRP.cat]} · réflexe</span><span>🔥 ${PRP.streak}${PRP.best>PRP.streak?' · rec '+PRP.best:''}</span></div>
+    <div class="pbar mb"><i style="width:${acc}%"></i></div>
+    <div class="sub" style="margin-bottom:10px">${PRP.n?acc+'% · '+PRP.n+' faites — vite, au feeling':'Choisis vite : c\'est le réflexe qu\'on installe.'}</div>
+    <div class="stem">${stemHtml}</div>
+    <div id="prpopts" style="display:flex;gap:10px;flex-wrap:wrap">
+      ${PRP.dispOpts.map((o,k)=>`<button class="opt" style="flex:1 1 30%;min-width:88px;text-align:center;font-size:19px;font-weight:800;padding:16px;margin-bottom:0" onclick="prepAnswer(${k})">${o}</button>`).join('')}
+    </div>
+    <div id="prpafter"></div>
+    <button class="btn ghost mt" onclick="finishPrep()">■ Stop &amp; bilan</button>
+  `;
+}
+function prepAnswer(k){
+  if(!PRP||PRP.answered) return; PRP.answered=true;
+  const it=PRP.cur, correct=PRP.dispCorrect, ok=(k===correct);
+  document.querySelectorAll('#prpopts .opt').forEach((b,idx)=>{ b.setAttribute('disabled',''); if(idx===correct)b.classList.add('good'); else if(idx===k)b.classList.add('bad'); else b.classList.add('dim'); });
+  PRP.n++;
+  if(ok){ PRP.ok++; PRP.streak++; if(PRP.streak>PRP.best)PRP.best=PRP.streak; }
+  else { PRP.streak=0; recordMistake({kind:'gram',q:it.stem,opts:it.opts,correct:it.correct,expl:it.expl,cat:'Prépositions · '+it.cat}); }
+  document.getElementById('prpafter').innerHTML=`<div class="expl ${ok?'ok':'no'}" style="margin-top:10px">${ok?'✓ ':'✗ '+PRP.dispOpts[correct]+'. '}${it.expl}</div>`;
+  setTimeout(()=>{ if(PRP&&PRP.live&&PRP.answered) renderPrep(); }, ok?600:1900);
+}
+function finishPrep(){
+  if(!PRP) return; PRP.live=false;
+  const acc=PRP.n?Math.round(100*PRP.ok/PRP.n):0, xp=Math.min(80,PRP.ok*2);
+  markStudy(); if(xp) addXp(xp); save(); if(typeof checkAchievements==='function') checkAchievements();
+  const msg=PRP.n>=25?'Les prépositions rentrent par l\'usage — et tu viens d\'en enchaîner un paquet.':PRP.n>=10?'Bien. Reviens-y : c\'est la répétition qui grave la bonne préposition.':'Court — enchaîne beaucoup, souvent : la préposition juste vient au feeling, pas par la règle.';
+  app.innerHTML=`
+    <div class="card big"><div class="em">${acc>=85?'🎉':acc>=60?'💪':'📚'}</div>
+      <div class="score" style="color:${acc>=70?'var(--good)':'var(--accent)'}">${acc}%</div>
+      <div class="lab">${PRP.ok}/${PRP.n} · meilleure série ${PRP.best}</div>
+      <div class="mt sub">${msg} +${xp} XP</div></div>
+    <button class="btn" onclick="startPrep('${PRP.cat}')">↻ Encore</button>
+    <button class="btn ghost mt" onclick="setView('grammar')">← Grammaire</button>`;
+}
 function renderGrammarList() {
   const rows = LESSONS.map((l, idx) => {
     const st = S.lessons[l.id];
@@ -554,6 +612,19 @@ function renderGrammarList() {
         <button class="btn sec" onclick="startErr('indénombrables')">Indénombrables</button>
       </div>
       <button class="btn sec mt" onclick="startErr('pièges')">Pièges de calque</button>
+    </div>
+    <div class="card" style="border-color:var(--blue)">
+      <h2 style="font-size:16px">🧭 Prépositions · au réflexe</h2>
+      <div class="sub">Le cauchemar des francophones, transformé en réflexe : <b style="color:var(--txt)">in/on/at</b> (temps &amp; lieu), <b style="color:var(--txt)">verbes + préposition</b> (good at, depend on…) et <b style="color:var(--txt)">phrasal verbs</b> (turn off, look after…).</div>
+      <button class="btn mt" onclick="startPrep('all')">Tout mélanger</button>
+      <div class="row2 mt">
+        <button class="btn sec" onclick="startPrep('temps')">Temps</button>
+        <button class="btn sec" onclick="startPrep('lieu')">Lieu</button>
+      </div>
+      <div class="row2 mt">
+        <button class="btn sec" onclick="startPrep('verbes')">Verbes + prép.</button>
+        <button class="btn sec" onclick="startPrep('phrasal')">Phrasal verbs</button>
+      </div>
     </div>
     ${rows}
   `;

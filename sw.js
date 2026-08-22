@@ -1,9 +1,10 @@
 /* 990 — service worker : cache offline (app shell) */
-const CACHE = '990-v16';
+const CACHE = '990-v17';
 const ASSETS = [
   'index.html',
-  'app.js?v=16',
+  'app.js?v=17',
   'zero-errors.js?v=1',
+  'prepositions.js?v=1',
   'vocab-extra8.js?v=1',
   'data.js?v=9',
   'vocab-extra.js?v=9',
