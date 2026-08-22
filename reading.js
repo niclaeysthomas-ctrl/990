@@ -142,6 +142,170 @@ window.READINGS = [
        "Il s'assit sur le banc glacé et, pour la première fois depuis des mois, ne ressentit aucune hâte. Il n'y avait plus nulle part où être. Il faillit sourire."]
     ],
     gloss: [["buzzed", "bourdonnait / grésillait"], ["soles", "les semelles"], ["shrank", "rétrécirent (to shrink)"], ["closed in", "se referma / se resserra"], ["hurry", "la hâte / la précipitation"]]
+  },
+
+  {
+    id: "shelley-frankenstein",
+    type: "Littérature",
+    title: "Frankenstein",
+    author: "Mary Shelley, 1818",
+    intro: "La toute première page du roman : l'explorateur Walton écrit à sa sœur, porté par un enthousiasme que le récit viendra assombrir.",
+    pairs: [
+      ["You will rejoice to hear that no disaster has accompanied the commencement of an enterprise which you have regarded with such evil forebodings.",
+       "Tu te réjouiras d'apprendre qu'aucun désastre n'a accompagné le commencement d'une entreprise que tu envisageais avec de si sombres pressentiments."],
+      ["I arrived here yesterday, and my first task is to assure my dear sister of my welfare and increasing confidence in the success of my undertaking.",
+       "Je suis arrivé ici hier, et ma première tâche est d'assurer ma chère sœur de mon bien-être et de ma confiance grandissante dans le succès de mon entreprise."]
+    ],
+    gloss: [["to rejoice", "se réjouir"], ["commencement", "le commencement / le début"], ["forebodings", "les (sombres) pressentiments"], ["welfare", "le bien-être"], ["undertaking", "l'entreprise / le projet"]]
+  },
+  {
+    id: "carroll-alice",
+    type: "Littérature",
+    title: "Alice's Adventures in Wonderland",
+    author: "Lewis Carroll, 1865",
+    intro: "L'ouverture d'« Alice au pays des merveilles » : l'ennui d'un après-midi, juste avant que le lapin blanc ne passe en courant.",
+    pairs: [
+      ["Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it.",
+       "Alice commençait à en avoir bien assez d'être assise auprès de sa sœur sur le talus, sans rien à faire : une ou deux fois, elle avait jeté un coup d'œil au livre que lisait sa sœur, mais il n'y avait ni images ni dialogues."],
+      ["'And what is the use of a book,' thought Alice, 'without pictures or conversation?'",
+       "« Et à quoi sert un livre, songea Alice, sans images ni dialogues ? »"]
+    ],
+    gloss: [["to be tired of", "en avoir assez de"], ["bank", "le talus / la rive"], ["to peep into", "jeter un coup d'œil dans"], ["what is the use of…?", "à quoi sert… ?"], ["conversation", "les dialogues / la conversation"]]
+  },
+  {
+    id: "doyle-scandal",
+    type: "Littérature",
+    title: "A Scandal in Bohemia",
+    author: "Arthur Conan Doyle, 1891",
+    intro: "Les premières lignes de la nouvelle : comment Watson présente « LA femme », Irene Adler, la seule à avoir tenu tête à Sherlock Holmes.",
+    pairs: [
+      ["To Sherlock Holmes she is always the woman. I have seldom heard him mention her under any other name.",
+       "Pour Sherlock Holmes, elle est toujours LA femme. Je l'ai rarement entendu la désigner sous un autre nom."],
+      ["In his eyes she eclipses and predominates the whole of her sex.",
+       "À ses yeux, elle éclipse et surpasse tout le reste de son sexe."]
+    ],
+    gloss: [["always", "toujours"], ["seldom", "rarement"], ["to mention", "mentionner / évoquer"], ["to eclipse", "éclipser"], ["to predominate", "prédominer / l'emporter sur"]]
+  },
+  {
+    id: "bronte-wuthering",
+    type: "Littérature",
+    title: "Wuthering Heights",
+    author: "Emily Brontë, 1847",
+    intro: "La première entrée du journal de Lockwood : l'arrivée d'un citadin dans la lande sauvage du Yorkshire.",
+    pairs: [
+      ["1801. — I have just returned from a visit to my landlord — the solitary neighbour that I shall be troubled with. This is certainly a beautiful country!",
+       "1801. — Je reviens à l'instant d'une visite à mon propriétaire — le seul voisin dont j'aurai à me soucier. Voilà, à coup sûr, une bien belle contrée !"],
+      ["In all England, I do not believe that I could have fixed on a situation so completely removed from the stir of society.",
+       "Dans toute l'Angleterre, je ne crois pas que j'aurais pu arrêter mon choix sur un lieu aussi complètement à l'écart de l'agitation du monde."]
+    ],
+    gloss: [["landlord", "le propriétaire (bailleur)"], ["solitary", "solitaire / isolé"], ["to be troubled with", "avoir affaire à / être importuné par"], ["to fix on", "arrêter son choix sur"], ["the stir of society", "l'agitation du monde"]]
+  },
+  {
+    id: "fitzgerald-gatsby",
+    type: "Littérature",
+    title: "The Great Gatsby",
+    author: "F. Scott Fitzgerald, 1925",
+    intro: "La fin, mythique, de « Gatsby le Magnifique » : une méditation sur l'espoir et le passé. (Repère au passage les verbes irréguliers : beat, borne.)",
+    pairs: [
+      ["Gatsby believed in the green light, the orgastic future that year by year recedes before us. It eluded us then, but that's no matter — tomorrow we will run faster, stretch out our arms farther.",
+       "Gatsby croyait en la lumière verte, cet avenir extatique qui, année après année, recule devant nous. Il nous a échappé alors, mais qu'importe — demain nous courrons plus vite, nous tendrons les bras plus loin."],
+      ["And one fine morning — So we beat on, boats against the current, borne back ceaselessly into the past.",
+       "Et un beau matin — Ainsi nous luttons, barques à contre-courant, sans cesse ramenés vers le passé."]
+    ],
+    gloss: [["to recede", "reculer / refluer"], ["to elude", "échapper à"], ["that's no matter", "qu'importe / peu importe"], ["to stretch out", "tendre / étirer"], ["borne back", "ramené en arrière (de « to bear »)"]]
+  },
+  {
+    id: "thoreau-walden",
+    type: "Littérature",
+    title: "Walden",
+    author: "Henry David Thoreau, 1854",
+    intro: "La phrase-manifeste de Thoreau : pourquoi il est parti vivre seul, deux ans, dans une cabane au bord d'un étang.",
+    pairs: [
+      ["I went to the woods because I wished to live deliberately, to front only the essential facts of life, and see if I could not learn what it had to teach.",
+       "Je m'en allai dans les bois parce que je voulais vivre à dessein, n'affronter que les faits essentiels de la vie, et voir si je ne pourrais pas apprendre ce qu'elle avait à enseigner."],
+      ["And not, when I came to die, discover that I had not lived.",
+       "Et non pas, à l'heure de ma mort, découvrir que je n'avais pas vécu."]
+    ],
+    gloss: [["to live deliberately", "vivre à dessein / délibérément"], ["to front", "affronter / faire face à"], ["essential facts", "les faits essentiels"], ["to teach", "enseigner"], ["when I came to die", "à l'heure de ma mort"]]
+  },
+  {
+    id: "stevenson-jekyll",
+    type: "Littérature",
+    title: "Dr Jekyll and Mr Hyde",
+    author: "R. L. Stevenson, 1886",
+    intro: "Le portrait qui ouvre « L'Étrange Cas du Dr Jekyll et de M. Hyde » : l'austère notaire Utterson.",
+    pairs: [
+      ["Mr. Utterson the lawyer was a man of a rugged countenance that was never lighted by a smile; cold, scanty and embarrassed in discourse; backward in sentiment.",
+       "Maître Utterson, l'homme de loi, était un homme au visage rude que jamais un sourire n'éclairait ; froid, avare et emprunté dans ses propos ; peu porté au sentiment."],
+      ["Lean, long, dusty, dreary and yet somehow lovable.",
+       "Sec, long, terne, morose, et pourtant, d'une certaine façon, attachant."]
+    ],
+    gloss: [["countenance", "le visage / la mine"], ["rugged", "rude / rugueux"], ["scanty", "avare / maigre"], ["backward in sentiment", "peu porté au sentiment"], ["lovable", "attachant"]]
+  },
+
+  {
+    id: "market-crowd",
+    type: "Presse",
+    title: "What a market really is",
+    author: "Essai · finance",
+    intro: "Ce qu'est vraiment un marché : moins une affaire de chiffres qu'une foule qui parie sur l'avenir. (Pour ton monde de la finance.)",
+    pairs: [
+      ["A market is often pictured as a place of cold numbers, but at heart it is a crowd of people guessing what others will do next. Every price is a story the crowd tells itself about the future.",
+       "On se représente souvent un marché comme un lieu de chiffres froids, mais au fond, c'est une foule de gens qui devinent ce que les autres vont faire ensuite. Chaque prix est une histoire que la foule se raconte à elle-même sur l'avenir."],
+      ["When confidence is high, money flows in and prices climb; when fear takes over, the same assets are dumped at any price. Nothing about the companies has changed overnight — only the mood of the crowd.",
+       "Quand la confiance est élevée, l'argent afflue et les prix grimpent ; quand la peur l'emporte, les mêmes actifs sont bradés à n'importe quel prix. Rien n'a changé dans les entreprises du jour au lendemain — seule l'humeur de la foule a changé."],
+      ["That is why the calmest investor often wins. To buy when others panic and to hold when others chase is less a matter of intelligence than of temperament.",
+       "C'est pourquoi l'investisseur le plus calme l'emporte souvent. Acheter quand les autres paniquent et conserver quand les autres courent après le marché relève moins de l'intelligence que du tempérament."]
+    ],
+    gloss: [["at heart", "au fond / essentiellement"], ["to climb", "grimper / monter"], ["to dump (assets)", "brader / se débarrasser de"], ["overnight", "du jour au lendemain"], ["to chase", "courir après / poursuivre"]]
+  },
+  {
+    id: "ai-learns",
+    type: "Presse",
+    title: "The machines that learn",
+    author: "Essai · technologie",
+    intro: "Comment « apprennent » les intelligences artificielles d'aujourd'hui — et la vraie question qu'elles nous posent.",
+    pairs: [
+      ["Modern artificial intelligence does not think the way we do. It has read a vast share of everything ever written, and from that ocean of text it has learned to guess, word by word, what tends to come next.",
+       "L'intelligence artificielle moderne ne pense pas comme nous. Elle a lu une immense partie de tout ce qui a jamais été écrit, et de cet océan de textes elle a appris à deviner, mot après mot, ce qui a tendance à suivre."],
+      ["The result can feel like understanding, and sometimes it comes remarkably close. Yet the machine has no memory of yesterday and no stake in tomorrow; it neither hopes nor fears.",
+       "Le résultat peut donner l'impression d'une compréhension, et parfois il en est remarquablement proche. Pourtant, la machine n'a aucun souvenir d'hier ni aucun intérêt dans demain ; elle n'espère ni ne craint."],
+      ["The real question is no longer whether such tools are clever, but what we choose to hand over to them — and what we insist on keeping for ourselves.",
+       "La vraie question n'est plus de savoir si ces outils sont intelligents, mais ce que nous choisissons de leur confier — et ce que nous tenons à garder pour nous."]
+    ],
+    gloss: [["a vast share", "une immense partie"], ["word by word", "mot après mot"], ["to have a stake in", "avoir un intérêt dans / être partie prenante"], ["to hand over", "confier / remettre"], ["to insist on", "tenir à / exiger"]]
+  },
+  {
+    id: "why-sleep",
+    type: "Presse",
+    title: "Why we sleep",
+    author: "Essai · sciences",
+    intro: "Longtemps traité comme du temps perdu, le sommeil s'est révélé l'un des piliers de la santé.",
+    pairs: [
+      ["For a long time, sleep was treated as wasted time — a nightly pause we could trim to get more done. Science has since turned that idea on its head.",
+       "Pendant longtemps, le sommeil a été considéré comme du temps perdu — une pause nocturne que l'on pouvait rogner pour en faire plus. La science a depuis renversé cette idée."],
+      ["While we sleep, the brain sorts the day's memories, flushes out waste and repairs the body. A single bad night dulls attention; months of poor sleep quietly erode health.",
+       "Pendant que nous dormons, le cerveau trie les souvenirs de la journée, évacue les déchets et répare le corps. Une seule mauvaise nuit émousse l'attention ; des mois de sommeil médiocre érodent la santé à bas bruit."],
+      ["The lesson is humbling: we cannot cheat sleep for long. Sooner or later, the debt falls due, and the body collects what it is owed.",
+       "La leçon est humble : on ne peut pas tromper le sommeil bien longtemps. Tôt ou tard, la dette arrive à échéance, et le corps réclame son dû."]
+    ],
+    gloss: [["to trim", "rogner / réduire"], ["to turn on its head", "renverser (une idée)"], ["to flush out", "évacuer / éliminer"], ["to dull", "émousser"], ["to fall due", "arriver à échéance"]]
+  },
+  {
+    id: "praise-boredom",
+    type: "Presse",
+    title: "In defence of boredom",
+    author: "Essai · société",
+    intro: "Petit éloge de l'ennui, ce terreau oublié de la curiosité et de l'imagination.",
+    pairs: [
+      ["We have grown so good at filling every spare moment that boredom has almost vanished from daily life. The queue, the wait, the empty afternoon — all are now swallowed by a glowing screen.",
+       "Nous sommes devenus si doués pour remplir le moindre moment libre que l'ennui a presque disparu de la vie quotidienne. La file d'attente, l'attente, l'après-midi vide — tout est désormais englouti par un écran lumineux."],
+      ["Yet boredom was never merely empty. It is the soil in which curiosity and imagination take root; children left with nothing to do eventually invent something.",
+       "Pourtant, l'ennui n'a jamais été simplement vide. C'est le terreau où la curiosité et l'imagination prennent racine ; les enfants qu'on laisse sans rien à faire finissent par inventer quelque chose."],
+      ["To reclaim a little boredom, then, is not to waste time but to make room — for the wandering thoughts that no notification will ever bring.",
+       "Retrouver un peu d'ennui, dès lors, ce n'est pas perdre son temps, mais faire de la place — pour ces pensées vagabondes qu'aucune notification n'apportera jamais."]
+    ],
+    gloss: [["spare moment", "moment libre"], ["to vanish", "disparaître"], ["to swallow", "engloutir / avaler"], ["to take root", "prendre racine"], ["to reclaim", "récupérer / se réapproprier"]]
   }
 ];
 

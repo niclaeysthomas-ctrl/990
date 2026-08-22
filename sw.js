@@ -1,5 +1,5 @@
 /* 990 — service worker : cache offline (app shell) */
-const CACHE = '990-v20';
+const CACHE = '990-v21';
 const ASSETS = [
   'index.html',
   'app.js?v=20',
@@ -17,7 +17,7 @@ const ASSETS = [
   'vocab-extra6.js?v=12',
   'vocab-future.js?v=13',
   'vocab-extra7.js?v=15',
-  'reading.js?v=15',
+  'reading.js?v=21',
   'translations.js?v=9',
   'listening-long.js?v=9',
   'exam-data.js?v=9',
