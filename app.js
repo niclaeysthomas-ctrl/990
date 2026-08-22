@@ -445,6 +445,11 @@ function renderHome() {
       <div class="body"><div class="t">Anglais soutenu</div><div class="d">Élever le registre : du neutre vers l'élégant</div></div>
       <div class="badge zero">${REGISTER.length}</div>
     </button>
+    <button class="tile" onclick="renderLitHome()">
+      <div class="ic l">✒️</div>
+      <div class="body"><div class="t">L'anglais de Jane Eyre</div><div class="d">Le style littéraire : inversions, mots choisis, Brontë</div></div>
+      <div class="badge zero">✒️</div>
+    </button>
 
     <button class="tile" onclick="renderReadingHome()">
       <div class="ic l">📖</div>
