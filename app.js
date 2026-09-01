@@ -33,6 +33,8 @@ const DEFAULT = {
   perfectDays: 0,       // jours où l'objectif du jour a été atteint
   slowAudio: false,     // vitesse d'écoute réduite
   verbs: {},            // deck Anki à part : verbes irréguliers (index -> état SM-2)
+  mine: [],             // LA MOISSON : deck perso de tournures attrapées (voir moisson.js)
+  mineDir: 'en2fr',     // sens des cartes de la moisson : reconnaître ou produire
   firstRun: true
 };
 
@@ -280,7 +282,10 @@ const ACHIEVEMENTS = [
   { id: 'exam600', ic: '📈', title: 'Cap B2', desc: 'Score estimé ≥ 600', test: () => (S.estScore || 0) >= 600 },
   { id: 'exam785', ic: '🎓', title: 'Objectif ESCP', desc: 'Score estimé ≥ 785', test: () => (S.estScore || 0) >= 785 },
   { id: 'exam900', ic: '🏆', title: 'Excellence', desc: 'Score estimé ≥ 900', test: () => (S.estScore || 0) >= 900 },
-  { id: 'xp1000', ic: '⭐', title: 'Mille XP', desc: '1000 XP cumulés', test: () => S.xp >= 1000 }
+  { id: 'xp1000', ic: '⭐', title: 'Mille XP', desc: '1000 XP cumulés', test: () => S.xp >= 1000 },
+  { id: 'moisson10', ic: '🌾', title: 'Chineur', desc: '10 tournures attrapées dans la nature', test: () => (S.mine || []).length >= 10 },
+  { id: 'moisson25', ic: '🧺', title: 'Belle moisson', desc: '25 tournures à toi', test: () => (S.mine || []).length >= 25 },
+  { id: 'moissonmat', ic: '🪶', title: 'Elles sont tiennes', desc: '15 tournures perso ancrées (≥21j)', test: () => typeof mineMastered === 'function' && mineMastered() >= 15 }
 ];
 function earnedIds() { const s = []; ACHIEVEMENTS.forEach(a => { try { if (a.test()) s.push(a.id); } catch (e) {} }); return s; }
 function checkAchievements() {
@@ -340,6 +345,8 @@ function coachAdvice() {
   const due = dueCards().length;
   const dp = dailyProgress();
   if (due > 0) return { title: 'Priorité : réviser', msg: `${due} carte(s) sont dues. Les revoir à temps, c'est là que la mémoire se joue.`, btn: 'Réviser', action: 'startReview(false)' };
+  if (minePendingCount() >= 3 || (minePendingCount() >= 1 && minePendingAge() >= 4))
+    return { title: 'Tes tournures attendent', msg: `${minePendingCount()} tournure(s) que tu as attrapée(s) dorment sans explication${minePendingAge() >= 4 ? `, la plus vieille depuis ${minePendingAge()} jours` : ''}. Exporte-les et fais-les expliquer : c'est le vocabulaire que tu as choisi toi-même, celui qui reste.`, btn: 'Exporter ma moisson', action: 'renderMineExport(false)' };
   if (mistakeCount() >= 3) return { title: 'Corrige tes erreurs', msg: `Tu as ${mistakeCount()} question(s) déjà ratée(s) en attente. Les rejouer jusqu'à les maîtriser, c'est le plus direct vers le sans-faute.`, btn: 'Revoir mes erreurs', action: 'startMistakes()' };
   if (dp.t < 1 && buildTransQueue('Tous').length) return { title: 'Passe à la production', msg: 'Traduire des phrases rend ta grammaire active — le vrai déclic bilingue.', btn: 'Traduire', action: "setView('traduire')" };
   if (!dp.s) return { title: 'Un peu d\'étude', msg: 'Une session d\'écoute ou une leçon de grammaire pour valider ta journée.', btn: 'Écouter', action: "setView('listen')" };
@@ -427,6 +434,12 @@ function renderHome() {
       <div class="ic" style="background:linear-gradient(135deg,#ff5c6c33,#ffb02011);color:var(--bad)">⚡</div>
       <div class="body"><div class="t">Verbes irréguliers</div><div class="d">Deck Anki à part · prétérit + participe · l'oral qui pardonne pas</div></div>
       <div class="badge ${buildVerbQueue('Tous').length===0?'zero':''}">${buildVerbQueue('Tous').length}</div>
+    </button>
+
+    <button class="tile" onclick="renderMoissonHome()">
+      <div class="ic e">🌾</div>
+      <div class="body"><div class="t">La Moisson</div><div class="d">${mine().length === 0 ? 'Ton deck à toi : les tournures que tu attrapes' : `${mine().length} tournure(s)${minePendingCount() ? ` · ${minePendingCount()} à faire expliquer` : ''}`}</div></div>
+      <div class="badge ${minePendingCount() ? '' : (mineQueueCount() ? '' : 'zero')}" ${minePendingCount() ? 'style="background:var(--blue);color:#04122e"' : ''}>${minePendingCount() || mineQueueCount() || '＋'}</div>
     </button>
 
     <button class="tile" onclick="setView('grammar')">
