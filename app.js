@@ -277,7 +277,8 @@ const ACHIEVEMENTS = [
   { id: 'vocmat', ic: '🧠', title: 'Mémoire d\'acier', desc: '100 mots ancrés (≥21j)', test: () => matureCount() >= 100 },
   { id: 'trans25', ic: '✍️', title: 'Traducteur', desc: '25 phrases traduites', test: () => transSeen() >= 25 },
   { id: 'transmat', ic: '🖋️', title: 'Plume bilingue', desc: '25 traductions maîtrisées', test: () => transMastered() >= 25 },
-  { id: 'gramall', ic: '📘', title: 'Grammairien', desc: 'Toutes les leçons validées', test: () => LESSONS.every(l => S.lessons[l.id] && S.lessons[l.id].done) },
+  { id: 'gramall', ic: '📘', title: 'Grammairien', desc: 'Toutes les leçons validées', test: () => LESSONS.filter(l => !l.hard).every(l => S.lessons[l.id] && S.lessons[l.id].done) },
+  { id: 'scalpel', ic: '🔪', title: 'Au scalpel', desc: 'Les 10 leçons de haute précision validées', test: () => { const h = LESSONS.filter(l => l.hard); return h.length > 0 && h.every(l => S.lessons[l.id] && S.lessons[l.id].done); } },
   { id: 'listen5', ic: '🎧', title: 'Bonne oreille', desc: '5 sessions Part 3/4', test: () => (S.longDone || 0) >= 5 },
   { id: 'exam600', ic: '📈', title: 'Cap B2', desc: 'Score estimé ≥ 600', test: () => (S.estScore || 0) >= 600 },
   { id: 'exam785', ic: '🎓', title: 'Objectif ESCP', desc: 'Score estimé ≥ 785', test: () => (S.estScore || 0) >= 785 },
@@ -612,6 +613,7 @@ function finishPrep(){
 }
 function renderGrammarList() {
   const rows = LESSONS.map((l, idx) => {
+    if (l.hard) return '';
     const st = S.lessons[l.id];
     const unlocked = lessonUnlocked(idx);
     const done = st && st.done;
@@ -651,8 +653,31 @@ function renderGrammarList() {
         <button class="btn sec" onclick="startPrep('phrasal')">Phrasal verbs</button>
       </div>
     </div>
+    ${scalpelCard()}
     ${rows}
   `;
+}
+
+/* Carte du palier « haute précision » : leçons hard:true, hors parcours séquentiel. */
+function scalpelCard() {
+  const items = LESSONS.map((l, idx) => ({ l, idx })).filter(x => x.l.hard);
+  if (!items.length) return '';
+  const done = items.filter(x => S.lessons[x.l.id] && S.lessons[x.l.id].done).length;
+  const rows = items.map(({ l, idx }) => {
+    const st = S.lessons[l.id];
+    const ok = st && st.done;
+    return `<div class="lrow ${ok ? 'done' : ''}" onclick="startLesson(${idx})">
+      <div class="n">${ok ? '✓' : '🔪'}</div>
+      <div class="info"><div class="tt">${l.title}</div><div class="tg">${l.q.length} questions · autopsie des distracteurs</div></div>
+      <div class="sc ${st && st.best >= 70 ? 'pass' : ''}">${st && st.best != null ? st.best + '%' : ''}</div>
+    </div>`;
+  }).join('');
+  return `<div class="card" style="border-color:var(--bad)">
+      <h2 style="font-size:16px">🔪 LE SCALPEL · grammaire de haute précision</h2>
+      <div class="sub">Le cran au-dessus des leçons Part 5. Ici le <b style="color:var(--txt)">déclencheur est enfoui</b> dans la phrase, les <b style="color:var(--txt)">quatre options sont toutes de l'anglais correct</b> ailleurs, et chaque correction ouvre l'<b style="color:var(--txt)">autopsie des trois mauvaises réponses</b>. Pas de déblocage : attaque dans l'ordre que tu veux.</div>
+      <div class="pill warn mt">${done} / ${items.length} validées · +6 XP par bonne réponse</div>
+      <div class="mt">${rows}</div>
+    </div>`;
 }
 
 /* ---------- GRAMMAIRE : quiz ---------- */
@@ -692,10 +717,17 @@ function renderQuestion() {
     <div id="after"></div>
   `;
 }
+/* Autopsie des distracteurs : « pourquoi les trois autres sont fausses ».
+   Repliée par défaut pour ne pas noyer la correction. */
+function whyBlock(why) {
+  if (!why) return '';
+  const txt = why.replace(/ ✗ /g, '<br>✗ ');   // une fausse réponse par ligne
+  return `<details class="whyx"><summary>🔬 Pourquoi les autres sont fausses</summary><div>${txt}</div></details>`;
+}
 function answer(k, correct) {
   if (Q.answered) return;
   Q.answered = true;
-  const [stem, opts, , expl] = Q.l.q[Q.order[Q.i]];
+  const [stem, opts, , expl, why] = Q.l.q[Q.order[Q.i]];
   const btns = document.querySelectorAll('#opts .opt');
   btns.forEach((b, idx) => {
     b.setAttribute('disabled', '');
@@ -704,11 +736,12 @@ function answer(k, correct) {
     else b.classList.add('dim');
   });
   const ok = k === correct;
-  if (ok) { Q.correct++; addXp(4); }
-  else recordMistake({ kind: 'gram', q: stem, opts, correct, expl, cat: 'Grammaire · ' + Q.l.title });
+  if (ok) { Q.correct++; addXp(Q.l.hard ? 6 : 4); }
+  else recordMistake({ kind: 'gram', q: stem, opts, correct, expl, why, cat: 'Grammaire · ' + Q.l.title });
   const last = Q.i === Q.l.q.length - 1;
   document.getElementById('after').innerHTML = `
     <div class="expl ${ok ? 'ok' : 'no'}">${ok ? '✅ Correct. ' : '❌ Réponse : ' + 'ABCD'[correct] + '. '}${expl}</div>
+    ${whyBlock(why)}
     <button class="btn mt" onclick="${last ? 'finishLesson()' : 'nextQuestion()'}">${last ? 'Voir le résultat' : 'Suivant'}</button>
   `;
   document.getElementById('after').scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -1436,7 +1469,7 @@ function qkey(s) { let h = 0; for (let i = 0; i < s.length; i++) { h = (h * 31 +
 function recordMistake(m) {
   if (!S.mistakes) S.mistakes = {};
   const k = qkey((m.q || '') + '|' + m.kind);
-  S.mistakes[k] = { kind: m.kind, q: m.q, opts: m.opts, correct: m.correct, expl: m.expl || '', cat: m.cat || '', audio: m.audio || null, box: 0, ts: Date.now() };
+  S.mistakes[k] = { kind: m.kind, q: m.q, opts: m.opts, correct: m.correct, expl: m.expl || '', why: m.why || '', cat: m.cat || '', audio: m.audio || null, box: 0, ts: Date.now() };
   save();
 }
 function mistakeCount() { return Object.keys(S.mistakes || {}).length; }
@@ -1493,6 +1526,7 @@ function answerMistake(k) {
   const last = MR.pos === MR.keys.length - 1;
   document.getElementById('after').innerHTML = `
     <div class="expl ${ok ? 'ok' : 'no'}">${ok ? (graduated ? '✅ Maîtrisée ! Elle sort de ta liste d\'erreurs.' : '✅ Correct — encore une bonne réponse et elle est acquise.') : '❌ Bonne réponse : ' + 'ABCD'[m.correct] + '.'} ${m.expl || ''}</div>
+    ${whyBlock(m.why)}
     <button class="btn mt" onclick="${last ? 'finishMistakes()' : 'nextMistake()'}">${last ? 'Terminé' : 'Suivant'}</button>
   `;
   document.getElementById('after').scrollIntoView({ behavior: 'smooth', block: 'end' });

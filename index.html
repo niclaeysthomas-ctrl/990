@@ -94,6 +94,14 @@ button{font-family:inherit;cursor:pointer;border:none;color:inherit}
 .expl{background:var(--bg2);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:12px 14px;font-size:14px;color:var(--txt);margin-top:4px}
 .expl.ok{border-color:var(--good)}
 .expl.no{border-color:var(--bad)}
+.whyx{margin-top:8px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.whyx summary{cursor:pointer;list-style:none;padding:10px 13px;font-size:13px;font-weight:800;color:var(--muted)}
+.whyx summary::-webkit-details-marker{display:none}
+.whyx summary:after{content:' ▾';color:var(--muted)}
+.whyx[open] summary{color:var(--txt);border-bottom:1px solid var(--line)}
+.whyx[open] summary:after{content:' ▴'}
+.whyx>div{padding:11px 13px;font-size:13.5px;line-height:1.65;color:var(--txt)}
+.whyx>div b{color:var(--accent)}
 
 .qmeta{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px;font-weight:600;margin-bottom:4px}
 
@@ -293,6 +301,7 @@ button{font-family:inherit;cursor:pointer;border:none;color:inherit}
 <script src="vocab-extra8.js?v=1"></script>
 <script src="verbs.js?v=20"></script>
 <script src="moisson.js?v=1"></script>
-<script src="app.js?v=21"></script>
+<script src="scalpel.js?v=1"></script>
+<script src="app.js?v=22"></script>
 </body>
 </html>
