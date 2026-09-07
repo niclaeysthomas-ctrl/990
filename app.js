@@ -35,6 +35,7 @@ const DEFAULT = {
   verbs: {},            // deck Anki à part : verbes irréguliers (index -> état SM-2)
   mine: [],             // LA MOISSON : deck perso de tournures attrapées (voir moisson.js)
   mineDir: 'en2fr',     // sens des cartes de la moisson : reconnaître ou produire
+  plume: { essays: [], draft: null, seen: {} }, // LA PLUME : atelier d'expression écrite (voir plume.js)
   firstRun: true
 };
 
@@ -278,6 +279,10 @@ const ACHIEVEMENTS = [
   { id: 'trans25', ic: '✍️', title: 'Traducteur', desc: '25 phrases traduites', test: () => transSeen() >= 25 },
   { id: 'transmat', ic: '🖋️', title: 'Plume bilingue', desc: '25 traductions maîtrisées', test: () => transMastered() >= 25 },
   { id: 'gramall', ic: '📘', title: 'Grammairien', desc: 'Toutes les leçons validées', test: () => LESSONS.filter(l => !l.hard).every(l => S.lessons[l.id] && S.lessons[l.id].done) },
+  { id: 'plume1', ic: '✒️', title: 'Premier jet', desc: 'Écrire un essai complet au chrono', test: () => typeof pEssays === 'function' && pEssays().filter(e => e.done).length >= 1 },
+  { id: 'plume10', ic: '🖊️', title: 'Dix copies', desc: '10 essais écrits', test: () => typeof pEssays === 'function' && pEssays().filter(e => e.done).length >= 10 },
+  { id: 'plumefmt', ic: '🎨', title: 'Tous les formats', desc: 'Un écrit dans chacun des 7 formats', test: () => typeof pEssays === 'function' && Object.keys(window.PLUME_FORMATS || {}).every(k => pEssays().some(e => e.fmt === k && e.done)) },
+  { id: 'plumeclean', ic: '💎', title: 'Copie propre', desc: 'Un essai sans aucune faute détectée', test: () => typeof pEssays === 'function' && pEssays().some(e => e.relu && e.relu.score >= 90) },
   { id: 'scalpel', ic: '🔪', title: 'Au scalpel', desc: 'Les 10 leçons de haute précision validées', test: () => { const h = LESSONS.filter(l => l.hard); return h.length > 0 && h.every(l => S.lessons[l.id] && S.lessons[l.id].done); } },
   { id: 'listen5', ic: '🎧', title: 'Bonne oreille', desc: '5 sessions Part 3/4', test: () => (S.longDone || 0) >= 5 },
   { id: 'exam600', ic: '📈', title: 'Cap B2', desc: 'Score estimé ≥ 600', test: () => (S.estScore || 0) >= 600 },
@@ -348,6 +353,20 @@ function coachAdvice() {
   if (due > 0) return { title: 'Priorité : réviser', msg: `${due} carte(s) sont dues. Les revoir à temps, c'est là que la mémoire se joue.`, btn: 'Réviser', action: 'startReview(false)' };
   if (minePendingCount() >= 3 || (minePendingCount() >= 1 && minePendingAge() >= 4))
     return { title: 'Tes tournures attendent', msg: `${minePendingCount()} tournure(s) que tu as attrapée(s) dorment sans explication${minePendingAge() >= 4 ? `, la plus vieille depuis ${minePendingAge()} jours` : ''}. Exporte-les et fais-les expliquer : c'est le vocabulaire que tu as choisi toi-même, celui qui reste.`, btn: 'Exporter ma moisson', action: 'renderMineExport(false)' };
+  if (typeof pEssays === 'function') {
+    if (plume().draft) {
+      const sd = pSujet(plume().draft.sujet);
+      return { title: 'Ton brouillon t\'attend', msg: `Tu as commencé «\u00a0${sd ? sd.titre : 'un essai'}\u00a0» sans le finir. Un texte laissé en plan ne t'apprend rien : termine-le, même en dessous du nombre de mots.`, btn: 'Reprendre', action: 'renderPlumeChoix()' };
+    }
+    const nonNotes = pEssays().filter(e => e.done && !e.note);
+    if (nonNotes.length) return { title: 'Un essai attend sa note', msg: "Tu l'as écrit, l'app t'a relu — mais la note à la grille officielle et le paragraphe réécrit, c'est la correction qui les donne. C'est là que se trouve le vrai gain.", btn: 'Faire corriger', action: `renderPlumeExport(${nonNotes[nonNotes.length - 1].id})` };
+    if (pDue()) {
+      const d = pDaysSince();
+      return { title: d >= 99 ? 'Écris ton premier essai' : `Un essai à écrire (${d} j)`, msg: d >= 99
+        ? "L'expression écrite est la seule compétence qui ne se travaille pas en QCM. Un format court prend 10 minutes."
+        : `Dernier essai il y a ${d} jours. C'est le rythme — tous les deux ou trois jours — qui construit la main, pas les séances marathon.`, btn: 'Choisir un sujet', action: 'renderPlumeChoix()' };
+    }
+  }
   if (mistakeCount() >= 3) return { title: 'Corrige tes erreurs', msg: `Tu as ${mistakeCount()} question(s) déjà ratée(s) en attente. Les rejouer jusqu'à les maîtriser, c'est le plus direct vers le sans-faute.`, btn: 'Revoir mes erreurs', action: 'startMistakes()' };
   if (dp.t < 1 && buildTransQueue('Tous').length) return { title: 'Passe à la production', msg: 'Traduire des phrases rend ta grammaire active — le vrai déclic bilingue.', btn: 'Traduire', action: "setView('traduire')" };
   if (!dp.s) return { title: 'Un peu d\'étude', msg: 'Une session d\'écoute ou une leçon de grammaire pour valider ta journée.', btn: 'Écouter', action: "setView('listen')" };
@@ -441,6 +460,12 @@ function renderHome() {
       <div class="ic e">🌾</div>
       <div class="body"><div class="t">La Moisson</div><div class="d">${mine().length === 0 ? 'Ton deck à toi : les tournures que tu attrapes' : `${mine().length} tournure(s)${minePendingCount() ? ` · ${minePendingCount()} à faire expliquer` : ''}`}</div></div>
       <div class="badge ${minePendingCount() ? '' : (mineQueueCount() ? '' : 'zero')}" ${minePendingCount() ? 'style="background:var(--blue);color:#04122e"' : ''}>${minePendingCount() || mineQueueCount() || '＋'}</div>
+    </button>
+
+    <button class="tile" onclick="renderPlumeHome()"${typeof pDue === 'function' && pDue() ? ' style="border-color:#ff7ab6"' : ''}>
+      <div class="ic" style="background:linear-gradient(135deg,#ff7ab633,#9d7bff11);color:#ff7ab6">✒️</div>
+      <div class="body"><div class="t">La Plume</div><div class="d">${plumeTuileTexte()}</div></div>
+      <div class="badge ${plumeAlerte() ? '' : 'zero'}">${plumeAlerte() ? '!' : '✓'}</div>
     </button>
 
     <button class="tile" onclick="setView('grammar')">
@@ -1835,6 +1860,7 @@ function finishReg() {
 /* ---------- Boot ---------- */
 if (!S.badges) S.badges = [];
 if (!S.verbs) S.verbs = {};   // deck verbes irréguliers (ancienne progression sans cette clé)
+if (!S.plume || typeof S.plume !== 'object') S.plume = { essays: [], draft: null, seen: {} }; // atelier d'écriture
 // Migration silencieuse : si des trophées sont déjà mérités mais jamais enregistrés, on les scelle sans notifier.
 if (S.badges.length === 0) { const pre = earnedIds(); if (pre.length) { S.badges = pre; save(); } }
 touchDay();
