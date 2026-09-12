@@ -24,7 +24,7 @@ const DEFAULT = {
   history: [],          // [{ts, date, total, L, R, kind, diff, mins}]
   trans: {},            // index -> état SRS-lite des traductions
   transDone: 0,         // total de phrases travaillées
-  daily: { date: todayStr(), cards: 0, trans: 0, study: 0, credited: 0 }, // objectif du jour
+  daily: { date: todayStr(), cards: 0, trans: 0, study: 0, speak: 0, credited: 0 }, // objectif du jour
   mistakes: {},         // erreurs à rejouer (clé -> {kind,q,opts,correct,expl,cat,audio,box})
   register: {},         // SRS-lite du module Anglais soutenu
   transDir: 'fr2en',    // sens de la traduction : fr2en ou en2fr
@@ -37,13 +37,16 @@ const DEFAULT = {
   mineDir: 'en2fr',     // sens des cartes de la moisson : reconnaître ou produire
   plume: { essays: [], draft: null, seen: {} }, // LA PLUME : atelier d'expression écrite (voir plume.js)
   lime: { srs: {}, extra: [], done: 0, newDate: todayStr(), newToday: 0 }, // LA LIME : exos quotidiens de production (voir lime.js)
+  dia: { srs: {}, voice: 'us', lineDir: 'shadow', stats: {} }, // LE DIAPASON : accent & prononciation (voir diapason.js)
+  audioSpeed: 'normal', // vitesse d'écoute : slow · normal · native
   firstRun: true
 };
 
-// Objectifs quotidiens
-const GOAL_CARDS = 20, GOAL_TRANS = 5;
+// Objectifs quotidiens — le 4e (parler) est arrivé avec LE DIAPASON :
+// une journée d'anglais sans un mot prononcé à voix haute ne compte plus comme complète.
+const GOAL_CARDS = 20, GOAL_TRANS = 5, GOAL_SPEAK = 10;
 function resetDailyIfNeeded() {
-  if (!S.daily || S.daily.date !== todayStr()) S.daily = { date: todayStr(), cards: 0, trans: 0, study: 0 };
+  if (!S.daily || S.daily.date !== todayStr()) S.daily = { date: todayStr(), cards: 0, trans: 0, study: 0, speak: 0 };
 }
 function bumpDaily(field, n) { resetDailyIfNeeded(); S.daily[field] = (S.daily[field] || 0) + (n || 1); save(); checkDailyDone(); }
 function markStudy() { resetDailyIfNeeded(); S.daily.study = 1; save(); checkDailyDone(); }
@@ -52,7 +55,8 @@ function dailyProgress() {
   const c = Math.min(1, S.daily.cards / GOAL_CARDS);
   const t = Math.min(1, S.daily.trans / GOAL_TRANS);
   const s = S.daily.study ? 1 : 0;
-  return { c, t, s, pct: Math.round((c + t + s) / 3 * 100), done: (c >= 1 && t >= 1 && s >= 1) };
+  const o = Math.min(1, (S.daily.speak || 0) / GOAL_SPEAK);   // « o » comme oral
+  return { c, t, s, o, pct: Math.round((c + t + s + o) / 4 * 100), done: (c >= 1 && t >= 1 && s >= 1 && o >= 1) };
 }
 function checkDailyDone() {
   resetDailyIfNeeded();
@@ -295,7 +299,11 @@ const ACHIEVEMENTS = [
   { id: 'moissonmat', ic: '🪶', title: 'Elles sont tiennes', desc: '15 tournures perso ancrées (≥21j)', test: () => typeof mineMastered === 'function' && mineMastered() >= 15 },
   { id: 'lime30', ic: '🔧', title: 'Premier limage', desc: '30 exercices de production travaillés', test: () => !!(S.lime && (S.lime.done || 0) >= 30) },
   { id: 'limeperso', ic: '🩹', title: 'Tes fautes à toi', desc: '15 exos nés de tes propres corrections', test: () => typeof limePersoCount === 'function' && limePersoCount() >= 15 },
-  { id: 'limemat', ic: '💠', title: 'Ça ne se voit plus', desc: '40 tournures ancrées dans La Lime', test: () => typeof limeMastered === 'function' && limeMastered() >= 40 }
+  { id: 'limemat', ic: '💠', title: 'Ça ne se voit plus', desc: '40 tournures ancrées dans La Lime', test: () => typeof limeMastered === 'function' && limeMastered() >= 40 },
+  { id: 'diaear', ic: '👂', title: 'L\'oreille se règle', desc: '100 paires minimales entendues juste', test: () => typeof dGet === 'function' && dGet('pairOk') >= 100 },
+  { id: 'diastress', ic: '🎼', title: 'Accent tonique', desc: '100 accents de mot trouvés à l\'oreille', test: () => typeof dGet === 'function' && dGet('stressOk') >= 100 },
+  { id: 'diavoice', ic: '🎙️', title: 'Ta propre voix', desc: '30 productions enregistrées et réécoutées', test: () => typeof dGet === 'function' && dGet('spoken') >= 30 },
+  { id: 'dialines', ic: '🗣️', title: 'Phrases natives', desc: '25 phrases bilingues ancrées (≥21j)', test: () => { if (typeof dia !== 'function') return false; const s = dia().srs; return Object.keys(s).filter(k => k.indexOf('l:') === 0 && s[k].interval >= 21).length >= 25; } }
 ];
 function earnedIds() { const s = []; ACHIEVEMENTS.forEach(a => { try { if (a.test()) s.push(a.id); } catch (e) {} }); return s; }
 function checkAchievements() {
@@ -376,6 +384,10 @@ function coachAdvice() {
   if (typeof limeQueueCount === 'function' && limeQueueCount('all') >= 1)
     return { title: 'La séance du jour', msg: `${limeQueueCount('all')} exercice(s) de production t'attendent. C'est le travail qui enlève l'accent français de ton écrit — on ne t'y montre jamais la forme fautive, tu produis la bonne.`, btn: 'Limer', action: "startLime('all')" };
   if (mistakeCount() >= 3) return { title: 'Corrige tes erreurs', msg: `Tu as ${mistakeCount()} question(s) déjà ratée(s) en attente. Les rejouer jusqu'à les maîtriser, c'est le plus direct vers le sans-faute.`, btn: 'Revoir mes erreurs', action: 'startMistakes()' };
+  if (typeof dDueCount === 'function' && dDueCount() > 0)
+    return { title: 'Ta prononciation attend', msg: `${dDueCount()} mot(s) ou phrase(s) du Diapason sont à revoir. L'accent est la seule chose qu'on entend AVANT ta grammaire et ton vocabulaire.`, btn: 'Ouvrir le Diapason', action: 'renderDiapasonHome()' };
+  if (typeof renderDiapasonHome === 'function' && dp.o < 1)
+    return { title: 'Tu n\'as pas encore parlé aujourd\'hui', msg: 'Lire et cocher ne fait pas progresser une bouche. Douze minutes de Diapason : tu écoutes, tu désignes, tu dis, tu t\'écoutes.', btn: 'La séance du jour', action: 'dSeanceStart()' };
   if (dp.t < 1 && buildTransQueue('Tous').length) return { title: 'Passe à la production', msg: 'Traduire des phrases rend ta grammaire active — le vrai déclic bilingue.', btn: 'Traduire', action: "setView('traduire')" };
   if (!dp.s) return { title: 'Un peu d\'étude', msg: 'Une session d\'écoute ou une leçon de grammaire pour valider ta journée.', btn: 'Écouter', action: "setView('listen')" };
   if (dp.c < 1) return { title: 'Apprends du vocabulaire', msg: 'De nouvelles cartes t\'attendent aujourd\'hui.', btn: 'Cartes', action: 'startReview(false)' };
@@ -414,6 +426,7 @@ function renderHome() {
         <h2 style="font-size:16px;margin-bottom:6px">Objectif du jour ${dp.done ? '🏆' : ''}</h2>
         ${goalLine(dp.c >= 1, 'Réviser des cartes', `${Math.min(S.daily.cards, GOAL_CARDS)}/${GOAL_CARDS}`)}
         ${goalLine(dp.t >= 1, 'Traduire des phrases', `${Math.min(S.daily.trans, GOAL_TRANS)}/${GOAL_TRANS}`)}
+        ${goalLine(dp.o >= 1, 'Parler à voix haute', `${Math.min(S.daily.speak || 0, GOAL_SPEAK)}/${GOAL_SPEAK}`)}
         ${goalLine(dp.s >= 1, 'Étudier (grammaire/écoute)', dp.s ? 'fait' : '0/1')}
       </div>
     </div>`;
@@ -456,6 +469,12 @@ function renderHome() {
       <div class="ic a">🃏</div>
       <div class="body"><div class="t">Réviser les cartes</div><div class="d">${due} révision(s) · ${news} nouvelle(s)</div></div>
       <div class="badge ${(due+news)===0?'zero':''}">${due + news}</div>
+    </button>
+
+    <button class="tile" onclick="renderDiapasonHome()"${dailyProgress().o < 1 ? ' style="border-color:var(--purple)"' : ''}>
+      <div class="ic l">🎙️</div>
+      <div class="body"><div class="t">Le Diapason</div><div class="d">Accent, prononciation, phrases bilingues · l'oreille puis la bouche</div></div>
+      <div class="badge ${dDueCount() ? '' : 'zero'}">${dDueCount() || (dailyProgress().o < 1 ? '🎙️' : '✓')}</div>
     </button>
 
     <button class="tile" onclick="renderVerbsHome()">
@@ -1024,11 +1043,21 @@ function renderListenHome() {
       <div class="body"><div class="t">Part 3/4 · Conversations & exposés</div><div class="d">Dialogues joués, puis questions de compréhension</div></div>
       <div class="badge zero">${nConv + nTalk}</div>
     </button>
-    <button class="btn ghost mt" onclick="toggleSlow()">🐢 Vitesse : ${S.slowAudio ? 'Lente' : 'Normale'}</button>
-    <div class="sub center mt">Part 3/4, c'est là que se gagne le score Listening du TOEIC.</div>
+    <button class="tile" onclick="dDictStart()">
+      <div class="ic l">✍️</div>
+      <div class="body"><div class="t">Dictée multi-accents</div><div class="d">Phrases natives à vitesse réelle · US, UK, Irlande, Australie…</div></div>
+      <div class="badge zero">${typeof DIA !== 'undefined' ? DIA.lines.length : 0}</div>
+    </button>
+    <div class="seg mt">
+      <button class="${audioSpeed() === 'slow' ? 'on' : ''}" onclick="setSpeed('slow')">🐢 Lente<small>déchiffrer</small></button>
+      <button class="${audioSpeed() === 'normal' ? 'on' : ''}" onclick="setSpeed('normal')">Normale<small>par défaut</small></button>
+      <button class="${audioSpeed() === 'native' ? 'on' : ''}" onclick="setSpeed('native')">⚡ Native<small>vrai débit</small></button>
+    </div>
+    <div class="sub center mt">Part 3/4, c'est là que se gagne le score Listening. La vitesse « native », elle, est ce qui te sépare d'une vraie conversation.</div>
   `;
 }
-function toggleSlow() { S.slowAudio = !S.slowAudio; save(); renderListenHome(); toast(S.slowAudio ? 'Écoute ralentie 🐢' : 'Écoute à vitesse normale'); }
+function setSpeed(v) { S.audioSpeed = v; S.slowAudio = (v === 'slow'); save(); renderListenHome(); toast(v === 'slow' ? 'Écoute ralentie 🐢' : v === 'native' ? 'Débit natif ⚡' : 'Vitesse normale'); }
+function toggleSlow() { setSpeed(audioSpeed() === 'slow' ? 'normal' : 'slow'); }
 function startListen() {
   LST = { order: shuffle([...Array(EXAM_LISTEN.length).keys()]), i: 0, correct: 0, answered: false };
   renderListen();
@@ -1173,7 +1202,11 @@ if ('speechSynthesis' in window) {
   pickVoice();
   speechSynthesis.onvoiceschanged = pickVoice;
 }
-function audioRate(base) { return base * (S.slowAudio ? 0.78 : 1); }
+/* Trois vitesses : lente (déchiffrage), normale, et « native » — celle à laquelle
+   les gens parlent vraiment, et la seule qui prépare à une vraie conversation. */
+const SPEEDS = { slow: 0.78, normal: 1, native: 1.18 };
+function audioSpeed() { return S.audioSpeed || (S.slowAudio ? 'slow' : 'normal'); }
+function audioRate(base) { return base * (SPEEDS[audioSpeed()] || 1); }
 function speak(text) {
   if (!('speechSynthesis' in window)) { toast('Synthèse vocale indisponible'); return; }
   speechSynthesis.cancel();
@@ -1505,6 +1538,9 @@ function escapeHtml(s) {
    (méthode Leitner : 2 bonnes réponses d'affilée = acquise)
    ============================================================ */
 function qkey(s) { let h = 0; for (let i = 0; i < s.length; i++) { h = (h * 31 + s.charCodeAt(i)) | 0; } return 'm' + (h >>> 0); }
+/* Étiquette d'option : les questions du Diapason (« quelle syllabe ? ») peuvent
+   dépasser 4 choix — « ABCD »[4] rendait « undefined » à l'écran. */
+function optLabel(i) { return 'ABCDEFGH'[i] || String(i + 1); }
 function recordMistake(m) {
   if (!S.mistakes) S.mistakes = {};
   const k = qkey((m.q || '') + '|' + m.kind);
@@ -1533,7 +1569,7 @@ function renderMistake() {
     ? `<div class="stem" style="font-size:17px">${m.q}</div>`
     : `<div class="stem">${(m.q || '').replace('______', '<span class="blank">______</span>')}</div>`;
   const optHtml = m.opts.map((o, idx) =>
-    `<button class="opt" onclick="answerMistake(${idx})"><span class="lab">${'ABCD'[idx]}</span>${o}</button>`).join('');
+    `<button class="opt" onclick="answerMistake(${idx})"><span class="lab">${optLabel(idx)}</span>${o}</button>`).join('');
   app.innerHTML = `
     <div class="qmeta"><span>🎯 Erreur · ${m.cat || ''}</span><span>${MR.pos + 1}/${MR.keys.length}</span></div>
     <div class="pbar mb"><i style="width:${MR.pos / MR.keys.length * 100}%"></i></div>
@@ -1564,7 +1600,7 @@ function answerMistake(k) {
   const graduated = ok && !S.mistakes[key];
   const last = MR.pos === MR.keys.length - 1;
   document.getElementById('after').innerHTML = `
-    <div class="expl ${ok ? 'ok' : 'no'}">${ok ? (graduated ? '✅ Maîtrisée ! Elle sort de ta liste d\'erreurs.' : '✅ Correct — encore une bonne réponse et elle est acquise.') : '❌ Bonne réponse : ' + 'ABCD'[m.correct] + '.'} ${m.expl || ''}</div>
+    <div class="expl ${ok ? 'ok' : 'no'}">${ok ? (graduated ? '✅ Maîtrisée ! Elle sort de ta liste d\'erreurs.' : '✅ Correct — encore une bonne réponse et elle est acquise.') : '❌ Bonne réponse : ' + optLabel(m.correct) + '.'} ${m.expl || ''}</div>
     ${whyBlock(m.why)}
     <button class="btn mt" onclick="${last ? 'finishMistakes()' : 'nextMistake()'}">${last ? 'Terminé' : 'Suivant'}</button>
   `;
@@ -1875,6 +1911,8 @@ function finishReg() {
 if (!S.badges) S.badges = [];
 if (!S.verbs) S.verbs = {};   // deck verbes irréguliers (ancienne progression sans cette clé)
 if (!S.plume || typeof S.plume !== 'object') S.plume = { essays: [], draft: null, seen: {} }; // atelier d'écriture
+if (!S.dia || typeof S.dia !== 'object') S.dia = { srs: {}, voice: 'us', lineDir: 'shadow', stats: {} }; // prononciation
+if (!S.audioSpeed) S.audioSpeed = S.slowAudio ? 'slow' : 'normal';
 // Migration silencieuse : si des trophées sont déjà mérités mais jamais enregistrés, on les scelle sans notifier.
 if (S.badges.length === 0) { const pre = earnedIds(); if (pre.length) { S.badges = pre; save(); } }
 touchDay();

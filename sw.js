@@ -1,9 +1,11 @@
 /* 990 — service worker : cache offline (app shell) */
-const CACHE = '990-v25';
+const CACHE = '990-v26';
 const ASSETS = [
   'index.html',
-  'app.js?v=24',
+  'app.js?v=25',
   'lime.js?v=1',
+  'diapason-data.js?v=1',
+  'diapason.js?v=1',
   'plume-data.js?v=1',
   'plume.js?v=2',
   'scalpel.js?v=1',
