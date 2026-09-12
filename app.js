@@ -36,6 +36,7 @@ const DEFAULT = {
   mine: [],             // LA MOISSON : deck perso de tournures attrapées (voir moisson.js)
   mineDir: 'en2fr',     // sens des cartes de la moisson : reconnaître ou produire
   plume: { essays: [], draft: null, seen: {} }, // LA PLUME : atelier d'expression écrite (voir plume.js)
+  lime: { srs: {}, extra: [], done: 0, newDate: todayStr(), newToday: 0 }, // LA LIME : exos quotidiens de production (voir lime.js)
   firstRun: true
 };
 
@@ -291,7 +292,10 @@ const ACHIEVEMENTS = [
   { id: 'xp1000', ic: '⭐', title: 'Mille XP', desc: '1000 XP cumulés', test: () => S.xp >= 1000 },
   { id: 'moisson10', ic: '🌾', title: 'Chineur', desc: '10 tournures attrapées dans la nature', test: () => (S.mine || []).length >= 10 },
   { id: 'moisson25', ic: '🧺', title: 'Belle moisson', desc: '25 tournures à toi', test: () => (S.mine || []).length >= 25 },
-  { id: 'moissonmat', ic: '🪶', title: 'Elles sont tiennes', desc: '15 tournures perso ancrées (≥21j)', test: () => typeof mineMastered === 'function' && mineMastered() >= 15 }
+  { id: 'moissonmat', ic: '🪶', title: 'Elles sont tiennes', desc: '15 tournures perso ancrées (≥21j)', test: () => typeof mineMastered === 'function' && mineMastered() >= 15 },
+  { id: 'lime30', ic: '🔧', title: 'Premier limage', desc: '30 exercices de production travaillés', test: () => !!(S.lime && (S.lime.done || 0) >= 30) },
+  { id: 'limeperso', ic: '🩹', title: 'Tes fautes à toi', desc: '15 exos nés de tes propres corrections', test: () => typeof limePersoCount === 'function' && limePersoCount() >= 15 },
+  { id: 'limemat', ic: '💠', title: 'Ça ne se voit plus', desc: '40 tournures ancrées dans La Lime', test: () => typeof limeMastered === 'function' && limeMastered() >= 40 }
 ];
 function earnedIds() { const s = []; ACHIEVEMENTS.forEach(a => { try { if (a.test()) s.push(a.id); } catch (e) {} }); return s; }
 function checkAchievements() {
@@ -353,6 +357,8 @@ function coachAdvice() {
   if (due > 0) return { title: 'Priorité : réviser', msg: `${due} carte(s) sont dues. Les revoir à temps, c'est là que la mémoire se joue.`, btn: 'Réviser', action: 'startReview(false)' };
   if (minePendingCount() >= 3 || (minePendingCount() >= 1 && minePendingAge() >= 4))
     return { title: 'Tes tournures attendent', msg: `${minePendingCount()} tournure(s) que tu as attrapée(s) dorment sans explication${minePendingAge() >= 4 ? `, la plus vieille depuis ${minePendingAge()} jours` : ''}. Exporte-les et fais-les expliquer : c'est le vocabulaire que tu as choisi toi-même, celui qui reste.`, btn: 'Exporter ma moisson', action: 'renderMineExport(false)' };
+  if (typeof limePersoNew === 'function' && limePersoNew() >= 1)
+    return { title: 'Tes propres fautes t\'attendent', msg: `${limePersoNew()} exercice(s) sont nés de tes dernières corrections. Ce ne sont pas des règles générales : ce sont les tournures que TU as ratées, à reproduire correctement jusqu'à ce qu'elles sortent seules.`, btn: 'Les liner', action: "startLime('perso')" };
   if (typeof pEssays === 'function') {
     if (plume().draft) {
       const sd = pSujet(plume().draft.sujet);
@@ -367,6 +373,8 @@ function coachAdvice() {
         : `Dernier essai il y a ${d} jours. C'est le rythme — tous les deux ou trois jours — qui construit la main, pas les séances marathon.`, btn: 'Choisir un sujet', action: 'renderPlumeChoix()' };
     }
   }
+  if (typeof limeQueueCount === 'function' && limeQueueCount('all') >= 1)
+    return { title: 'La séance du jour', msg: `${limeQueueCount('all')} exercice(s) de production t'attendent. C'est le travail qui enlève l'accent français de ton écrit — on ne t'y montre jamais la forme fautive, tu produis la bonne.`, btn: 'Limer', action: "startLime('all')" };
   if (mistakeCount() >= 3) return { title: 'Corrige tes erreurs', msg: `Tu as ${mistakeCount()} question(s) déjà ratée(s) en attente. Les rejouer jusqu'à les maîtriser, c'est le plus direct vers le sans-faute.`, btn: 'Revoir mes erreurs', action: 'startMistakes()' };
   if (dp.t < 1 && buildTransQueue('Tous').length) return { title: 'Passe à la production', msg: 'Traduire des phrases rend ta grammaire active — le vrai déclic bilingue.', btn: 'Traduire', action: "setView('traduire')" };
   if (!dp.s) return { title: 'Un peu d\'étude', msg: 'Une session d\'écoute ou une leçon de grammaire pour valider ta journée.', btn: 'Écouter', action: "setView('listen')" };
@@ -466,6 +474,12 @@ function renderHome() {
       <div class="ic" style="background:linear-gradient(135deg,#ff7ab633,#9d7bff11);color:#ff7ab6">✒️</div>
       <div class="body"><div class="t">La Plume</div><div class="d">${plumeTuileTexte()}</div></div>
       <div class="badge ${plumeAlerte() ? '' : 'zero'}">${plumeAlerte() ? '!' : '✓'}</div>
+    </button>
+
+    <button class="tile" onclick="renderLimeHome()"${limePersoNew() ? ' style="border-color:#ff7ab6"' : ''}>
+      <div class="ic" style="background:linear-gradient(135deg,#9d7bff33,#4d8dff11);color:var(--purple)">🔧</div>
+      <div class="body"><div class="t">La Lime</div><div class="d">${limeTuileTexte()}</div></div>
+      <div class="badge ${limeQueueCount('all') ? '' : 'zero'}"${limePersoNew() ? ' style="background:#ff7ab6;color:#2a0518"' : ''}>${limeQueueCount('all') || '✓'}</div>
     </button>
 
     <button class="tile" onclick="setView('grammar')">

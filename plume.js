@@ -738,6 +738,12 @@ function runPlumeImport(id) {
       versees++;
     });
   }
+  /* chaque correction devient un exercice de production dans LA LIME
+     (seule la forme juste est réimprimée — jamais la fautive) */
+  let limes = 0;
+  if (typeof limeFromCorrections === 'function')
+    limes = limeFromCorrections(p.corrections, 'La Plume · ' + ((pSujet(e.sujet) || {}).titre || ''));
+
   save(); touchDay();
   addXp(20);
   if (typeof checkAchievements === 'function') checkAchievements();
@@ -746,6 +752,7 @@ function runPlumeImport(id) {
   if (p.corrections.length) bits.push(`<b>${p.corrections.length}</b> correction(s)`);
   if (p.para) bits.push('le paragraphe réécrit');
   if (versees) bits.push(`<b>${versees}</b> tournure(s) versée(s) dans La Moisson`);
+  if (limes) bits.push(`<b>${limes}</b> exercice(s) créé(s) dans La Lime`);
   toast('✨ Correction importée');
   renderPlumeImport(id, `✨ ${bits.join(' · ')}.`);
 }
