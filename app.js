@@ -74,7 +74,22 @@ function checkDailyDone() {
   const p = new URLSearchParams(location.search).get('restore'); if (!p) return;
   let b = p.replace(/-/g, '+').replace(/_/g, '/'); while (b.length % 4) b += '=';
   const obj = JSON.parse(decodeURIComponent(escape(atob(b))));
-  if (obj && typeof obj === 'object' && obj.cards !== undefined) localStorage.setItem('t990', JSON.stringify(obj));
+  if (obj && typeof obj === 'object' && obj.cards !== undefined) {
+    /* Un lien de transfert REMPLACE tout. Rouvrir un vieux lien (historique,
+       favori, message qu'on s'est envoyé) effaçait la progression en silence.
+       Filet + confirmation, comme Le Coffre du Pointage sait déjà le faire. */
+    const actuel = localStorage.getItem('t990');
+    const aDuContenu = actuel && actuel.length > 400;
+    if (aDuContenu) {
+      try { localStorage.setItem('t990_filet', actuel); } catch (e) {}
+      const dEtat = (() => { try { const s = JSON.parse(actuel);
+        return (s.cards ? Object.keys(s.cards).length : 0) + ' carte(s) travaillée(s), série de ' + (s.streak || 0) + ' jour(s)';
+      } catch (e) { return 'une progression existante'; } })();
+      const ok = confirm('Ce lien va REMPLACER ce qui est sur cet appareil (' + dEtat + ') par la progression du lien.\n\nUne copie de secours est gardée sous la clé t990_filet.\n\nRemplacer ?');
+      if (!ok) { history.replaceState(null, '', location.pathname); return; }
+    }
+    localStorage.setItem('t990', JSON.stringify(obj));
+  }
   history.replaceState(null, '', location.pathname);
 } catch (e) {} })();
 function transferLink() {
@@ -91,7 +106,24 @@ function load() {
     return Object.assign({}, DEFAULT, raw);
   } catch (e) { return Object.assign({}, DEFAULT); }
 }
-function save() { localStorage.setItem('t990', JSON.stringify(S)); }
+/* Une seule clé (t990), réécrite en entier à chaque appel — et une origine
+   github.io partagée par la vingtaine d'apps. Si le quota est atteint ou si
+   le navigateur refuse d'écrire, setItem LÈVE : sans ce filet l'exception
+   interrompait la fonction appelante (séance figée sur la carte en cours,
+   sans un mot). Vérifié au navigateur en forçant l'échec d'écriture. */
+let SAVE_KO = 0;
+function save() {
+  try { localStorage.setItem('t990', JSON.stringify(S)); SAVE_KO = 0; return true; }
+  catch (e) {
+    SAVE_KO++;
+    if (SAVE_KO === 1 || SAVE_KO % 25 === 0) {
+      try { toast('⚠️ Sauvegarde impossible (stockage plein) — exporte avec Le Coffre'); } catch (_) {}
+      try { console.warn('990 : écriture localStorage refusée', e && e.name); } catch (_) {}
+    }
+    return false;
+  }
+}
+function saveHealthy() { return SAVE_KO === 0; }
 
 /* ---------- Gestion jour / streak ---------- */
 function touchDay() {
