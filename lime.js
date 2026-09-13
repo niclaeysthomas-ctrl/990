@@ -557,7 +557,11 @@ function limeFreshSorted() {
 }
 function limeNewLeft() { const st = limeState(); return Math.max(0, LIME_NEW - (st.newToday || 0)); }
 function buildLimeQueue(cat, illimite) {
-  const keep = i => !cat || cat === 'all' || i.cat === cat;
+  /* Un exercice perso sans consigne produisible (champ `fr`) affichait
+     l'explication comme énoncé : impossible à faire. Il attend sa
+     réparation par le prochain import plutôt que de polluer la file. */
+  const utilisable = i => !(i.cat === 'perso' && !i.fr);
+  const keep = i => utilisable(i) && (!cat || cat === 'all' || i.cat === cat);
   const due = shuffle(limeDue().filter(keep).map(i => i.id));
   const fresh = limeFreshSorted().filter(keep);
   /* Ses propres corrections ne sont pas de la matière neuve à doser : ce sont
@@ -572,7 +576,7 @@ function buildLimeQueue(cat, illimite) {
 function limeQueueCount(cat) { return buildLimeQueue(cat, false).length; }
 function limeMastered() { const st = limeState(); return Object.keys(st.srs).filter(k => st.srs[k].interval >= 21).length; }
 function limePersoCount() { return limeState().extra.length; }
-function limePersoNew() { return limeFresh().filter(i => i.cat === 'perso').length; }
+function limePersoNew() { return limeFresh().filter(i => i.cat === 'perso' && i.fr).length; }
 
 function rateLime(id, rating) {
   const st = limeState();
@@ -659,32 +663,63 @@ function limeMask(texte, cible) {
    devient un exercice de production. La forme fautive n'est
    jamais reproduite : seule la bonne forme est à écrire.
    ============================================================ */
+/* Chaque correction devient un exercice de PRODUCTION. Deux règles :
+   · la forme fautive n'est jamais reproduite ;
+   · la consigne doit être produisible. C'est le champ `fr` (4e case
+     d'une ligne de correction : avant :: après :: pourquoi :: sens FR).
+     Sans lui, l'exercice affichait l'explication comme énoncé — donc
+     une consigne du genre « la consigne impose de trancher entre TES
+     DEUX effets », impossible à traduire en anglais. Ces exercices-là
+     sont désormais RÉPARÉS dès qu'un import apporte le sens français,
+     et refusés tant qu'il manque. */
 function limeFromCorrections(corrections, src) {
-  if (!Array.isArray(corrections) || !corrections.length) return 0;
+  if (!Array.isArray(corrections) || !corrections.length) return { n: 0, maj: 0, sansConsigne: 0 };
   const st = limeState(), now = Date.now();
-  let n = 0;
+  let n = 0, maj = 0, sansConsigne = 0;
   corrections.forEach((c, i) => {
     const cible = String(c.apres || '').trim();
     if (!cible || cible.length < 2) return;
+    const consigne = String(c.fr || '').trim();
+    const pourquoi = String(c.pourquoi || '').trim();
     const cle = lNorm(cible);
-    if (st.extra.some(e => lNorm(e.target) === cle)) return;
+
+    /* déjà là ? on en profite pour lui donner la consigne qui manquait */
+    const dejaPerso = st.extra.find(e => lNorm(e.target) === cle);
+    if (dejaPerso) {
+      if (consigne && dejaPerso.fr !== consigne) {
+        dejaPerso.fr = consigne;
+        dejaPerso.front = consigne;
+        dejaPerso.why = pourquoi || dejaPerso.why;
+        maj++;
+      }
+      return;
+    }
     if (limeAll().some(e => lNorm(e.target) === cle)) return;
-    const consigne = String(c.pourquoi || '').trim();
+    if (!consigne) { sansConsigne++; return; }
+
     st.extra.push({
       id: 'p' + now + '-' + i,
       cat: 'perso',
       type: 'fix',
-      front: consigne || 'Réécris cette tournure comme il fallait l’écrire.',
+      front: consigne,
+      fr: consigne,
       target: cible,
       alt: [],
-      why: consigne,
+      why: pourquoi,
       src: src || 'La Plume',
       created: now
     });
     n++;
   });
-  if (n) save();
-  return n;
+  if (n || maj) save();
+  return { n, maj, sansConsigne };
+}
+
+/* Réparation des exercices perso créés avant l'ajout du champ `fr` :
+   tant qu'ils n'ont pas de consigne produisible, ils sortent de la file
+   plutôt que d'afficher une explication en guise d'énoncé. */
+function limePersoCassees() {
+  return limeState().extra.filter(e => e.cat === 'perso' && !e.fr);
 }
 
 /* ============================================================
@@ -710,6 +745,16 @@ function renderLimeHome() {
     </button>`;
   }).join('');
 
+  /* Exercices perso hérités d'un import sans sens français : inutilisables,
+     donc écartés de la file. On propose de les jeter plutôt que de les
+     laisser gonfler le compteur pour rien. */
+  const cassees = limePersoCassees();
+  const menage = cassees.length ? `
+    <div class="banner" style="border-color:var(--muted)">
+      <div class="t" style="color:var(--muted)">${cassees.length} exercice(s) sans consigne</div>
+      <div class="d">Ils viennent d'une correction importée avant que le sens français soit demandé : impossible de produire quoi que ce soit à partir d'une explication. Ils sont déjà hors de tes séances. Un réimport de la correction les répare ; sinon, jette-les.</div>
+      <button class="btn sec" onclick="limeJeterCassees()">Les jeter</button>
+    </div>` : '';
   const nudge = persoNew > 0 ? `
     <div class="banner" style="border-color:#ff7ab6">
       <div class="t" style="color:#ff7ab6">🩹 ${persoNew} exercice(s) tiré(s) de tes propres corrections</div>
@@ -718,6 +763,7 @@ function renderLimeHome() {
     </div>` : '';
 
   app.innerHTML = `
+    ${menage}
     ${nudge}
     <div class="card">
       <h2>🔧 La Lime</h2>
@@ -766,9 +812,9 @@ function renderLimeCard() {
   const consigne = it.type === 'lift'
     ? 'Réécris cette phrase au niveau du haut du barème'
     : it.type === 'fix'
-      ? 'Écris la forme juste'
+      ? 'Écris-la en anglais, comme il fallait l’écrire'
       : 'Écris-la en anglais';
-  const front = it.type === 'fix' ? limeMask(it.front, it.target) : lEsc(it.front);
+  const front = it.type === 'fix' ? limeMask(it.fr || it.front, it.target) : lEsc(it.front);
   const styleFront = it.type === 'lift'
     ? 'font-size:19px;font-weight:600;font-style:italic;color:var(--muted)'
     : 'font-size:20px;font-weight:700';
@@ -961,4 +1007,13 @@ function limeTuileTexte() {
   const q = limeQueueCount('all');
   if (!q) return 'Tout est à jour — reviens demain';
   return `${q} exo(s) aujourd'hui · produire la forme juste`;
+}
+
+function limeJeterCassees() {
+  const st = limeState();
+  const avant = st.extra.length;
+  st.extra = st.extra.filter(e => !(e.cat === 'perso' && !e.fr));
+  save();
+  toast((avant - st.extra.length) + ' exercice(s) jeté(s)');
+  renderLimeHome();
 }

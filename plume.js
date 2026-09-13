@@ -700,7 +700,7 @@ function parsePlume(raw) {
     if (sec === 'verdict') { if (l) verdL.push(l); return; }
     if (sec === 'corr') {
       const p = l.split(/\s*::\s*/);
-      if (p.length >= 2) out.corrections.push({ avant: p[0].trim(), apres: p[1].trim(), pourquoi: (p[2] || '').trim() });
+      if (p.length >= 2) out.corrections.push({ avant: p[0].trim(), apres: p[1].trim(), pourquoi: (p[2] || '').trim(), fr: (p[3] || '').trim() });
       return;
     }
     if (sec === 'para') { paraL.push(brut.replace(/\*\*/g, '')); return; }
@@ -767,7 +767,7 @@ function runPlumeImport(id) {
   }
   /* chaque correction devient un exercice de production dans LA LIME
      (seule la forme juste est réimprimée — jamais la fautive) */
-  let limes = 0;
+  let limes = null;
   if (typeof limeFromCorrections === 'function')
     limes = limeFromCorrections(p.corrections, 'La Plume · ' + ((pSujet(e.sujet) || {}).titre || ''));
 
@@ -779,7 +779,9 @@ function runPlumeImport(id) {
   if (p.corrections.length) bits.push(`<b>${p.corrections.length}</b> correction(s)`);
   if (p.para) bits.push('le paragraphe réécrit');
   if (versees) bits.push(`<b>${versees}</b> tournure(s) versée(s) dans La Moisson`);
-  if (limes) bits.push(`<b>${limes}</b> exercice(s) créé(s) dans La Lime`);
+  if (limes && limes.n) bits.push(`<b>${limes.n}</b> exercice(s) créé(s) dans La Lime`);
+  if (limes && limes.maj) bits.push(`<b>${limes.maj}</b> exercice(s) réparé(s)`);
+  if (limes && limes.sansConsigne) bits.push(`<b>${limes.sansConsigne}</b> sans consigne en français, écarté(s)`);
   toast('✨ Correction importée');
   renderPlumeImport(id, `✨ ${bits.join(' · ')}.`);
 }

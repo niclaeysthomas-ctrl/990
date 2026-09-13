@@ -85,7 +85,7 @@ window.VOCAB = window.VOCAB.concat([
   ["to freeze", "geler / congeler", "Water freezes at zero degrees.", "Science"],
   ["to dissolve", "dissoudre / se dissoudre", "Sugar dissolves in water.", "Science"],
   ["breakthrough", "la percée / l'avancée majeure", "A medical breakthrough was announced.", "Science"],
-  ["findings", "les résultats / les conclusions", "The findings were surprising.", "Science"],
+  ["findings", "les conclusions, les résultats (d’une étude) ⟨FINE-dingz⟩", "The findings align with separate measures of pupil wellbeing.", "Science"],
   ["accurate", "exact / précis", "The measurements were accurate.", "Science"],
 
   /* --- Verbes de parole & attitude --- */

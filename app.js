@@ -4,7 +4,7 @@
 'use strict';
 
 const DAY = 86400000;
-const NEW_PER_DAY = 15;         // nouvelles cartes introduites par jour
+const NEW_PER_DAY = 25;         // nouvelles cartes par jour (15 → 25 le 13/09/2026 : il en veut plus, et le temps rendu par la prononciation y passe)
 const todayStr = () => new Date().toISOString().slice(0, 10);
 
 /* ---------- État persistant ---------- */
@@ -41,10 +41,12 @@ const DEFAULT = {
   audioSpeed: 'normal', // vitesse d'écoute : slow · normal · native
   firstRun: true
 };
-
-// Objectifs quotidiens — le 4e (parler) est arrivé avec LE DIAPASON :
-// une journée d'anglais sans un mot prononcé à voix haute ne compte plus comme complète.
-const GOAL_CARDS = 20, GOAL_TRANS = 5, GOAL_SPEAK = 10;
+// Objectifs quotidiens. Le 4e pilier (« parler à voix haute », arrivé avec
+// LE DIAPASON) a été retiré le 13/09/2026 à sa demande : l'examen qu'il
+// passe est un TOEIC Listening & Reading, où rien ne se produit à l'oral.
+// Le volume libéré est passé au vocabulaire — 30 cartes par jour au lieu
+// de 20, et 25 nouvelles au lieu de 15 (voir NEW_PER_DAY).
+const GOAL_CARDS = 30, GOAL_TRANS = 5, GOAL_SPEAK = 10;
 function resetDailyIfNeeded() {
   if (!S.daily || S.daily.date !== todayStr()) S.daily = { date: todayStr(), cards: 0, trans: 0, study: 0, speak: 0 };
 }
@@ -55,8 +57,8 @@ function dailyProgress() {
   const c = Math.min(1, S.daily.cards / GOAL_CARDS);
   const t = Math.min(1, S.daily.trans / GOAL_TRANS);
   const s = S.daily.study ? 1 : 0;
-  const o = Math.min(1, (S.daily.speak || 0) / GOAL_SPEAK);   // « o » comme oral
-  return { c, t, s, o, pct: Math.round((c + t + s + o) / 4 * 100), done: (c >= 1 && t >= 1 && s >= 1 && o >= 1) };
+  const o = Math.min(1, (S.daily.speak || 0) / GOAL_SPEAK);   // conservé pour l'historique, plus compté
+  return { c, t, s, o, pct: Math.round((c + t + s) / 3 * 100), done: (c >= 1 && t >= 1 && s >= 1) };
 }
 function checkDailyDone() {
   resetDailyIfNeeded();
@@ -416,10 +418,6 @@ function coachAdvice() {
   if (typeof limeQueueCount === 'function' && limeQueueCount('all') >= 1)
     return { title: 'La séance du jour', msg: `${limeQueueCount('all')} exercice(s) de production t'attendent. C'est le travail qui enlève l'accent français de ton écrit — on ne t'y montre jamais la forme fautive, tu produis la bonne.`, btn: 'Limer', action: "startLime('all')" };
   if (mistakeCount() >= 3) return { title: 'Corrige tes erreurs', msg: `Tu as ${mistakeCount()} question(s) déjà ratée(s) en attente. Les rejouer jusqu'à les maîtriser, c'est le plus direct vers le sans-faute.`, btn: 'Revoir mes erreurs', action: 'startMistakes()' };
-  if (typeof dDueCount === 'function' && dDueCount() > 0)
-    return { title: 'Ta prononciation attend', msg: `${dDueCount()} mot(s) ou phrase(s) du Diapason sont à revoir. L'accent est la seule chose qu'on entend AVANT ta grammaire et ton vocabulaire.`, btn: 'Ouvrir le Diapason', action: 'renderDiapasonHome()' };
-  if (typeof renderDiapasonHome === 'function' && dp.o < 1)
-    return { title: 'Tu n\'as pas encore parlé aujourd\'hui', msg: 'Lire et cocher ne fait pas progresser une bouche. Douze minutes de Diapason : tu écoutes, tu désignes, tu dis, tu t\'écoutes.', btn: 'La séance du jour', action: 'dSeanceStart()' };
   if (dp.t < 1 && buildTransQueue('Tous').length) return { title: 'Passe à la production', msg: 'Traduire des phrases rend ta grammaire active — le vrai déclic bilingue.', btn: 'Traduire', action: "setView('traduire')" };
   if (!dp.s) return { title: 'Un peu d\'étude', msg: 'Une session d\'écoute ou une leçon de grammaire pour valider ta journée.', btn: 'Écouter', action: "setView('listen')" };
   if (dp.c < 1) return { title: 'Apprends du vocabulaire', msg: 'De nouvelles cartes t\'attendent aujourd\'hui.', btn: 'Cartes', action: 'startReview(false)' };
@@ -458,7 +456,6 @@ function renderHome() {
         <h2 style="font-size:16px;margin-bottom:6px">Objectif du jour ${dp.done ? '🏆' : ''}</h2>
         ${goalLine(dp.c >= 1, 'Réviser des cartes', `${Math.min(S.daily.cards, GOAL_CARDS)}/${GOAL_CARDS}`)}
         ${goalLine(dp.t >= 1, 'Traduire des phrases', `${Math.min(S.daily.trans, GOAL_TRANS)}/${GOAL_TRANS}`)}
-        ${goalLine(dp.o >= 1, 'Parler à voix haute', `${Math.min(S.daily.speak || 0, GOAL_SPEAK)}/${GOAL_SPEAK}`)}
         ${goalLine(dp.s >= 1, 'Étudier (grammaire/écoute)', dp.s ? 'fait' : '0/1')}
       </div>
     </div>`;
@@ -503,11 +500,6 @@ function renderHome() {
       <div class="badge ${(due+news)===0?'zero':''}">${due + news}</div>
     </button>
 
-    <button class="tile" onclick="renderDiapasonHome()"${dailyProgress().o < 1 ? ' style="border-color:var(--purple)"' : ''}>
-      <div class="ic l">🎙️</div>
-      <div class="body"><div class="t">Le Diapason</div><div class="d">Accent, prononciation, phrases bilingues · l'oreille puis la bouche</div></div>
-      <div class="badge ${dDueCount() ? '' : 'zero'}">${dDueCount() || (dailyProgress().o < 1 ? '🎙️' : '✓')}</div>
-    </button>
 
     <button class="tile" onclick="renderVerbsHome()">
       <div class="ic" style="background:linear-gradient(135deg,#ff5c6c33,#ffb02011);color:var(--bad)">⚡</div>
@@ -1079,6 +1071,11 @@ function renderListenHome() {
       <div class="ic l">✍️</div>
       <div class="body"><div class="t">Dictée multi-accents</div><div class="d">Phrases natives à vitesse réelle · US, UK, Irlande, Australie…</div></div>
       <div class="badge zero">${typeof DIA !== 'undefined' ? DIA.lines.length : 0}</div>
+    </button>
+    <button class="tile" onclick="dPairHome()">
+      <div class="ic l">👂</div>
+      <div class="body"><div class="t">Paires minimales · l'oreille</div><div class="d">ship/sheep, work/walk, want/won't — entendre la différence avant de la rater en question</div></div>
+      <div class="badge zero">${typeof DIA !== 'undefined' ? DIA.pairs.length : 0}</div>
     </button>
     <div class="seg mt">
       <button class="${audioSpeed() === 'slow' ? 'on' : ''}" onclick="setSpeed('slow')">🐢 Lente<small>déchiffrer</small></button>

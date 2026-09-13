@@ -197,7 +197,7 @@ window.VOCAB = window.VOCAB.concat([
   ["to thrive", "prospérer / s'épanouir", "The business thrived after the reform.", "Soutenu"],
   ["to dwindle", "s'amenuiser / diminuer", "Their savings slowly dwindled.", "Soutenu"],
   ["to soar", "monter en flèche", "Prices soared after the shortage.", "Soutenu"],
-  ["to plummet", "chuter / s'effondrer", "Sales plummeted last quarter.", "Soutenu"],
+  ["to plummet", "chuter brutalement, dégringoler ⟨PLUM-it⟩", "Maths scores have plummeted across almost every OECD country.", "Soutenu"],
   ["to linger", "s'attarder / persister", "A faint smell lingered in the room.", "Soutenu"],
   ["to overlook", "négliger ; donner sur", "We overlooked one important detail.", "Soutenu"],
   ["to acknowledge", "reconnaître / admettre", "She acknowledged her mistake.", "Soutenu"],
