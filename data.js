@@ -171,7 +171,7 @@ window.LESSONS = [
     id: "inversion",
     title: "Inversion & emphase",
     tag: "C1-C2",
-    note: "Pour insister, on place un adverbe négatif ou restrictif en tête, ce qui force l'inversion sujet-auxiliaire (comme dans une question) : « Never have I... », « Rarely does she... », « Not only did they... », « Hardly had I arrived when... », « Only after... did we... ». C'est un marqueur d'anglais soutenu.",
+    note: "Pour insister, on place un adverbe négatif ou restrictif en tête, ce qui force l'inversion sujet-auxiliaire (comme dans une question) : « Never have I... », « Rarely does she... », « Not only did they... », « Hardly had I arrived when... », « Only after... did we... ». C'est un marqueur d'anglais soutenu. — Deuxième famille, celle qui rapporte des points dans un essai : la CONCESSION par inversion. Adjectif ou participe en tête, puis as (ou though) + sujet + verbe : « Worrying as it may sound... », « Hard as it may be... », « Attractive though the argument is... », « Much as I admire her... », « Try as he might... ». Jamais de « for » devant : « For worrying as it may sound » est la faute classique du francophone.",
     q: [
       ["Never ______ such a poorly organized event.", ["I have seen", "have I seen", "I saw", "did I saw"], 1, "Adverbe négatif en tête → inversion : have I seen.", ],
       ["Not only ______ the deadline, but they also cut costs.", ["they met", "did they meet", "they did meet", "met they"], 1, "« Not only » en tête → inversion : did they meet."],
@@ -180,7 +180,11 @@ window.LESSONS = [
       ["Only after the audit ______ the full extent of the fraud.", ["we understood", "did we understand", "we did understand", "understood we"], 1, "« Only after... » → inversion sur la principale : did we understand."],
       ["No sooner had she left ______ the phone rang.", ["when", "that", "than", "then"], 2, "Structure figée : No sooner had... than..."],
       ["Under no circumstances ______ share this password.", ["you should", "should you", "you do", "do should"], 1, "Locution négative en tête → inversion : should you."],
-      ["So complex was the problem ______ no one could solve it.", ["than", "that", "as", "which"], 1, "Emphase avec « So + adj » en tête → ...that (conséquence)."]
+      ["So complex was the problem ______ no one could solve it.", ["than", "that", "as", "which"], 1, "Emphase avec « So + adj » en tête → ...that (conséquence)."],
+      ["______ as it may sound, promotion often goes to whoever is visible.", ["For worrying", "Worrying", "Worried", "As worrying it"], 1, "Concession par inversion : adjectif/participe + AS + sujet + verbe. Rien devant : « Worrying as it may sound… ». (« As worrying as it may sound » marche aussi, avec les deux « as ».)"],
+      ["Much ______ the convenience of remote work, I would not defend it at any cost.", ["as I value", "I value", "that I value", "as valuing"], 0, "« Much as + sujet + verbe » = « tout autant que j'apprécie… ». Même moule concessif que « Try as he might »."],
+      ["______ though the argument is, it overlooks the cost to newcomers.", ["Attractive", "As attractive", "So attractive", "More attractive"], 0, "Variante avec THOUGH : adjectif nu en tête, puis though + sujet + verbe. « Attractive though the argument is… »"],
+      ["She would not go so far ______ that the merit system is dead.", ["as saying", "as to say", "to say", "that she says"], 1, "Idiome figé : go SO far AS TO + infinitif. « as saying » est le réflexe francophone (aller jusqu'à DIRE), et c'est faux."]
     ]
   },
   {

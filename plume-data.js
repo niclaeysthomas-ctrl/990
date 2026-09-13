@@ -130,7 +130,7 @@ window.PLUME_FORMATS = {
 /* Connecteurs et tournures reconnus par le relecteur (variété = bande). */
 window.PLUME_CONNECTEURS = {
   bas: ['and', 'but', 'so', 'because', 'also', 'then', 'first of all', 'secondly', 'finally', 'in conclusion', 'to sum up', 'moreover', 'furthermore', 'in addition'],
-  haut: ['whereas', 'albeit', 'insofar as', 'to the extent that', 'granted that', 'admittedly', 'conversely', 'by contrast', 'that said', 'all the same', 'if anything', 'not least because', 'in which case', 'on the grounds that', 'for all its', 'far from', 'let alone', 'much as', 'were it not for', 'hence', 'thereby', 'whereby', 'accordingly', 'notwithstanding', 'paradoxically', 'crucially', 'tellingly', 'arguably']
+  haut: ['whereas', 'albeit', 'insofar as', 'to the extent that', 'granted that', 'admittedly', 'conversely', 'by contrast', 'that said', 'all the same', 'if anything', 'not least because', 'in which case', 'on the grounds that', 'for all its', 'far from', 'let alone', 'much as', 'were it not for', 'hence', 'thereby', 'whereby', 'accordingly', 'notwithstanding', 'paradoxically', 'crucially', 'tellingly', 'arguably', 'ultimately', 'indeed', 'on balance', 'in the final analysis', 'even so', 'to be sure', 'at the very least', 'if only because']
 };
 
 /* ============================================================

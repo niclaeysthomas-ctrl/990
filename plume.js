@@ -112,7 +112,31 @@ window.PLUME_REGLES = [
   { id: 'motspauvres', sev: 'pauvre', re: /\b(?:things?|good|bad|big|nice|get|got|make\s+better|very\s+much)\b/gi, t: 'Mot passe-partout', d: "thing → <b>factor, aspect, issue, feature</b> ; good → <b>beneficial, sound, compelling</b> ; bad → <b>detrimental, damaging</b> ; big → <b>substantial, considerable</b> ; get → <b>obtain, acquire, become</b>." },
   { id: 'peoplethink', sev: 'pauvre', re: /\b(?:people|everyone|everybody)\s+(?:think|thinks|say|says|believe|believes)\b/gi, t: '« people think »', d: "Généralisation invérifiable. Dis <b>qui</b> : critics argue, economists have found, supporters of the measure claim." },
   { id: 'inconclusion', sev: 'pauvre', re: /\b(?:in\s+conclusion|to\s+sum\s+up|to\s+conclude|in\s+a\s+nutshell)\b/gi, t: 'Conclusion étiquetée', d: "Correct et attendu en IELTS. Mais à haut niveau, une conclusion se reconnaît sans étiquette : <b>The case for X therefore rests on…</b>" },
-  { id: 'firstsecond', sev: 'pauvre', re: /\b(?:first\s+of\s+all|firstly|secondly|thirdly|last\s+but\s+not\s+least)\b/gi, t: 'Numérotation scolaire', d: "Signale une liste, pas un raisonnement. Articule par le SENS : <b>The more serious objection is…</b>, <b>A further difficulty arises when…</b>" }
+  { id: 'firstsecond', sev: 'pauvre', re: /\b(?:first\s+of\s+all|firstly|secondly|thirdly|last\s+but\s+not\s+least)\b/gi, t: 'Numérotation scolaire', d: "Signale une liste, pas un raisonnement. Articule par le SENS : <b>The more serious objection is…</b>, <b>A further difficulty arises when…</b>" },
+
+  /* --- issues de sa copie C1 du 12/09/2026 : l'essai « remote work ».
+         Ces quatorze règles sont exactement ce que le relecteur avait
+         laissé passer — il n'avait vu que la longueur. Pas de lookbehind. --- */
+
+  /* fautes */
+  { id: 'espacepunct', sev: 'faute', re: /[ \u00A0]+[?!;:]/g, t: 'Espace avant ? ! ; :', d: "Réflexe typographique français. En anglais la ponctuation est <b>collée</b> au mot : <i>does it?</i>, <i>simple: scarcity decides</i>. Ça se voit à chaque ligne d'une copie." },
+  { id: 'guilfr', sev: 'faute', re: /[«»]/g, t: 'Guillemets français « »', d: "Les chevrons n'existent pas en anglais : <b>guillemets droits</b> collés au mot (\"remote\" ou 'remote'), sans espace intérieur." },
+  { id: 'forconcess', sev: 'faute', re: /\bfor\s+\w+\s+as\s+(?:it|they|this|that|he|she)\s+(?:may|might|can|could|does|do)\s+(?:sound|seem|appear|be|look)\b/gi, t: 'Concession : « For X as it may… »', d: "La concession par inversion ne prend <b>jamais</b> « for » : <b>Worrying as it may sound</b>, <b>Hard as it may be</b>, ou <b>As worrying as it may sound</b>. C'est une structure qui note — autant la poser juste." },
+  { id: 'gofaras', sev: 'faute', re: /\bgo(?:es|ing)?\s+as\s+far\s+as\s+(?:to\s+)?(?:say|saying|argue|arguing|claim|claiming|suggest|suggesting)\b/gi, t: '« go as far as saying »', d: "Idiome figé : <b>go SO far AS TO + infinitif</b> — <i>I would go so far as to say that…</i>. « as far as » sert à la distance ou à la délimitation (<i>as far as I know</i>)." },
+  { id: 'understatex', sev: 'faute', re: /\bunderstat(?:e|es|ing|ed)\s+(?:the\s+)?(?:possibility|risk|danger|likelihood|threat|scale|severity|extent)\b/gi, t: 'understate / underestimate', d: "On <b>understate</b> un fait (on le présente comme moindre en le disant) ; on <b>underestimate</b> un risque, une probabilité, une ampleur (on se trompe en l'évaluant). Devant possibility / risk / threat : <b>underestimate</b>." },
+  { id: 'ruledagainst', sev: 'faute', re: /\b(?:should|must|ought\s+to|needs?\s+to|has\s+to|have\s+to)\s+be\s+ruled\s+against\b/gi, t: '« should be ruled against »', d: "<b>rule against</b> = trancher contre, au tribunal ou en arbitrage. Pour un risque qu'il faut empêcher : <b>must be guarded against</b>, <b>resisted</b>, <b>headed off</b>." },
+  { id: 'sneakin', sev: 'faute', re: /\bsneak(?:s|ing|ed)?\s+in(?:to)?\s+(?:[\w'’-]+\s+){0,3}?(?:lives|life|privacy|space|affairs|business)\b/gi, t: '« sneak in someone’s life »', d: "<b>sneak something in</b> = l'introduire en fraude : tu dis l'inverse de ce que tu veux dire. Pour empiéter : <b>intrude into</b> / <b>encroach on</b> / <b>pry into</b> someone's private life." },
+  { id: 'alterto', sev: 'faute', re: /\balter(?:s|ing|ed)?\s+(?:it|them|this|that|its\s+\w+|the\s+\w+)\s+to\s+(?:a|an|the|more|something)\b/gi, t: '« alter it to a … form »', d: "« alter X to Y » n'est pas un schéma anglais. On <b>adapts X into</b> / <b>recasts X in</b> / <b>turns X into</b> a more digital form." },
+
+  /* calques */
+  { id: 'nothingbut', sev: 'calque', re: /\bis\s+nothing\s+but\s+(?:the\s+)?truth\b/gi, t: '« is nothing but the truth »', d: "« the truth, the whole truth and nothing but the truth » est la formule du <b>serment judiciaire</b>. Pour dire qu'un constat est exact : <b>rings true</b>, <b>is undeniably the case</b>, <b>is hard to deny</b>." },
+  { id: 'personalspace', sev: 'calque', re: /\bpersonal\s+space\b/gi, t: '« personal space »', d: "<b>personal space</b> = la distance physique qu'on garde autour de soi. La vie privée, le domaine qu'un employeur ne doit pas envahir, c'est <b>privacy</b> / <b>someone's private life</b>. Vérifie lequel tu voulais." },
+
+  /* registre */
+  { id: 'endofday', sev: 'registre', re: /\bat\s+the\s+end\s+of\s+the\s+day\s*,/gi, t: '« at the end of the day, … »', d: "Formule orale quand elle articule un raisonnement (le sens littéral — <i>they go home at the end of the day</i> — reste correct, et c'est pour ça que la règle n'attrape que la version suivie d'une virgule). Dans une conclusion notée : <b>Ultimately</b>, <b>On balance</b>, <b>In the final analysis</b>." },
+  { id: 'deemit', sev: 'registre', re: /\bI\s+deem\s+(?:it|this|that)\b/gi, t: '« I deem it… »', d: "<b>deem</b> appartient au juridique et au bureaucratique ; dans un essai il sonne emprunté, surtout à côté d'une formule orale. Écris <b>it is crucial that</b>, <b>it would be a mistake to</b>, <b>I would argue that</b>." },
+  { id: 'rhetag', sev: 'registre', re: /,\s*(?:does|is|are|do|did|will|would|can|could|has|have|should)\s+(?:it|he|she|they|we|you|I)\s+not\s*\?/gi, t: 'Tag rhétorique « …, does it not ? »', d: "Le question tag est un procédé <b>oral</b> : dans un essai il prend le correcteur à témoin au lieu d'argumenter. Et vérifie la polarité : après un sujet quasi-négatif (<i>little</i>, <i>few</i>, <i>hardly</i>) le tag reste <b>positif</b> — <i>little changes, does it?</i>" },
+  { id: 'yougen', sev: 'registre', re: /\byou\s+(?:can|cannot|can't|must|have\s+to|need\s+to|should|will\s+never|won't)\b/gi, t: '« you » générique', d: "Le <i>you</i> impersonnel est parlé. À l'écrit noté : <b>one cannot</b>, un passif (<i>it cannot be assumed that…</i>), ou un sujet nommé (<i>employers cannot…</i>). Admis dans un mail et sur un forum." }
 ];
 
 /* Analyse d'un texte : renvoie {mots, phrases, paras, drapeaux[], mesures{}, score} */
@@ -130,6 +154,9 @@ function plumeRelire(texte, sujet) {
   const informel = sujet && (sujet.fmt === 'email' || sujet.fmt === 'review');
   window.PLUME_REGLES.forEach(r => {
     if (r.id === 'contractions' && informel) return;   /* admises dans un mail ou une critique */
+    /* le « you » impersonnel : parlé dans une copie, normal dans un mail
+       ou dans un post de forum (TOEFL Academic Discussion). */
+    if (r.id === 'yougen' && (informel || (sujet && sujet.fmt === 'toefl'))) return;
     if (r.id === 'exclam' && sujet && sujet.fmt === 'review') return;
     r.re.lastIndex = 0;
     const hits = t.match(r.re);

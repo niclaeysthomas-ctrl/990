@@ -9,7 +9,8 @@
    ou d'une phrase anglaise plate. L'erreur n'est jamais imprimée.
 
    Trois sources d'exercices :
-   1. le corpus ci-dessous (65 items, écrits sur ses vraies fautes) ;
+   1. le corpus ci-dessous (91 items en 10 chantiers, écrits sur ses vraies
+      fautes — dont « Le haut du barème », tiré de sa copie Cambridge C1) ;
    2. l'auto-alimentation : chaque correction importée dans LA PLUME
       devient un exercice (voir limeFromCorrections) ;
    3. l'import de nouvelles séries (boucle export → Claude → import).
@@ -30,6 +31,7 @@ const LIME_CATS = {
   charn: { n: 'Charnières de haut vol',   ic: '🪢', c: 'var(--purple)' },
   gram:  { n: 'Structures qui notent',    ic: '🏛️', c: 'var(--purple)' },
   mec:   { n: 'Mécanique anglaise',       ic: '⚙️', c: 'var(--muted)' },
+  bareme:{ n: 'Le haut du barème',        ic: '🎯', c: 'var(--accent)' },
   perso: { n: 'Tes propres corrections',  ic: '🩹', c: '#ff7ab6' }
 };
 
@@ -423,6 +425,86 @@ window.LIME = [
  "A 280-word essay written in nineteen minutes",
  ["A 280-word essay produced in nineteen minutes"],
  "L’adjectif composé chiffré prend un trait d’union et reste au singulier : a 280-word essay, a five-year plan, a ten-minute break."]
+,
+
+/* ---------- LE HAUT DU BARÈME ----------
+   Écrits sur sa copie Cambridge C1 du 12/09/2026 (essai « remote work »,
+   193 mots, 12/20). Ce sont les tournures qui séparaient sa copie du
+   haut de la grille : la forme fautive n'est jamais imprimée ici. */
+['bm01','bareme','fr2en',"Aussi inquiétant que cela puisse paraître, la promotion récompense souvent la visibilité.",
+ "Worrying as it may sound, promotion often rewards visibility",
+ ["As worrying as it may sound, promotion often rewards visibility","Worrying as it may sound, promotion frequently rewards visibility"],
+ "Concession par inversion : adjectif ou participe + as + sujet + verbe, et surtout rien devant. Même moule : Hard as it may be, Much as I admire her, Try as he might."],
+
+['bm02','bareme','lift',"I will even say that distance rewards results more honestly than the office did.",
+ "I would go so far as to say that distance rewards results more honestly than the office did",
+ ["I would go so far as to argue that distance rewards results more honestly than the office did"],
+ "Pour annoncer une thèse plus forte que la précédente : go SO far AS TO + infinitif. L’idiome est figé, et il ne vaut que si ce qui suit est réellement plus radical."],
+
+['bm03','bareme','fr2en',"Ce constat, tout sombre qu’il soit, est difficile à nier.",
+ "That claim, bleak as it is, is hard to deny",
+ ["The claim, for all its bleakness, is hard to deny","That observation, bleak as it is, rings true"],
+ "« rings true » / « hard to deny » pour dire qu’un constat tient. Le calque « ce n’est rien d’autre que la vérité » tombe sur nothing but the truth, qui est la formule du serment judiciaire."],
+
+['bm04','bareme','lift',"This also reminds us of company culture, which is going to suffer.",
+ "A second and graver casualty is company culture",
+ ["The second casualty, and the graver one, is company culture"],
+ "Un connecteur doit refléter un lien que le raisonnement a construit. Nommer la victime suivante hiérarchise ; « this reminds us of » annonce une déduction qui n’a pas eu lieu."],
+
+['bm05','bareme','fr2en',"Les entreprises risquent d’empiéter sur la vie privée de leurs salariés.",
+ "Firms risk encroaching on their employees' privacy",
+ ["Companies risk encroaching on their staff's privacy","Employers risk intruding into their employees' private lives"],
+ "encroach on / intrude into / pry into + privacy. « personal space » est la distance physique qu’on garde autour de soi, jamais le domaine privé."],
+
+['bm06','bareme','fr2en',"C’est un risque contre lequel il faut se prémunir dès le départ.",
+ "It is a risk that must be guarded against from the outset",
+ ["This is a risk to be guarded against from the outset","It is a danger that must be resisted from the outset"],
+ "guard against / head off / resist un risque. « rule against » est ce que fait un tribunal quand il tranche contre une partie."],
+
+['bm07','bareme','fr2en',"Ce serait une erreur de sous-estimer la gravité de ce risque.",
+ "It would be a mistake to underestimate the severity of that risk",
+ ["It would be an error to underestimate how serious that risk is"],
+ "On underestimate un risque (on l’évalue mal) ; on understate un fait (on le dit en dessous de la réalité). Et « it would be a mistake to » passe mieux que « I deem it crucial », qui sonne juridique."],
+
+['bm08','bareme','fr2en',"De ces deux effets, c’est la perte de vie privée qui compte le plus pour l’avenir du travail.",
+ "Of these two effects, it is the loss of privacy that matters more for the future of work",
+ ["Of the two, the loss of privacy matters more for the future of work"],
+ "Quand la consigne demande « which matters more », il faut trancher entre TES DEUX effets : « more than the others » rouvre la liste et coûte le critère Content. La structure emphatique it is X that désigne sans ambiguïté."],
+
+['bm09','bareme','lift',"In the end, a company cannot enjoy both advantages at once.",
+ "Ultimately, a firm cannot have it both ways",
+ ["On balance, a company cannot have it both ways","In the final analysis, a firm cannot have it both ways"],
+ "Ultimately / On balance / In the final analysis remplacent la formule orale ; et l’idiome nié est « have it both ways » (le best of both worlds ne s’emploie qu’à l’affirmative)."],
+
+['bm10','bareme','lift',"You can't mentor someone through a screen.",
+ "One cannot mentor a junior colleague through a screen",
+ ["Mentoring cannot be done through a screen","No employer can mentor a junior colleague through a screen"],
+ "Le « you » impersonnel est oral : one, un passif, ou un sujet nommé. (Dans une citation du sujet, en revanche, tu la recopies telle quelle.)"],
+
+['bm11','bareme','fr2en',"Ce que le documentaire appelle du favoritisme s’appelle plus justement un biais de proximité.",
+ "What the documentary calls favouritism is better described as proximity bias",
+ ["What the documentary calls favoritism is more accurately termed proximity bias"],
+ "proximity bias : le terme technique exact du « promotion goes to whoever is visible ». Le mot juste du domaine vaut dix adjectifs, et il signale que tu connais le sujet."],
+
+['bm12','bareme','fr2en',"Les salariés à distance risquent de vérifier le vieil adage : loin des yeux, loin de l’esprit.",
+ "Remote employees risk proving the old adage that out of sight is out of mind",
+ ["Remote workers risk confirming the old adage that out of sight is out of mind"],
+ "Un proverbe s’encadre (the old adage that…), sinon il fait remplissage. Et ici il s’agit d’oubli professionnel, pas de sentiment."],
+
+['bm13','bareme','fr2en',"Les juniors apprenaient le jugement par imprégnation ; un appel vidéo transmet des consignes, pas des réflexes.",
+ "Junior staff used to pick up judgement by osmosis; a video call transmits instructions, not instincts",
+ ["Juniors once picked up judgement by osmosis; a video call transmits instructions, not instincts"],
+ "pick something up by osmosis = apprendre sans qu’on vous l’enseigne : la réponse exacte à « you cannot mentor someone through a screen ». Le point-virgule oppose deux propositions complètes."],
+
+['bm14','bareme','lift',"Or the company will change its culture into something more digital.",
+ "Or the company will recast its culture in a more digital form",
+ ["Or the company will adapt its culture into a more digital form"],
+ "« alter X to Y » n’est pas un schéma anglais : recast X IN, adapt X INTO, turn X INTO."],
+
+['bm15','bareme','fr2en',"Pourtant, peu de choses changent par rapport au bureau traditionnel.",
+ "Yet little changes from the traditional office model",
+ ["Yet little has changed from the traditional office model"],
+ "L’affirmation directe remplace le tag rhétorique, qui est oral. Et si tu en poses un quand même : après un sujet quasi-négatif (little, few, hardly) le tag reste POSITIF — little changes, does it?"]
 
 ];
 
