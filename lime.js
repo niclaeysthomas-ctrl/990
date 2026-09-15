@@ -32,6 +32,7 @@ const LIME_CATS = {
   gram:  { n: 'Structures qui notent',    ic: '🏛️', c: 'var(--purple)' },
   mec:   { n: 'Mécanique anglaise',       ic: '⚙️', c: 'var(--muted)' },
   bareme:{ n: 'Le haut du barème',        ic: '🎯', c: 'var(--accent)' },
+  recur: { n: 'Ce que tu refais',         ic: '🔁', c: '#ff7ab6' },
   perso: { n: 'Tes propres corrections',  ic: '🩹', c: '#ff7ab6' }
 };
 
@@ -505,6 +506,72 @@ window.LIME = [
  "Yet little changes from the traditional office model",
  ["Yet little has changed from the traditional office model"],
  "L’affirmation directe remplace le tag rhétorique, qui est oral. Et si tu en poses un quand même : après un sujet quasi-négatif (little, few, hardly) le tag reste POSITIF — little changes, does it?"]
+,
+
+/* ---------- CE QUE TU REFAIS ----------
+   Écrit en comparant ses deux premières copies corrigées (essai
+   Cambridge du 12/09, IELTS du 14/09) : ce chantier ne contient QUE
+   des fautes apparues DEUX fois, plus les points qu'il a demandé
+   lui-même à travailler. C'est le plus rentable du deck. */
+['rc01','recur','fr2en',"Les entreprises de réseaux sociaux affirment que leurs plateformes sont neutres.",
+ "Social media companies claim that their platforms are neutral",
+ ["Social media firms argue that their platforms are neutral","The platforms claim that they are neutral"],
+ "Ton réflexe « their » est juste — c'est le SUJET qu'il faut changer. Dès que tu penses aux entreprises, écris social media companies / firms / the platforms, et tout le pluriel suit."],
+
+['rc02','recur','fr2en',"Les réseaux sociaux ont changé la façon dont l’information circule ; leur portée est immense.",
+ "Social media has changed the way news travels; its reach is enormous",
+ ["Social media has transformed the way news travels; its reach is vast"],
+ "« social media » employé seul est un indénombrable SINGULIER : has, its. Le pluriel « media are » ne survit que dans « the media » au sens de la presse, en registre très soutenu."],
+
+['rc03','recur','lift',"My take is that this might make things worse.",
+ "In my view, this might end up worsening the problem",
+ ["I would argue that this might end up making the problem worse"],
+ "Deux corrections d'un coup : « my take is » est du registre de podcast, et « end up » est toujours suivi de -ING."],
+
+['rc04','recur','fr2en',"Les utilisateurs postent n’importe quoi en attendant de se faire bannir.",
+ "Users post whatever they like, waiting for the ban to come",
+ ["Users post whatever they want while waiting to be banned"],
+ "await se construit SANS préposition (await a decision), wait prend FOR. « awaiting for » mélange les deux et ne se dit jamais."],
+
+['rc05','recur','fr2en',"Une telle mesure ouvrirait la voie à un principe bien plus large.",
+ "Such a measure would pave the way for a far broader principle",
+ ["A measure of this kind would pave the way for a much wider principle"],
+ "Deux automatismes : « such A measure » devant un singulier dénombrable, et on pave the WAY, jamais the path."],
+
+['rc06','recur','fr2en',"La même logique s’applique à ceux qui défendent la légalisation.",
+ "The same logic applies to those who support legalisation",
+ ["The same reasoning applies to the proponents of legalisation"],
+ "apply TO something. « apply for » veut dire postuler. Et « proponents » s'emploie au pluriel quand on désigne un camp."],
+
+['rc07','recur','lift',"The state throws the hot potato back to social media, which is identifiable.",
+ "The state shifts the burden onto the platforms, which can be identified",
+ ["The state passes responsibility to the platforms, which are identifiable"],
+ "L'image de la patate chaude est orale. « shift the burden onto » dit exactement la même chose au registre de la copie."],
+
+['rc08','recur','fr2en',"L’intention qui se cache derrière une telle mesure est facile à lire.",
+ "The intention behind such a measure is easy to read",
+ ["What such a measure betrays is easy to read"],
+ "« transpire » est un faux ami : il veut dire s'avérer, se révéler (it transpired that…). Pour « transparaître », contourne par « the intention behind » ou « what X betrays »."],
+
+['rc09','recur','fr2en',"Le coût de la modération grimpe en flèche.",
+ "The cost of moderation is soaring",
+ ["The cost of moderation is spiralling","Moderation costs are escalating"],
+ "« steepening » se dit d'une courbe (a steepening decline), pas d'un coût. Un coût soars, spirals, escalates."],
+
+['rc10','recur','fr2en',"Cela aggraverait le problème même qu’elle cherche à résoudre.",
+ "It would worsen the very problem it seeks to solve",
+ ["It would aggravate the very problem it sets out to solve"],
+ "aim TO / seek TO + infinitif. « aims at solving » est correct mais lourd, et la lourdeur se paie au-dessus de la bande 6."],
+
+['rc11','recur','fr2en',"Cet essai soutiendra que les plateformes doivent répondre de ce qu’elles hébergent.",
+ "This essay will argue that platforms should be held to account for what they host",
+ ["I will argue that platforms should be held liable for the content they host"],
+ "Ta récurrence n°1, sur les deux copies : ta position n'est jamais posée noir sur blanc. Une phrase de ce moule en fin d'introduction, et le critère Task Response cesse de te coûter des points."],
+
+['rc12','recur','lift',"I would not be as cautious if I thought I was immune, would you?",
+ "Nobody is careful when they believe themselves immune",
+ ["No one takes care when they believe themselves to be immune"],
+ "Le tag rhétorique (would you ? does it not ?) est apparu dans tes deux copies : c'est de l'oral, et il prend le correcteur à témoin au lieu d'argumenter. L'affirmation générale frappe plus fort."]
 
 ];
 
