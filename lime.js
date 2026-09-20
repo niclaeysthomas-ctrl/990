@@ -141,9 +141,9 @@ window.LIME = [
 
 /* ---------- LE MOT QUI N’EXISTE PAS ---------- */
 ['mo01','mot','fr2en',"La capacité à prendre des risques se paie très cher.",
- "The ability to take risks commands a very high price",
- ["The willingness to take risks is richly rewarded"],
- "pricable n’existe pas. Ce qui se paie cher commands a high price / a premium ; ce qui est bien payé is richly rewarded, handsomely paid."],
+ "The ability to take risks commands a premium",
+ ["The ability to take risks commands a high price","The willingness to take risks is richly rewarded"],
+ "pricable n’existe pas. Ce qui se paie cher commands a high price / commands a premium ; ce qui est bien payé is richly rewarded, handsomely paid. Note qu’on évite « a VERY high price » : l’adjectif précis (a premium) vaut mieux que l’adverbe d’intensité, et ton relecteur le signale."],
 
 ['mo02','mot','fr2en',"Ce sont les corrections les plus rentables.",
  "These are the corrections that pay off most",
@@ -172,9 +172,9 @@ window.LIME = [
  "I think est plat et se répète. I would argue pose une thèse et t’engage : c’est exactement ce que la grille récompense sous « position »."],
 
 ['rg03','reg','lift',"A lot of people believe this.",
- "A great many people believe this",
- ["This is a widely held belief","Many would subscribe to this view"],
- "a lot of appartient à l’oral. À l’écrit noté : a great many, a substantial number, ou la nominalisation a widely held belief."],
+ "A great many people hold this view",
+ ["This is a widely held belief","Many would subscribe to this view","A great many people take this view"],
+ "Deux crans d’un coup. a lot of appartient à l’oral : à l’écrit noté, a great many, a substantial number, ou la nominalisation a widely held belief. Et « people believe » est une attribution vague — hold this view, take this view, ou mieux : dis QUI (critics argue, economists have found)."],
 
 ['rg04','reg','lift',"This is a very big problem.",
  "This is a profound problem",
@@ -377,9 +377,9 @@ window.LIME = [
  "Were it not for (présent irréel) / Had it not been for (passé irréel) : l’inversion sans if. Ne mélange pas les deux temps."],
 
 ['gr03','gram','fr2en',"Ce qui explique vraiment les salaires, c’est la rareté.",
- "What really explains wages is scarcity",
- ["It is scarcity that really explains wages"],
- "La clivée What … is. Le verbe reste au singulier même si la suite est au pluriel : What explains wages IS scarcity."],
+ "What truly explains wages is scarcity",
+ ["It is scarcity that truly explains wages","What really explains wages is scarcity"],
+ "La clivée What … is. Le verbe reste au singulier même si la suite est au pluriel : What explains wages IS scarcity. Et truly se note mieux que really, que ton relecteur range dans les intensifieurs pauvres."],
 
 ['gr04','gram','fr2en',"Un certain nombre d’infirmières quittent le métier chaque année.",
  "A number of nurses leave the profession every year",
@@ -408,9 +408,9 @@ window.LIME = [
 
 /* ---------- MÉCANIQUE ANGLAISE ---------- */
 ['me01','mec','fr2en',"Écris cette question en anglais, ponctuation comprise : Qu’est-ce qui détermine vraiment un salaire ?",
- "What actually determines a person's salary?",
- ["What really determines someone's pay?"],
- "Aucun espace avant ? ! : ; en anglais. Le réflexe français se voit à chaque ligne et se paie en note de mécanique."],
+ "What truly determines a person's salary?",
+ ["What really determines someone's pay?","What actually determines a person's salary?"],
+ "Aucun espace avant ? ! : ; en anglais. Le réflexe français se voit à chaque ligne et se paie en note de mécanique. (actually est accepté ici, mais ton relecteur te le signalera toujours : neuf fois sur dix, un francophone qui écrit actually voulait dire currently.)"],
 
 ['me02','mec','fr2en',"Enchaîne après deux-points : La raison est simple : la rareté décide.",
  "The reason is simple: scarcity decides",
@@ -437,7 +437,7 @@ window.LIME = [
  ["As worrying as it may sound, promotion often rewards visibility","Worrying as it may sound, promotion frequently rewards visibility"],
  "Concession par inversion : adjectif ou participe + as + sujet + verbe, et surtout rien devant. Même moule : Hard as it may be, Much as I admire her, Try as he might."],
 
-['bm02','bareme','lift',"I will even say that distance rewards results more honestly than the office did.",
+['bm02','bareme','lift',"I would even say that distance rewards results more honestly than the office did.",
  "I would go so far as to say that distance rewards results more honestly than the office did",
  ["I would go so far as to argue that distance rewards results more honestly than the office did"],
  "Pour annoncer une thèse plus forte que la précédente : go SO far AS TO + infinitif. L’idiome est figé, et il ne vaut que si ce qui suit est réellement plus radical."],
@@ -447,10 +447,10 @@ window.LIME = [
  ["The claim, for all its bleakness, is hard to deny","That observation, bleak as it is, rings true"],
  "« rings true » / « hard to deny » pour dire qu’un constat tient. Le calque « ce n’est rien d’autre que la vérité » tombe sur nothing but the truth, qui est la formule du serment judiciaire."],
 
-['bm04','bareme','lift',"This also reminds us of company culture, which is going to suffer.",
+['bm04','bareme','lift',"Company culture is another thing that will suffer, and the damage is worse.",
  "A second and graver casualty is company culture",
  ["The second casualty, and the graver one, is company culture"],
- "Un connecteur doit refléter un lien que le raisonnement a construit. Nommer la victime suivante hiérarchise ; « this reminds us of » annonce une déduction qui n’a pas eu lieu."],
+ "Hiérarchiser fait le travail qu’un connecteur vague prétend faire : nommer la victime suivante ET la classer (second, graver) construit le lien au lieu de l’annoncer. « Cela nous rappelle aussi » promet une déduction qui n’a pas eu lieu."],
 
 ['bm05','bareme','fr2en',"Les entreprises risquent d’empiéter sur la vie privée de leurs salariés.",
  "Firms risk encroaching on their employees' privacy",
@@ -497,10 +497,10 @@ window.LIME = [
  ["Juniors once picked up judgement by osmosis; a video call transmits instructions, not instincts"],
  "pick something up by osmosis = apprendre sans qu’on vous l’enseigne : la réponse exacte à « you cannot mentor someone through a screen ». Le point-virgule oppose deux propositions complètes."],
 
-['bm14','bareme','lift',"Or the company will change its culture into something more digital.",
- "Or the company will recast its culture in a more digital form",
- ["Or the company will adapt its culture into a more digital form"],
- "« alter X to Y » n’est pas un schéma anglais : recast X IN, adapt X INTO, turn X INTO."],
+['bm14','bareme','lift',"The company will make its culture more digital instead.",
+ "The company will instead recast its culture in a more digital form",
+ ["The company will instead adapt its culture into a more digital form"],
+ "Le schéma est verbe + objet + préposition figée : recast X IN, adapt X INTO, turn X INTO. C’est la préposition qui se calque mal depuis le français, pas le verbe. Et instead se place avant le verbe plein, pas en fin de phrase, dès qu’on écrit."],
 
 ['bm15','bareme','fr2en',"Pourtant, peu de choses changent par rapport au bureau traditionnel.",
  "Yet little changes from the traditional office model",
@@ -543,10 +543,10 @@ window.LIME = [
  ["The same reasoning applies to the proponents of legalisation"],
  "apply TO something. « apply for » veut dire postuler. Et « proponents » s'emploie au pluriel quand on désigne un camp."],
 
-['rc07','recur','lift',"The state throws the hot potato back to social media, which is identifiable.",
+['rc07','recur','lift',"The state gives the problem back to the social media companies, which are easy to identify.",
  "The state shifts the burden onto the platforms, which can be identified",
  ["The state passes responsibility to the platforms, which are identifiable"],
- "L'image de la patate chaude est orale. « shift the burden onto » dit exactement la même chose au registre de la copie."],
+ "Les images parlées — refiler la patate chaude, renvoyer la balle — tombent à plat dans une copie. shift the burden ONTO dit la même chose au bon registre, et platforms évite de répéter social media."],
 
 ['rc08','recur','fr2en',"L’intention qui se cache derrière une telle mesure est facile à lire.",
  "The intention behind such a measure is easy to read",
@@ -568,10 +568,10 @@ window.LIME = [
  ["I will argue that platforms should be held liable for the content they host"],
  "Ta récurrence n°1, sur les deux copies : ta position n'est jamais posée noir sur blanc. Une phrase de ce moule en fin d'introduction, et le critère Task Response cesse de te coûter des points."],
 
-['rc12','recur','lift',"I would not be as cautious if I thought I was immune, would you?",
+['rc12','recur','lift',"People are not careful when they think that nothing can happen to them.",
  "Nobody is careful when they believe themselves immune",
  ["No one takes care when they believe themselves to be immune"],
- "Le tag rhétorique (would you ? does it not ?) est apparu dans tes deux copies : c'est de l'oral, et il prend le correcteur à témoin au lieu d'argumenter. L'affirmation générale frappe plus fort."],
+ "Deux gains : nobody frappe plus fort qu’un people not… , et believe oneself + adjectif économise la subordonnée. Au passage, le tag rhétorique (would you ? does it not ?) est apparu dans tes deux copies : c’est de l’oral, il prend le correcteur à témoin au lieu d’argumenter."],
 
 
 /* ---------- COPIE IELTS TASK 2 « SALAIRES & VALEUR SOCIALE » (20/09/2026) ----------
@@ -616,15 +616,15 @@ window.LIME = [
  ["This modus operandi no longer prevails"],
  "modus operandi : latin figé au NOMINATIF. « modo » est un ablatif, il n'apparaît jamais dans cette expression."],
 
-['ie08','reg','lift',"I would defend all day that scarcity and usefulness go together.",
+['ie08','reg','lift',"I really think that scarcity and usefulness always go together.",
  "I would contend that scarcity and usefulness go hand in hand",
  ["I would maintain that scarcity and usefulness go hand in hand","I would submit that scarcity and usefulness are inseparable"],
- "« defend all day » est un calque de « je défendrais toute la journée » : ça ne se dit pas. contend / maintain / submit posent une thèse en un mot académique."],
+ "« Je défendrais toute la journée que… » n’a pas de décalque anglais : le verbe qui POSE une thèse est contend, maintain ou submit. Et go hand in hand remplace un always go together plat."],
 
-['ie09','reg','lift',"People will receive the rent of your past usefulness for ever and ever.",
- "A lineage will collect the rent on your past usefulness in perpetuity",
- ["Your descendants will collect the rent on your past usefulness in perpetuity"],
- "Deux corrections d'un coup : on perçoit une rente ON un actif, jamais OF. Et « for ever and ever » relève du conte pour enfants — in perpetuity est le terme exact."],
+['ie09','reg','lift',"Your descendants will keep earning money from your past usefulness, and it will never stop.",
+ "Your descendants will collect the rent on your past usefulness in perpetuity",
+ ["A lineage will collect the rent on your past usefulness in perpetuity"],
+ "Deux corrections d’un coup : on perçoit une rente ON un actif, jamais OF. Et « pour toujours et à jamais » relève du conte pour enfants — in perpetuity est le terme des contrats."],
 
 ['ie10','bareme','lift',"That doesn't mean that a nurse should be paid more than a footballer.",
  "That does not mean that a nurse should command a higher salary than a footballer",

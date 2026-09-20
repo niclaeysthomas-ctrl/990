@@ -1,13 +1,13 @@
 /* 990 — service worker : cache offline (app shell) */
-const CACHE = '990-v31';
+const CACHE = '990-v32';
 const ASSETS = [
   'index.html',
   'app.js?v=28',
-  'lime.js?v=5',
+  'lime.js?v=6',
   'diapason-data.js?v=1',
   'diapason.js?v=1',
   'plume-data.js?v=2',
-  'plume.js?v=6',
+  'plume.js?v=7',
   'scalpel.js?v=1',
   'moisson.js?v=2',
   'verbs.js?v=20',
@@ -27,7 +27,7 @@ const ASSETS = [
   'vocab-future.js?v=13',
   'vocab-extra7.js?v=15',
   'vocab-lectures.js?v=1',
-  'reading.js?v=21',
+  'reading.js?v=22',
   'translations.js?v=9',
   'listening-long.js?v=9',
   'exam-data.js?v=10',
