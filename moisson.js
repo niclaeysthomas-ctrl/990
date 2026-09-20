@@ -374,6 +374,66 @@ function runMineImport() {
 }
 
 /* ============================================================
+   LES TOURNURES VERSÉES PAR UNE CORRECTION DE COPIE
+   Ajouté le 2026-09-20. Jusqu'ici, les tournures que Claude donnait
+   en corrigeant un essai devaient être recollées à la main dans
+   « 📥 Importer ». Quand elles viennent d'une copie corrigée, elles
+   entrent directement : c'est le même contenu, sans le geste.
+   Une graine n'écrase JAMAIS une carte existante (rapprochement par
+   mNorm) et ne s'installe qu'une fois — S.mineSeed retient les lots
+   déjà versés, donc tu peux supprimer une carte sans la voir revenir.
+   ============================================================ */
+const MINE_SEED = [
+  { lot: 'ielts-salaires-2026-09-20', cards: [
+    { en: 'to be commensurate with',
+      fr: "être à la hauteur de, proportionné à",
+      note: "Registre formel, presque administratif — taillé pour un sujet sur les salaires. S'emploie avec pay, salary, reward, punishment. Piège de calque : évite « proportional to », mathématique et plat, là où l'anglais attend commensurate with.",
+      ex: 'Pay should be commensurate with the contribution a role makes to society.',
+      exfr: "La rémunération devrait être à la hauteur de la contribution d'un métier à la société." },
+    { en: 'to command a salary',
+      fr: "obtenir un salaire (par la valeur qu'on représente sur le marché)",
+      note: "Le verbe qui te manquait : c'est le poste ou la compétence qui « commande » le salaire, pas la personne qui le réclame. À éviter au sens de « réclamer » — là, c'est demand.",
+      ex: 'Footballers command astronomical salaries because scarcity, not social utility, sets the price.',
+      exfr: "Les footballeurs obtiennent des salaires astronomiques parce que c'est la rareté, et non l'utilité sociale, qui fixe le prix." },
+    { en: 'unearned income',
+      fr: "revenu non gagné (rente, intérêts, héritage)",
+      note: "Le terme exact de ton troisième paragraphe : tu décris la notion sur six lignes sans jamais la nommer. Vocabulaire d'économie et de fiscalité, neutre. Ne le confonds pas avec undeserved, qui porte un jugement moral ; unearned est purement technique.",
+      ex: "The compounding of unearned income allows one generation's usefulness to be collected by the next.",
+      exfr: "La capitalisation des revenus non gagnés permet à une génération de percevoir l'utilité de la précédente." },
+    { en: 'to conflate two things',
+      fr: "amalgamer, confondre deux notions distinctes",
+      note: "LE mot de ta conclusion : tu dis « the term value being used differently » en cinq mots là où conflate le dit en un. Registre académique. Ce n'est pas confuse (erreur d'inattention) mais l'assimilation abusive de deux concepts.",
+      ex: 'The question conflates economic value with moral worth.',
+      exfr: "La question amalgame la valeur économique et la valeur morale." },
+    { en: 'market forces dictate',
+      fr: "les forces du marché imposent, déterminent",
+      note: "Collocation figée : dictate, set ou determine — jamais « decide ». Sert à poser l'objection adverse en une phrase, là où tu y consacres un paragraphe entier.",
+      ex: 'Market forces dictate that a scarce skill will always outearn an essential one.',
+      exfr: "Les forces du marché font qu'une compétence rare sera toujours mieux payée qu'une compétence essentielle." },
+  ]},
+];
+function mineSeedOnce() {
+  if (typeof S === 'undefined' || !S) return 0;
+  if (!Array.isArray(S.mineSeed)) S.mineSeed = [];
+  let add = 0;
+  MINE_SEED.forEach(lot => {
+    if (S.mineSeed.includes(lot.lot)) return;         /* lot déjà versé : on ne revient jamais dessus */
+    const now = Date.now();
+    lot.cards.forEach((c, i) => {
+      const key = mNorm(c.en);
+      if (mine().some(x => mNorm(x.en) === key)) return;   /* sa carte prime toujours sur la mienne */
+      mine().push({ id: now + i, en: c.en, fr: c.fr, note: c.note, ex: c.ex, exfr: c.exfr,
+        src: 'correction de copie · IELTS Task 2 du 20/09', created: now, updated: now, k: 1,
+        srs: { ease: 2.5, interval: 0, reps: 0, due: 0, introduced: false } });
+      add++;
+    });
+    S.mineSeed.push(lot.lot);
+  });
+  if (add) save();
+  return add;
+}
+
+/* ============================================================
    RÉVISION
    ============================================================ */
 let MN = null;

@@ -571,7 +571,75 @@ window.LIME = [
 ['rc12','recur','lift',"I would not be as cautious if I thought I was immune, would you?",
  "Nobody is careful when they believe themselves immune",
  ["No one takes care when they believe themselves to be immune"],
- "Le tag rhétorique (would you ? does it not ?) est apparu dans tes deux copies : c'est de l'oral, et il prend le correcteur à témoin au lieu d'argumenter. L'affirmation générale frappe plus fort."]
+ "Le tag rhétorique (would you ? does it not ?) est apparu dans tes deux copies : c'est de l'oral, et il prend le correcteur à témoin au lieu d'argumenter. L'affirmation générale frappe plus fort."],
+
+
+/* ---------- COPIE IELTS TASK 2 « SALAIRES & VALEUR SOCIALE » (20/09/2026) ----------
+   365 mots en 28 min, band 6.5 : TR 6 · CC 6 · LR 7 · GRA 6.5.
+   Le lexique tenait (7) ; la note était plafonnée par la POSITION —
+   ouverture « I totally agree », conclusion qui dément le sujet.
+   Règle de la maison : la forme fautive n'apparaît jamais. Ce qui est
+   montré en 'lift' est une version PLATE mais correcte, pas son erreur. */
+
+['ie01','perso','fr2en',"Ce principe a toujours prévalu et a transformé nos sociétés en mieux.",
+ "This principle has always prevailed and has changed our societies for the better",
+ ["This principle has always held true and has changed our societies for the better"],
+ "Deux present perfect coordonnés : has… and HAS…, jamais un plus-que-parfait au second. Et « en mieux » = for the BETTER — for the best veut dire « c'est mieux ainsi »."],
+
+['ie02','perso','fr2en',"La mondialisation et la finance ont changé le monde depuis la Seconde Guerre mondiale.",
+ "Globalisation and finance have changed the world since the Second World War",
+ ["Globalisation and finance have transformed the world since WWII"],
+ "since impose le present perfect, jamais le prétérit. Et la guerre : the Second World War en toutes lettres, ou WWII — mais pas « the WW2 »."],
+
+['ie03','gram','fr2en',"C'était un individu si utile qu'il en est devenu immensément riche.",
+ "He was so useful an individual that he became immensely wealthy",
+ ["He was such a useful individual that he became immensely wealthy"],
+ "so + adjectif + a/an + nom + that. L'autre moule, plus simple : such a + adjectif + nom + that. « too … that » n'existe pas : too ne prend que to + infinitif."],
+
+['ie04','mec','fr2en',"Les intérêts s'accumulent inévitablement.",
+ "Interest is bound to compound",
+ ["Interest inevitably compounds","Interest is bound to accrue"],
+ "Au sens financier, interest est INDÉNOMBRABLE : pas de -s, verbe au singulier. « interests » = les intérêts d'une partie, ou les centres d'intérêt."],
+
+['ie05','mec','fr2en',"Bien des exemples illustrent cette idée.",
+ "Many an example illustrates this idea",
+ ["A great many examples illustrate this idea"],
+ "« many a + singulier » commande un verbe au SINGULIER : many an example illustrates. Tournure littéraire qui note — mais si tu la sors, accorde-la."],
+
+['ie06','mec','fr2en',"Les gens répondent à cette position en criant que la rareté fixe les salaires.",
+ "People counter this position by shouting that scarcity sets wages",
+ ["People answer this position by claiming that scarcity sets wages"],
+ "La manière se marque par BY + gérondif. Sans « by », le participe reste suspendu — c'est la faute d'attachement classique chez les francophones."],
+
+['ie07','mot','fr2en',"Ce mode opératoire a cessé de prévaloir.",
+ "This modus operandi has ceased to prevail",
+ ["This modus operandi no longer prevails"],
+ "modus operandi : latin figé au NOMINATIF. « modo » est un ablatif, il n'apparaît jamais dans cette expression."],
+
+['ie08','reg','lift',"I would defend all day that scarcity and usefulness go together.",
+ "I would contend that scarcity and usefulness go hand in hand",
+ ["I would maintain that scarcity and usefulness go hand in hand","I would submit that scarcity and usefulness are inseparable"],
+ "« defend all day » est un calque de « je défendrais toute la journée » : ça ne se dit pas. contend / maintain / submit posent une thèse en un mot académique."],
+
+['ie09','reg','lift',"People will receive the rent of your past usefulness for ever and ever.",
+ "A lineage will collect the rent on your past usefulness in perpetuity",
+ ["Your descendants will collect the rent on your past usefulness in perpetuity"],
+ "Deux corrections d'un coup : on perçoit une rente ON un actif, jamais OF. Et « for ever and ever » relève du conte pour enfants — in perpetuity est le terme exact."],
+
+['ie10','bareme','lift',"That doesn't mean that a nurse should be paid more than a footballer.",
+ "That does not mean that a nurse should command a higher salary than a footballer",
+ ["That does not mean that nurses should command higher salaries than footballers"],
+ "Aucune contraction en écrit noté : does not. Et command a salary est LE verbe du sujet — « be paid more » est plat, et le correcteur le voit passer."],
+
+['ie11','bareme','fr2en',"La question amalgame la valeur économique et la valeur morale.",
+ "The question conflates economic value with moral worth",
+ ["The question conflates economic value and moral worth"],
+ "conflate = assimiler abusivement deux notions distinctes — à ne pas confondre avec confuse, qui est une simple inattention. Ce verbe résume une thèse entière en cinq mots."],
+
+['ie12','pos','lift',"It is obvious that salaries should reflect social value, and I agree completely.",
+ "While the principle is sound, the conclusion drawn from it does not follow",
+ ["I accept the principle but reject the inference drawn from it","The principle holds; the inference drawn from it does not"],
+ "LA correction qui vaut une bande entière. Annonce ta nuance DÈS l'introduction : ouvrir sur un accord total puis le démentir en conclusion, c'est ce que la grille sanctionne sous « position peu claire ». C'est ce qui t'a plafonné à 6 en Task Response."],
 
 ];
 
@@ -602,6 +670,9 @@ function limeById(id) { return limeAll().find(i => i.id === id); }
 function limeCat(id) { return LIME_CATS[id] || { n: id, ic: '•', c: 'var(--muted)' }; }
 
 /* ---------- SM-2, indépendant des autres decks ---------- */
+/* Les exercices tirés de sa dernière copie corrigée (IELTS Task 2 du 20/09).
+   Ils passent devant, comme les 'perso' — voir buildLimeQueue. */
+const LIME_LOT = ['ie01','ie02','ie03','ie04','ie05','ie06','ie07','ie08','ie09','ie10','ie11','ie12'];
 const LIME_SESSION = 8;     // longueur d'une séance
 const LIME_NEW = 4;         // nouveaux exercices introduits par jour
 function lSrs(id) {
@@ -624,18 +695,27 @@ function limeFreshSorted() {
 }
 function limeNewLeft() { const st = limeState(); return Math.max(0, LIME_NEW - (st.newToday || 0)); }
 function buildLimeQueue(cat, illimite) {
-  /* Un exercice perso sans consigne produisible (champ `fr`) affichait
-     l'explication comme énoncé : impossible à faire. Il attend sa
-     réparation par le prochain import plutôt que de polluer la file. */
-  const utilisable = i => !(i.cat === 'perso' && !i.fr);
+  /* Un exercice perso sans consigne produisible affichait l'explication comme
+     énoncé : impossible à faire. Il attend sa réparation par le prochain
+     import plutôt que de polluer la file.
+     ⚠️ corrigé le 2026-09-20 : le garde-fou testait `i.fr`, or le champ
+     s'appelle `front` (voir la conversion ligne ~663). `i.fr` étant toujours
+     undefined, TOUTE la catégorie « Tes propres corrections » était écartée
+     de la file — c'est pourquoi elle est restée vide depuis sa création. */
+  const utilisable = i => !(i.cat === 'perso' && !i.front);
   const keep = i => utilisable(i) && (!cat || cat === 'all' || i.cat === cat);
   const due = shuffle(limeDue().filter(keep).map(i => i.id));
   const fresh = limeFreshSorted().filter(keep);
   /* Ses propres corrections ne sont pas de la matière neuve à doser : ce sont
      ses fautes, il vient de les faire. Elles ignorent le quota quotidien —
      sinon le coach annonce 12 exercices et le bouton ne lance rien. */
-  const perso = fresh.filter(i => i.cat === 'perso').map(i => i.id);
-  const autres = fresh.filter(i => i.cat !== 'perso').map(i => i.id);
+  /* Même traitement pour le LOT de sa dernière copie corrigée : ce sont ses
+     fautes d'aujourd'hui, pas de la matière neuve à doser. Rangés en fin de
+     tableau et soumis au quota de 4 nouveaux par jour, ils ne lui seraient
+     arrivés qu'au bout d'un mois — la correction serait froide. */
+  const prio = i => i.cat === 'perso' || LIME_LOT.indexOf(i.id) >= 0;
+  const perso = fresh.filter(prio).map(i => i.id);
+  const autres = fresh.filter(i => !prio(i)).map(i => i.id);
   const news = illimite ? perso.concat(autres) : perso.concat(autres.slice(0, limeNewLeft()));
   const q = due.concat(news);
   return illimite ? q : q.slice(0, LIME_SESSION);

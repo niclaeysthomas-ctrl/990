@@ -127,6 +127,10 @@ function save() {
 }
 function saveHealthy() { return SAVE_KO === 0; }
 
+/* Les tournures versées par une correction de copie entrent dans LA MOISSON
+   au premier chargement qui suit la mise à jour. Idempotent : voir mineSeedOnce. */
+try { if (typeof mineSeedOnce === 'function') mineSeedOnce(); } catch (e) {}
+
 /* ---------- Gestion jour / streak ---------- */
 function touchDay() {
   const t = todayStr();

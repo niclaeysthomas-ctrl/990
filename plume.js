@@ -99,7 +99,7 @@ window.PLUME_REGLES = [
   { id: 'mediais', sev: 'calque', re: /\bmedia\s+is\b/gi, t: '« media is »', d: "En registre soutenu, <b>the media ARE</b> (pluriel de medium). Toléré au singulier à l'oral, sanctionné à l'écrit formel." },
 
   /* --- registre : correct à l'oral, hors sujet dans une copie notée --- */
-  { id: 'contractions', sev: 'registre', re: /\b(?:don't|doesn't|didn't|isn't|aren't|wasn't|weren't|can't|won't|wouldn't|couldn't|shouldn't|hasn't|haven't|hadn't|it's|I'm|we're|they're|you're|that's|there's|let's|I've|we've|I'd|I'll|we'll)\b/gi, t: 'Contractions', d: "Dans un essai, un rapport ou une copie d'examen : <b>formes pleines</b> (do not, it is, cannot). Les contractions sont admises dans un mail informel et dans une critique." },
+  { id: 'contractions', sev: 'registre', re: /\b(?:do|does|did|is|are|was|were|ca|wo|ai|would|could|should|has|have|had|must|need|dare)n['’]t\b|\b(?:it|that|there|let|what|who|he|she|here)['’]s\b|\b(?:I|you|we|they)['’](?:m|re|ve|ll|d)\b/gi, t: 'Contractions', d: "Dans un essai, un rapport ou une copie d'examen : <b>formes pleines</b> (do not, it is, cannot). Les contractions sont admises dans un mail informel et dans une critique. <b>C'est le coût de registre le plus facile à éviter de toute la copie.</b>" },
   { id: 'etc', sev: 'registre', re: /\betc\.?|\band\s+so\s+on\b/gi, t: '« etc. » / « and so on »', d: "Signale au correcteur que tu n'as plus d'idée. Nomme le troisième élément, ou arrête-toi à deux." },
   { id: 'exclam', sev: 'registre', re: /!/g, t: "Point d'exclamation", d: "Hors de propos dans un écrit noté (sauf critique très vivante). L'emphase se fait par la syntaxe, pas par la ponctuation." },
   { id: 'familier', sev: 'registre', re: /\b(?:kids|stuff|guys|a bit|huge|awesome|okay|ok|gonna|wanna|nowdays|pretty\s+\w+)\b/gi, t: 'Mot familier', d: "Registre parlé. Écris children, material/aspects, considerable, somewhat." },
@@ -151,7 +151,27 @@ window.PLUME_REGLES = [
   { id: 'steepening', sev: 'calque', re: /\bsteepening\s+(?:cost|costs|price|prices|expense|difficulty|burden)\b/gi, t: '« steepening cost »', d: "<b>steepening</b> se dit d'une COURBE (<i>a steepening decline</i>, <i>a steepening gradient</i>). Pour un coût qui grimpe : <b>soaring</b>, <b>spiralling</b>, <b>escalating</b>." },
   { id: 'aimsat', sev: 'pauvre', re: /\baims?\s+at\s+\w+ing\b/gi, t: '« aims at solving »', d: "Correct mais lourd. <b>aims TO solve</b> / <b>seeks to solve</b> / <b>sets out to solve</b> : plus net, et c'est ce qu'un correcteur attend au-dessus de la bande 6." },
   { id: 'mytake', sev: 'registre', re: /\bmy\s+take\s+(?:is|on)\b/gi, t: '« my take is »', d: "Registre de blog et de podcast. Dans une copie : <b>in my view</b>, <b>I would argue that</b>, <b>to my mind</b>." },
-  { id: 'hotpotato', sev: 'registre', re: /\bhot\s+potato\b/gi, t: '« the hot potato »', d: "Image orale. L'idée exacte, en registre d'essai : <b>to shift the burden onto</b>, <b>to pass responsibility to</b>, <b>to offload the problem onto</b>." }
+  { id: 'hotpotato', sev: 'registre', re: /\bhot\s+potato\b/gi, t: '« the hot potato »', d: "Image orale. L'idée exacte, en registre d'essai : <b>to shift the burden onto</b>, <b>to pass responsibility to</b>, <b>to offload the problem onto</b>." },
+  /* --- Copie IELTS Task 2 « salaires & valeur sociale » du 20/09/2026
+         (365 mots, 28 min, band 6.5). Le relecteur n'avait vu que les
+         espaces avant la ponctuation : tout le reste passait.
+         Dix règles neuves, toutes tirées de cette copie. Pas de lookbehind. --- */
+
+  /* fautes */
+  { id: 'toothat', sev: 'faute', re: /\btoo\s+\w+\s+(?:a|an)\s+\w+\s+that\b/gi, t: '« too … a/an … that »', d: "La structure est <b>so</b> + adjectif + a/an + nom + <b>that</b> : <i>so useful an individual that…</i>. « too » ne se construit qu'avec <b>to</b> + infinitif (<i>too useful to be ignored</i>) — jamais avec that." },
+  { id: 'forthebest', sev: 'faute', re: /\b(?:chang|evolv|improv|transform|turn|shift|mov)\w*\s+(?:[\w'’-]+\s+){0,4}?for\s+the\s+best\b/gi, t: '« changed … for the best »', d: "« en mieux » = <b>for the better</b>. <i>for the best</i> existe, mais veut dire « c'est mieux ainsi » (<i>it was all for the best</i>) — ce n'est pas ce que tu dis." },
+  { id: 'modooperandi', sev: 'faute', re: /\bmodo\s+operandi\b/gi, t: '« modo operandi »', d: "<b>modus operandi</b> : le latin est figé au nominatif. « modo » est un ablatif — il n'apparaît jamais dans cette expression." },
+  { id: 'interestspl', sev: 'faute', re: /\binterests\s+(?:compound|accrue|are\s+(?:bound|compounded|due|paid))/gi, t: '« interests » (financier)', d: "Au sens financier, <b>interest</b> est indénombrable : <i>interest compounds</i>, <i>interest accrues</i>. « interests » = les intérêts d'une partie, ou les centres d'intérêt." },
+  { id: 'thewwii', sev: 'faute', re: /\bthe\s+WW\s?(?:2|II)\b/gi, t: '« the WW2 »', d: "Pas d'article devant l'abréviation : <b>WWII</b> / <b>WW2</b>, ou <b>the Second World War</b> en toutes lettres." },
+  { id: 'renton', sev: 'faute', re: /\brent\s+of\s+(?:your|his|her|their|our|the|a|an)\b/gi, t: '« the rent of »', d: "On perçoit une rente <b>ON</b> un actif : <i>the rent on an asset</i>, <i>the return on capital</i>. « the rent of » désigne le loyer d'un objet précis." },
+
+  /* calques */
+  { id: 'alldaythat', sev: 'calque', re: /\b(?:defend|argue|say|maintain|claim|insist)\s+all\s+day\s+(?:long\s+)?that\b/gi, t: '« I would defend all day that »', d: "Calque de « je défendrais toute la journée ». En anglais noté : <b>I would contend / maintain / submit that</b> — un seul mot, et il pose la thèse." },
+
+  /* registre */
+  { id: 'foreverever', sev: 'registre', re: /\bfor\s?ever\s+and\s+ever\b/gi, t: '« for ever and ever »', d: "Registre de conte pour enfants. Le terme exact, juridique et économique : <b>in perpetuity</b>. Sinon <b>indefinitely</b>, <b>for generations</b>." },
+  { id: 'rhetq', sev: 'registre', re: /\b(?:See|Get|Spot|Notice)\s+(?:the\s+)?(?:problem|issue|point|difficulty|catch|flaw)\s*\?/gi, t: 'Question rhétorique au lecteur', d: "« See the problem? » interpelle le lecteur : c'est de l'oral, ou du billet de blog. En Task 2 on affirme : <b>The problem is self-evident.</b> / <b>The difficulty is plain.</b>" },
+
 ];
 
 /* Analyse d'un texte : renvoie {mots, phrases, paras, drapeaux[], mesures{}, score} */
