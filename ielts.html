@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0F1520">
+<title>990 — IELTS Salle d'examen</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+html{color-scheme:light}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+/* Layout: an exam booklet — a narrow sticky tab rail on top, one paper at a time, question numbers set like an answer sheet */
+:root{
+  --paper:#F3F5F8; --card:#FFFFFF; --ink:#16202D; --muted:#5B6778; --line:#D6DDE6;
+  --accent:#1D4F91; --accent-soft:#E2EBF7; --ok:#1F7A4D; --ok-soft:#E1F2E8; --bad:#B3261E; --bad-soft:#FBE6E4; --warn:#8A5D00; --warn-soft:#FBF0D6;
+  --water:#CFE0F2; --wood:#D5E6CF; --path:#C9B48C;
+  --f-display:"Newsreader", Georgia, "Times New Roman", serif;
+  --f-body:"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0F1520; --card:#161E2B; --ink:#E6ECF3; --muted:#97A3B4; --line:#283447;
+  --accent:#8FB5F0; --accent-soft:#1B2A43; --ok:#62C48F; --ok-soft:#14301F; --bad:#F28B82; --bad-soft:#3A1A18; --warn:#E3B758; --warn-soft:#352914;
+  --water:#1D3550; --wood:#1E3A24; --path:#6E6047; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0F1520; --card:#161E2B; --ink:#E6ECF3; --muted:#97A3B4; --line:#283447;
+  --accent:#8FB5F0; --accent-soft:#1B2A43; --ok:#62C48F; --ok-soft:#14301F; --bad:#F28B82; --bad-soft:#3A1A18; --warn:#E3B758; --warn-soft:#352914;
+  --water:#1D3550; --wood:#1E3A24; --path:#6E6047; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;padding:0 16px 64px}
+.wrap{max-width:1080px;margin:0 auto}
+header.top{padding-block:28px 12px;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between}
+h1{font-family:var(--f-display);font-weight:600;font-size:2.1rem;line-height:1.1;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1 em{font-style:italic;font-weight:400;color:var(--accent)}
+.sub{color:var(--muted);margin:6px 0 0;max-width:60ch}
+.target{font-family:var(--f-mono);font-size:.8rem;border:1px solid var(--line);padding:6px 10px;border-radius:4px;color:var(--muted);background:var(--card)}
+.target b{color:var(--ink)}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line);display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;margin-bottom:24px}
+nav.tabs button{font:600 .9rem var(--f-body);background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);padding:12px 14px 10px;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+nav.tabs button:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h2{font-family:var(--f-display);font-weight:600;font-size:1.55rem;margin:0 0 6px;text-wrap:balance}
+h3{font-family:var(--f-display);font-weight:600;font-size:1.2rem;margin:0 0 6px}
+h4{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:600}
+p{margin:0 0 10px}
+.lede{color:var(--muted);max-width:68ch;margin-bottom:18px}
+.stack{display:flex;flex-direction:column;gap:18px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{font:600 .88rem var(--f-body);border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 14px;border-radius:4px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--card)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.small{padding:5px 10px;font-size:.8rem}
+select,input[type=text],textarea{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:7px 9px}
+textarea{width:100%;min-height:260px;line-height:1.6;resize:vertical;font-family:var(--f-display);font-size:1.05rem}
+.timer{font-family:var(--f-mono);font-size:1.5rem;font-weight:600;font-variant-numeric:tabular-nums;padding:4px 10px;border:1px solid var(--line);border-radius:4px;min-width:5.2ch;text-align:center;background:var(--card)}
+.timer.low{color:var(--bad);border-color:var(--bad)}
+.instr{font-family:var(--f-mono);font-size:.78rem;letter-spacing:.02em;background:var(--accent-soft);color:var(--ink);padding:8px 10px;border-radius:4px;margin:10px 0}
+.instr b{font-weight:600}
+.qn{display:inline-flex;align-items:center;justify-content:center;min-width:1.9em;height:1.9em;padding:0 .3em;border:1.5px solid var(--ink);border-radius:3px;font:600 .8rem var(--f-mono);margin-right:8px;flex:none;font-variant-numeric:tabular-nums}
+.q{display:flex;align-items:center;flex-wrap:wrap;gap:6px 0;padding:7px 0;border-bottom:1px dashed var(--line)}
+.q:last-child{border-bottom:0}
+.q .lbl{flex:1 1 220px;min-width:0}
+.q input[type=text]{width:12em;max-width:100%}
+.q.ok input,.q.ok select{border-color:var(--ok);background:var(--ok-soft)}
+.q.bad input,.q.bad select{border-color:var(--bad);background:var(--bad-soft)}
+.fix{font:600 .8rem var(--f-mono);color:var(--ok);margin-left:8px}
+.form-sheet{border:1.5px solid var(--ink);border-radius:2px;padding:14px 16px;background:var(--card)}
+.form-sheet .ttl{font:600 .8rem var(--f-mono);letter-spacing:.12em;text-align:center;border-bottom:1.5px solid var(--ink);padding-bottom:8px;margin-bottom:6px}
+.score{font-family:var(--f-mono);padding:10px 12px;border-radius:4px;background:var(--accent-soft);margin-top:12px}
+.score b{font-size:1.1rem}
+details{border-top:1px solid var(--line);padding-top:10px;margin-top:12px}
+summary{cursor:pointer;font-weight:600;color:var(--accent)}
+.transcript p{margin:0 0 6px;font-family:var(--f-display);font-size:1rem}
+.transcript .spk{font:600 .72rem var(--f-mono);color:var(--muted);margin-right:6px}
+.status{font:.8rem var(--f-mono);color:var(--muted)}
+.two{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:820px){.two{grid-template-columns:minmax(0,1fr)}}
+.passage{font-family:var(--f-display);font-size:1.06rem;line-height:1.65;max-height:78vh;overflow-y:auto;padding-right:8px}
+.passage p{margin:0 0 14px;max-width:68ch}
+.passage .pl{font:600 .85rem var(--f-mono);margin-right:6px;color:var(--accent)}
+.sticky{position:sticky;top:60px}
+@media (max-width:820px){.sticky{position:static}.passage{max-height:none}}
+.heads{font-family:var(--f-display);font-size:.98rem;margin:0 0 8px;padding-left:0;list-style:none}
+.heads li{padding:2px 0}
+.heads b{font-family:var(--f-mono);font-size:.82rem;display:inline-block;min-width:2.6em}
+.radios{display:flex;gap:4px;flex-wrap:wrap}
+.radios label{font:600 .75rem var(--f-mono);border:1px solid var(--line);border-radius:3px;padding:4px 7px;cursor:pointer;background:var(--card)}
+.radios input{position:absolute;opacity:0;pointer-events:none}
+.radios input:checked+span{color:var(--accent)}
+.radios label:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.radios input:focus-visible+span{outline:2px solid var(--accent);outline-offset:3px}
+.drill-ex{font-family:var(--f-display);font-size:1.12rem;line-height:1.6;border-left:3px solid var(--line);padding-left:14px;margin:8px 0 14px}
+.drill-st{font-weight:600;margin-bottom:12px}
+.fb{padding:10px 12px;border-radius:4px;margin-top:12px}
+.fb.ok{background:var(--ok-soft);color:var(--ink);border-left:3px solid var(--ok)}
+.fb.bad{background:var(--bad-soft);color:var(--ink);border-left:3px solid var(--bad)}
+.subtabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.subtabs button{font:600 .82rem var(--f-body);border:1px solid var(--line);background:var(--card);color:var(--muted);padding:7px 12px;border-radius:999px;cursor:pointer}
+.subtabs button[aria-pressed="true"]{color:var(--card);background:var(--ink);border-color:var(--ink)}
+.prompt{font-family:var(--f-display);font-size:1.08rem;line-height:1.6;border:1.5px solid var(--ink);padding:14px 16px;border-radius:2px;background:var(--card);white-space:pre-line}
+.wc{font:600 .85rem var(--f-mono);font-variant-numeric:tabular-nums}
+.wc.under{color:var(--bad)}
+.chart{width:100%;max-width:620px;height:auto;display:block;margin:12px auto 0}
+.chart text{fill:var(--ink);font-family:var(--f-body);font-size:11px}
+.chart .axis{stroke:var(--muted);stroke-width:1}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.cue{border:1.5px solid var(--ink);border-radius:2px;padding:16px 18px;background:var(--card);font-family:var(--f-display);font-size:1.1rem}
+.cue ul{margin:6px 0 8px;padding-left:20px}
+.examiner{font-family:var(--f-display);font-size:1.25rem;line-height:1.45;padding:14px 0}
+.examiner .who{font:600 .72rem var(--f-mono);letter-spacing:.1em;color:var(--muted);display:block;margin-bottom:4px}
+.phase{font:600 .75rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:var(--warn-soft);color:var(--warn)}
+.result{margin-top:14px}
+.result .bands{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.result .band{border:1px solid var(--line);border-radius:4px;padding:8px 12px;min-width:110px;background:var(--card)}
+.result .band small{display:block;font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.result .band b{font:600 1.35rem var(--f-mono)}
+.result table{width:100%;border-collapse:collapse;font-size:.9rem}
+.result td{border-top:1px solid var(--line);padding:6px 6px;vertical-align:top}
+.result td.o{color:var(--bad);text-decoration:line-through;text-decoration-thickness:1px}
+.result td.n{color:var(--ok);font-weight:500}
+.model{font-family:var(--f-display);font-size:1.02rem;background:var(--accent-soft);padding:12px 14px;border-radius:4px;white-space:pre-line}
+.tbl-wrap{overflow-x:auto}
+table.fmt{border-collapse:collapse;width:100%;min-width:640px;font-size:.92rem}
+table.fmt th,table.fmt td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
+table.fmt th{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600}
+table.fmt td:first-child{font-family:var(--f-display);font-weight:600;font-size:1.05rem;white-space:nowrap}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.note{font-size:.88rem;color:var(--muted)}
+.callout{border-left:3px solid var(--warn);background:var(--warn-soft);padding:10px 14px;border-radius:0 4px 4px 0}
+.plan{list-style:none;padding:0;margin:0}
+.plan li{display:grid;grid-template-columns:4.2em minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.plan .d{font:600 .9rem var(--f-mono);color:var(--accent)}
+.plan .what{font-weight:600}
+.plan .how{color:var(--muted);font-size:.92rem}
+.plan .mock .d{color:var(--bad)}
+.checklist{list-style:none;padding:0;margin:0}
+.checklist li{padding:4px 0;display:flex;gap:8px}
+.checklist input{margin-top:4px}
+ul.tight{margin:4px 0 10px;padding-left:20px}
+ul.tight li{margin:2px 0}
+.band-calc select{min-width:5em}
+a{color:var(--accent)}
+.back{display:inline-block;font:600 .8rem var(--f-mono);text-decoration:none;margin-bottom:10px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header class="top">
+  <div>
+    <a class="back" href="index.html">← Retour à 990</a>
+    <h1>IELTS <em>Salle d'examen</em></h1>
+    <p class="sub">Les quatre épreuves au format réel, chronométrées. Écoute jouée une seule fois, lecture en 20 minutes par passage, écriture notée sur les quatre critères officiels, oral minuté partie par partie.</p>
+  </div>
+  <div class="target">Objectif <b>C2 ≈ band 8.5–9</b> · Academic</div>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Épreuves">
+  <button role="tab" data-tab="format" aria-selected="true">Format</button>
+  <button role="tab" data-tab="listening" aria-selected="false">Listening</button>
+  <button role="tab" data-tab="reading" aria-selected="false">Reading</button>
+  <button role="tab" data-tab="writing" aria-selected="false">Writing</button>
+  <button role="tab" data-tab="speaking" aria-selected="false">Speaking</button>
+  <button role="tab" data-tab="plan" aria-selected="false">Plan 14 jours</button>
+</nav>
+
+<!-- ============ FORMAT ============ -->
+<section id="tab-format" class="stack">
+  <div>
+    <h2>Le format, épreuve par épreuve</h2>
+    <p class="lede">IELTS ne délivre pas de « C2 » : tu obtiens une note de 0 à 9 par épreuve, et une note globale. La correspondance officielle avec le CECRL place le C2 à 8.5 et au-delà, le C1 de 7 à 8. Listening, Reading et Writing se passent le même jour, d'affilée et sans pause (2 h 40). Le Speaking a lieu le même jour ou dans les sept jours.</p>
+  </div>
+  <div class="panel tbl-wrap">
+    <table class="fmt">
+      <thead><tr><th>Épreuve</th><th>Durée</th><th>Structure</th><th>Types de questions</th><th>Pour viser 8.5+</th></tr></thead>
+      <tbody>
+        <tr><td>Listening</td><td class="mono">≈ 30 min<br><span class="note">+ 10 min de report (papier)<br>+ 2 min de relecture (ordinateur)</span></td>
+          <td>4 parties × 10 questions = 40. Une seule écoute. Parties 1–2 : vie quotidienne (dialogue, puis monologue). Parties 3–4 : contexte universitaire (discussion, puis cours magistral).</td>
+          <td>Formulaire / notes / tableau à compléter, QCM, appariement, plan ou carte à légender, phrases à compléter, réponses courtes.</td>
+          <td>37/40 minimum. L'orthographe compte : une faute = réponse fausse. Respecter la limite de mots (« NO MORE THAN TWO WORDS »). Les questions suivent l'ordre de l'enregistrement.</td></tr>
+        <tr><td>Reading</td><td class="mono">60 min<br><span class="note">sans temps de report</span></td>
+          <td>3 longs passages académiques (≈ 2 150 à 2 750 mots au total), difficulté croissante. 40 questions.</td>
+          <td>True / False / Not Given, Yes / No / Not Given, appariement de titres (headings), d'informations, de caractéristiques, complétion de résumé / phrases / tableau / schéma, QCM, réponses courtes.</td>
+          <td>37/40 minimum. Viser 17–18 min par passage pour garder une marge sur le troisième. Le piège à ce niveau : False contre Not Given.</td></tr>
+        <tr><td>Writing</td><td class="mono">60 min</td>
+          <td>Task 1 : au moins 150 mots, ≈ 20 min. Task 2 : au moins 250 mots, ≈ 40 min. La Task 2 compte double.</td>
+          <td>Task 1 (Academic) : décrire un graphique, tableau, diagramme de processus ou plan. Task 2 : essai (opinion, discuter deux points de vue, problème-solution, avantages-inconvénients, question double).</td>
+          <td>4 critères notés de 0 à 9 : Task Achievement / Response, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy. Overview obligatoire en Task 1. Position claire et tenue jusqu'au bout en Task 2.</td></tr>
+        <tr><td>Speaking</td><td class="mono">11–14 min</td>
+          <td>Part 1 : 4–5 min, questions sur toi. Part 2 : 1 min de préparation, puis 1 à 2 min seul sur une carte. Part 3 : 4–5 min de discussion abstraite liée à la Part 2.</td>
+          <td>Entretien en face à face avec un examinateur, enregistré.</td>
+          <td>4 critères : Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy, Pronunciation. Développer chaque réponse de Part 3 (avis, raison, exemple, nuance).</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="grid4">
+    <div class="panel band-calc">
+      <h4>Calcul de la note globale</h4>
+      <p class="note">Moyenne des quatre notes, arrondie à la demi-bande la plus proche (une moyenne en .25 monte à .5, en .75 monte à l'unité).</p>
+      <div class="row" style="margin-top:8px">
+        <label>L <select id="bc-l"></select></label><label>R <select id="bc-r"></select></label>
+        <label>W <select id="bc-w"></select></label><label>S <select id="bc-s"></select></label>
+      </div>
+      <div class="score" id="bc-out"></div>
+    </div>
+    <div class="panel">
+      <h4>Conversion Listening / Reading</h4>
+      <p class="note">Barème indicatif (Academic). Il varie légèrement d'une session à l'autre.</p>
+      <table class="mono" style="width:100%;font-size:.85rem;border-collapse:collapse">
+        <tr><td>Band</td><td>Listening</td><td>Reading</td></tr>
+        <tr><td>9</td><td>39–40</td><td>39–40</td></tr>
+        <tr><td>8.5</td><td>37–38</td><td>37–38</td></tr>
+        <tr><td>8</td><td>35–36</td><td>35–36</td></tr>
+        <tr><td>7.5</td><td>32–34</td><td>33–34</td></tr>
+        <tr><td>7</td><td>30–31</td><td>30–32</td></tr>
+        <tr><td>6.5</td><td>26–29</td><td>27–29</td></tr>
+      </table>
+    </div>
+    <div class="panel">
+      <h4>Ce qu'il faut savoir le jour J</h4>
+      <ul class="tight">
+        <li>Sur papier, le Listening laisse 10 min pour reporter les réponses ; sur ordinateur, tu tapes directement et tu n'as que 2 min de relecture.</li>
+        <li>Majuscules : sans importance, sauf si tu choisis d'écrire tout en capitales (accepté).</li>
+        <li>Un nombre en chiffres compte comme un nombre, pas comme un mot.</li>
+        <li>En Writing, tu es pénalisé sous 150 / 250 mots, pas au-dessus. Viser 170–190 et 270–320.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LISTENING ============ -->
+<section id="tab-listening" class="stack" hidden>
+  <div>
+    <h2>Listening</h2>
+    <p class="lede">Trois sections au format officiel (Parts 1, 2 et 4, questions numérotées comme à l'examen). L'audio est lu par la synthèse vocale de ton appareil, avec des voix britannique, australienne et américaine quand elles sont installées. C'est plus lent et plus net qu'un vrai enregistrement : sers-t'en pour les réflexes de format et l'orthographe, et fais tes examens blancs avec les audios officiels Cambridge.</p>
+  </div>
+  <div class="subtabs" id="lis-tabs"></div>
+  <div id="lis-body"></div>
+</section>
+
+<!-- ============ READING ============ -->
+<section id="tab-reading" class="stack" hidden>
+  <div>
+    <h2>Reading</h2>
+    <p class="lede">Un passage académique complet de 14 questions en 20 minutes, puis un entraînement ciblé sur True / False / Not Given, le type de question qui coûte le plus de points au-dessus de 8.</p>
+  </div>
+  <div class="subtabs" id="read-tabs">
+    <button aria-pressed="true" data-r="passage">Passage chronométré</button>
+    <button aria-pressed="false" data-r="drill">Drill True / False / Not Given</button>
+  </div>
+  <div id="read-passage"></div>
+  <div id="read-drill" hidden></div>
+</section>
+
+<!-- ============ WRITING ============ -->
+<section id="tab-writing" class="stack" hidden>
+  <div>
+    <h2>Writing</h2>
+    <p class="lede">Choisis un sujet, lance le chrono, écris. Le compteur de mots suit en direct. Une fois fini, le bouton de notation copie une demande de correction prête à coller dans Claude, qui note ta copie sur les quatre critères officiels, relève les erreurs et réécrit un paragraphe au niveau band 9. Ses notes sont une estimation à une demi-bande près, pas une note d'examinateur.</p>
+  </div>
+  <div class="panel stack">
+    <div class="row">
+      <label for="w-sel"><h4 style="margin:0">Sujet</h4></label>
+      <select id="w-sel" style="flex:1 1 320px;min-width:0"></select>
+    </div>
+    <div id="w-prompt"></div>
+    <div class="row" style="justify-content:space-between">
+      <div class="row"><span class="timer" id="w-timer">20:00</span><button class="btn primary" id="w-start">Lancer le chrono</button><button class="btn" id="w-reset">Réinitialiser</button></div>
+      <span class="wc" id="w-wc">0 mot</span>
+    </div>
+    <textarea id="w-text" spellcheck="false" placeholder="Écris ta réponse ici. Le correcteur orthographique est désactivé, comme le jour de l'examen."></textarea>
+    <div class="row">
+      <button class="btn primary" id="w-grade">Faire noter par Claude</button>
+      <button class="btn" id="w-copy">Copier la demande de correction</button>
+      <span class="status" id="w-status"></span>
+    </div>
+    <div id="w-result" class="result"></div>
+    <details>
+      <summary>Checklist band 8+ avant de rendre</summary>
+      <ul class="checklist" id="w-check"></ul>
+    </details>
+  </div>
+</section>
+
+<!-- ============ SPEAKING ============ -->
+<section id="tab-speaking" class="stack" hidden>
+  <div>
+    <h2>Speaking</h2>
+    <p class="lede">L'examinateur lit les questions à voix haute et le chrono tourne comme le jour J. Enregistre-toi sur ton téléphone (dictaphone) pendant que tu réponds. Ensuite, colle la transcription (la dictée vocale du téléphone suffit) : la page prépare la demande pour que Claude évalue la fluidité, lexique et grammaire. La prononciation ne peut pas être jugée à partir d'un texte : réécoute-toi pour ça.</p>
+  </div>
+  <div class="subtabs" id="sp-tabs">
+    <button aria-pressed="true" data-p="1">Part 1 · Entretien</button>
+    <button aria-pressed="false" data-p="2">Part 2 · Carte</button>
+    <button aria-pressed="false" data-p="3">Part 3 · Discussion</button>
+  </div>
+  <div class="panel stack" id="sp-body"></div>
+</section>
+
+<!-- ============ PLAN ============ -->
+<section id="tab-plan" class="stack" hidden>
+  <div>
+    <h2>Plan sur 14 jours</h2>
+    <p class="lede">Compté à rebours depuis le jour de l'examen. Trois examens blancs complets avec du matériel officiel, et entre eux, du travail ciblé sur tes erreurs. Environ 2 h par jour, 3 h les jours d'examen blanc.</p>
+  </div>
+  <div class="panel"><ul class="plan" id="plan-list"></ul></div>
+  <div class="panel">
+    <h4>Matériel officiel à utiliser pour les examens blancs</h4>
+    <ul class="tight">
+      <li><b>Cambridge IELTS Academic</b> (les volumes les plus récents) : de vrais sujets passés, avec les vrais audios. C'est la seule source dont le niveau et l'accent correspondent à l'examen.</li>
+      <li><a href="https://ielts.org/take-a-test/preparation-resources" target="_blank" rel="noopener">ielts.org — ressources de préparation</a> : tests d'entraînement gratuits.</li>
+      <li><a href="https://takeielts.britishcouncil.org/take-ielts/prepare/free-ielts-english-practice-tests" target="_blank" rel="noopener">British Council — tests gratuits</a>, dont la version sur ordinateur si tu passes l'examen ainsi.</li>
+    </ul>
+  </div>
+</section>
+</div>
+
+<script>
+"use strict";
+/* ---------------- helpers ---------------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const store = {
+  get(k, d) { try { const v = localStorage.getItem("ielts:" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem("ielts:" + k, JSON.stringify(v)); } catch (e) {} }
+};
+const fmtTime = s => { s = Math.max(0, Math.round(s)); return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); };
+function makeTimer(el, seconds, onEnd) {
+  let left = seconds, id = null;
+  const draw = () => { el.textContent = fmtTime(left); el.classList.toggle("low", left <= 60 && left < seconds); };
+  draw();
+  return {
+    start() { if (id) return; id = setInterval(() => { left--; draw(); if (left <= 0) { clearInterval(id); id = null; onEnd && onEnd(); } }, 1000); },
+    stop() { clearInterval(id); id = null; },
+    reset(s) { clearInterval(id); id = null; left = s ?? seconds; seconds = left; draw(); },
+    get running() { return !!id; }, get left() { return left; }
+  };
+}
+let audioCtx = null;
+function beep() {
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.frequency.value = 880; g.gain.value = 0.08; o.connect(g); g.connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + 0.35);
+  } catch (e) {}
+}
+
+/* ---------------- answer normalisation ---------------- */
+const NUMW = { zero:0, one:1, two:2, three:3, four:4, five:5, six:6, seven:7, eight:8, nine:9, ten:10, eleven:11, twelve:12, thirteen:13, fourteen:14, fifteen:15, sixteen:16, seventeen:17, eighteen:18, nineteen:19, twenty:20, thirty:30, forty:40, fifty:50, sixty:60 };
+function norm(s) {
+  let t = String(s || "").toLowerCase().replace(/[’']/g, "").replace(/[£$€%.,;:!?()"]/g, " ");
+  t = t.replace(/-/g, " ").replace(/\s+/g, " ").trim();
+  t = t.replace(/^(a|an|the) /, "");
+  t = t.replace(/\b(\d+)(st|nd|rd|th)\b/g, "$1");
+  t = t.split(" ").map(w => NUMW[w] != null ? String(NUMW[w]) : w).join(" ");
+  t = t.replace(/\b(\d+) (\d+)\b/g, (m, a, b) => (+a >= 20 && +b < 10) ? String(+a + +b) : m); // forty two -> 42
+  return t.replace(/ /g, "");
+}
+function wordCountAns(s) { return String(s || "").trim().split(/\s+/).filter(w => w && !/\d/.test(w)).length; }
+
+/* ---------------- speech ---------------- */
+let VOICES = [];
+function loadVoices() { try { VOICES = speechSynthesis.getVoices() || []; } catch (e) { VOICES = []; } }
+if ("speechSynthesis" in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+const FEM = /female|samantha|karen|serena|kate|susan|hazel|libby|sonia|victoria|moira|tessa|fiona|zira|aria|jenny|martha|catherine|natasha|emma|amy|joanna|salli|kimberly|olivia|ava|allison|nicky|matilda/i;
+const MAL = /\bmale|daniel|oliver|arthur|george|ryan|thomas|alex|fred|david|mark|guy|rishi|lee|william|james|brian|russell|gordon|aaron|evan|tom|liam/i;
+function pickVoice(lang, gender) {
+  const en = VOICES.filter(v => /^en/i.test(v.lang));
+  const sameLang = en.filter(v => v.lang.replace("_", "-").toLowerCase().startsWith(lang.toLowerCase()));
+  const pool = sameLang.length ? sameLang : en;
+  const rx = gender === "f" ? FEM : MAL, anti = gender === "f" ? MAL : FEM;
+  return pool.find(v => rx.test(v.name) && !anti.test(v.name)) || pool.find(v => !anti.test(v.name)) || pool[0] || null;
+}
+function speakOne(text, cfg) {
+  return new Promise(res => {
+    if (!("speechSynthesis" in window)) return res();
+    const u = new SpeechSynthesisUtterance(text);
+    const v = pickVoice(cfg.lang, cfg.g);
+    if (v) { u.voice = v; u.lang = v.lang; } else u.lang = cfg.lang;
+    u.rate = cfg.rate || 1; u.pitch = cfg.pitch || (cfg.g === "f" ? 1.1 : 0.9);
+    u.onend = res; u.onerror = res;
+    speechSynthesis.speak(u);
+  });
+}
+
+/* ---------------- Claude ---------------- */
+let samplePromise = null;
+function getSample() {
+  if (!samplePromise) samplePromise = (window.claude && window.claude.use) ? window.claude.use("sample").catch(() => null) : Promise.resolve(null);
+  return samplePromise;
+}
+const SAMPLE_ERR = {
+  not_granted: "Tu n'as pas autorisé la page à utiliser Claude. Utilise « Copier la demande de correction » et colle-la dans une conversation.",
+  sampling_disabled: "Claude n'est pas disponible depuis cette page pour ton compte. Copie la demande de correction et colle-la dans une conversation.",
+  rate_limited: "Trop de demandes d'un coup ou limite d'usage atteinte. Réessaie dans quelques minutes.",
+  invalid_json: "La réponse de Claude n'a pas pu être lue. Relance la correction.",
+  session_expired: "Ta session claude.ai a expiré. Reconnecte-toi puis relance.",
+  refused: "Claude a refusé cette demande. Vérifie le texte envoyé."
+};
+async function askClaude(prompt, statusEl, btn) {
+  const sample = await getSample();
+  if (!sample) { if (await copyText(prompt, statusEl)) statusEl.textContent = "Demande de correction copiée. Colle-la dans une conversation avec Claude : il te renverra les notes par critère, les erreurs et un paragraphe band 9."; return null; }
+  btn.disabled = true; statusEl.textContent = "Correction en cours, compte 20 à 60 secondes…";
+  try {
+    const data = await sample.json(prompt, { modelTier: "default" });
+    statusEl.textContent = "";
+    return data;
+  } catch (e) {
+    if (e && e.code !== "cancelled") statusEl.textContent = SAMPLE_ERR[e.code] || "La correction a échoué (erreur réseau ou service). Relance dans un instant.";
+    return null;
+  } finally { btn.disabled = false; }
+}
+async function copyText(txt, statusEl) {
+  try { await navigator.clipboard.writeText(txt); statusEl.textContent = "Demande copiée. Colle-la dans une conversation avec Claude."; return true; }
+  catch (e) {
+    const ta = document.createElement("textarea"); ta.value = txt; ta.style.minHeight = "120px"; statusEl.textContent = "Copie automatique bloquée : sélectionne le texte ci-dessous et copie-le.";
+    statusEl.after(ta); ta.select(); return false;
+  }
+}
+function renderBands(obj, labels) {
+  return `<div class="bands">${labels.map(([k, n]) => `<div class="band"><small>${esc(n)}</small><b>${esc(obj?.[k] ?? "–")}</b></div>`).join("")}</div>`;
+}
+function renderFixes(list, cols) {
+  if (!Array.isArray(list) || !list.length) return "";
+  return `<table><tbody>${list.map(x => `<tr><td class="o">${esc(x.original)}</td><td class="n">${esc(x.correction || x.better)}</td><td>${esc(x.why_fr || "")}</td></tr>`).join("")}</tbody></table>`;
+}
+
+/* ---------------- tabs ---------------- */
+function showTab(name) {
+  $$("nav.tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === name ? "true" : "false"));
+  $$("section[id^=tab-]").forEach(s => s.hidden = s.id !== "tab-" + name);
+  store.set("tab", name);
+  if (name !== "listening" && "speechSynthesis" in window) speechSynthesis.cancel();
+}
+$$("nav.tabs button").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
+
+/* ---------------- FORMAT: band calculator ---------------- */
+(function () {
+  const opts = []; for (let b = 9; b >= 4; b -= 0.5) opts.push(b);
+  const def = { l: 8.5, r: 8.5, w: 7.5, s: 8 };
+  ["l", "r", "w", "s"].forEach(k => {
+    const s = $("#bc-" + k); s.innerHTML = opts.map(o => `<option ${o === def[k] ? "selected" : ""}>${o.toFixed(1)}</option>`).join("");
+    s.addEventListener("change", calc);
+  });
+  function calc() {
+    const v = ["l", "r", "w", "s"].map(k => +$("#bc-" + k).value), avg = v.reduce((a, b) => a + b, 0) / 4;
+    const band = Math.floor(avg * 2 + 0.5) / 2;
+    $("#bc-out").innerHTML = `Moyenne ${avg.toFixed(3)} → note globale <b>${band.toFixed(1)}</b>${band >= 8.5 ? " · niveau C2" : band >= 7 ? " · niveau C1" : ""}`;
+  }
+  calc();
+})();
+
+/* =========================================================
+   LISTENING DATA
+   ========================================================= */
+const LIS = [
+{
+  id: "p1", tab: "Part 1 · Formulaire", title: "Part 1 — Inscription à un cours du soir",
+  intro: "You will hear a man phoning a community centre to enrol on a course.",
+  instr: "Complete the form below. Write <b>NO MORE THAN TWO WORDS AND/OR A NUMBER</b> for each answer.",
+  maxWords: 2,
+  cast: { W: { lang: "en-GB", g: "f" }, M: { lang: "en-GB", g: "m" } },
+  lines: [
+    ["W", "Good morning, Riverside Community Centre, Sarah speaking. How can I help?"],
+    ["M", "Hi. I'd like to enrol on the beginners' pottery course, if there are still places."],
+    ["W", "Let me check. We run it twice a week. The Tuesday group is actually full now, but there's still space in the Wednesday evening group."],
+    ["M", "Wednesday's fine. Actually, it suits me better."],
+    ["W", "Great. The autumn term has already started, so the next intake begins on the fourth of November."],
+    ["M", "The fourth. OK."],
+    ["W", "Can I take your name?"],
+    ["M", "Daniel Halloran. That's H, A, double L, O, R, A, N.", "Daniel Halloran. That's H-A-double L-O-R-A-N."],
+    ["W", "Thank you. And your postcode?"],
+    ["M", "It's B, S, six, seven, Q, T.", "It's BS6 7QT."],
+    ["W", "B, S, six, seven, Q, T. And a contact number?", "BS6 7QT. And a contact number?"],
+    ["M", "My mobile is oh, seven, nine, four, six. Three, one, eight. Five, five, two.", "My mobile is 07946 318 552."],
+    ["W", "Lovely. Just for our records, how did you hear about us? Was it through our website?"],
+    ["M", "I did look at the website afterwards, but I first saw the advert in the local newspaper."],
+    ["W", "That's useful to know. Now, the course fee is normally one hundred and sixty-five pounds for the ten weeks, but if you live in the borough, you get twenty pounds off."],
+    ["M", "I do, yes."],
+    ["W", "So that's one hundred and forty-five pounds. Materials like clay and glazes are included, and tools are provided, but you'll need to bring an apron. It gets quite messy."],
+    ["M", "Right. And is there parking?"],
+    ["W", "There's no parking at the front any more, I'm afraid, because of the building work. Please use the car park behind the library. It's free after six."],
+    ["M", "Behind the library. Got it."],
+    ["W", "And on your first evening, could you arrive fifteen minutes early? The tutor gives a short safety briefing."],
+    ["M", "No problem. Thanks very much."]
+  ],
+  qs: [
+    { n: 1, pre: "Day of class:", ans: ["Wednesday", "Wednesdays", "Wednesday evening", "Wednesday evenings"] },
+    { n: 2, pre: "Start date:", ans: ["4 November", "4th November", "November 4", "November 4th", "4th of November", "4 Nov", "4/11"] },
+    { n: 3, pre: "Name: Daniel", ans: ["Halloran"] },
+    { n: 4, pre: "Postcode:", ans: ["BS6 7QT"] },
+    { n: 5, pre: "Mobile number:", ans: ["07946 318 552", "07946318552"] },
+    { n: 6, pre: "Heard about the centre through the", ans: ["local newspaper", "newspaper"] },
+    { n: 7, pre: "Fee: £", ans: ["145", "one hundred and forty five"] },
+    { n: 8, pre: "Must bring: an", ans: ["apron"] },
+    { n: 9, pre: "Parking: car park behind the", ans: ["library"] },
+    { n: 10, pre: "First session: arrive … minutes early", ans: ["15", "fifteen"] }
+  ]
+},
+{
+  id: "p2", tab: "Part 2 · Plan", title: "Part 2 — Visite d'une réserve naturelle (plan)",
+  intro: "You will hear a guide welcoming visitors to a nature reserve.",
+  instr: "Label the map below. Write the correct letter, <b>A–H</b>, next to Questions 11–15.",
+  type: "letter",
+  cast: { N: { lang: "en-AU", g: "f" } },
+  lines: [
+    ["N", "Good morning everyone, and welcome to Hollin Marsh Nature Reserve. Before you set off, I'll quickly explain where everything is, so if you look at the map in your leaflet, you can follow along."],
+    ["N", "As you come through the main entrance, at the bottom of the map, you'll see two small buildings, one on either side of the path. The one on your left houses the toilets, and the one immediately on your right is the information point, where you can pick up trail guides and borrow binoculars."],
+    ["N", "If you carry on up the main path, you'll reach a junction where the path splits to the west and to the east. Right on the corner, on your left-hand side, just before you turn, is the café, which serves hot drinks and light lunches until four."],
+    ["N", "Now, if you take the west path towards the lake, about halfway along you'll come to a grassy area on the right, on the northern side of the path, with tables overlooking the water. That's the picnic area, and it's a lovely spot on a day like today."],
+    ["N", "When the path reaches the lake, I'd recommend you don't stop on the south bank. Many visitors head for the old viewing platform on the north shore, but I'm afraid that's closed for repairs at the moment. Instead, follow the shore path round to the west side of the lake, where you'll find the bird hide. It's the best place to see herons early in the morning."],
+    ["N", "Parents, you may have read that the children's play area was going to be built near the entrance. In the end, we decided to put it somewhere quieter, so you'll find it at the far end of the east path, just where it meets the edge of the woodland."],
+    ["N", "And finally, for those of you who enjoy art, the sculpture trail starts deep in the woodland itself, in the north-east corner of the reserve."]
+  ],
+  qs: [
+    { n: 11, pre: "Information point", ans: ["B"] },
+    { n: 12, pre: "Café", ans: ["C"] },
+    { n: 13, pre: "Picnic area", ans: ["D"] },
+    { n: 14, pre: "Bird hide", ans: ["E"] },
+    { n: 15, pre: "Children's play area", ans: ["G"] }
+  ]
+},
+{
+  id: "p4", tab: "Part 4 · Cours magistral", title: "Part 4 — Cours : le sommeil unihémisphérique",
+  intro: "You will hear part of a lecture on sleep in animals.",
+  instr: "Complete the notes below. Write <b>ONE WORD AND/OR A NUMBER</b> for each answer.",
+  maxWords: 1,
+  cast: { N: { lang: "en-US", g: "m" } },
+  lines: [
+    ["N", "Today I want to look at a remarkable adaptation known as unihemispheric sleep. As the name suggests, this is a state in which one half of the brain sleeps while the other half remains alert. One eye, the one connected to the waking half, usually stays open."],
+    ["N", "It's often assumed that this was first discovered in birds, but in fact the first clear evidence came from dolphins, in studies carried out in the nineteen-seventies. Dolphins, of course, need to keep surfacing to breathe, so switching off the whole brain would be dangerous."],
+    ["N", "In birds, the behaviour seems to be linked mainly to predators. In groups of ducks resting in a row, for example, the birds at the ends of the row are far more likely to sleep with one eye open. And that open eye is almost always the one facing away from the group, towards the edge, where danger is most likely to come from."],
+    ["N", "For a long time, a bigger question remained: do birds sleep while flying? To find out, one team studied frigatebirds, seabirds that can stay aloft over the ocean for weeks. The researchers attached small, lightweight sensors to the birds' heads to record their brain activity. The birds then flew non-stop for up to ten days."],
+    ["N", "What they found was surprising. Yes, the birds did sleep in flight, but only for a tiny amount of time: on average, just forty-two minutes per day, mostly in bursts of a few seconds. And this sleep happened almost entirely while the birds were gliding, rising in circles on currents of warm air, rather than flapping their wings. Back on land, the very same birds slept for more than twelve hours a day."],
+    ["N", "So what does this tell us? Firstly, it suggests that the need for sleep is not as fixed as we once believed. It appears to be flexible, at least in some species, depending on circumstances. And secondly, understanding how these birds cope with so little sleep might, in the long term, inform research on insomnia in humans, although we should be careful not to overstate the connection."]
+  ],
+  qs: [
+    { n: 31, head: "Definition", pre: "One half of the brain sleeps; the other half stays", ans: ["alert"] },
+    { n: 32, pre: "First clear evidence came from studies of", ans: ["dolphins", "dolphin"] },
+    { n: 33, head: "Birds", pre: "In a row of ducks, the open eye faces the … of the group", ans: ["edge"] },
+    { n: 34, head: "Frigatebird study", pre: "Researchers fitted lightweight … to the birds' heads", ans: ["sensors", "sensor"] },
+    { n: 35, pre: "Birds flew non-stop for up to ten", ans: ["days"] },
+    { n: 36, pre: "Average sleep in flight: … minutes per day", ans: ["42", "forty two"] },
+    { n: 37, pre: "Sleep occurred mainly while the birds were", ans: ["gliding", "circling"] },
+    { n: 38, pre: "On land, they slept for more than … hours", ans: ["12", "twelve"] },
+    { n: 39, head: "Implications", pre: "The need for sleep may be … rather than fixed", ans: ["flexible"] },
+    { n: 40, pre: "Possible relevance to research on … in humans", ans: ["insomnia"] }
+  ]
+}
+];
+
+const MAP_SVG = `<svg class="chart" viewBox="0 0 400 300" role="img" aria-label="Plan de la réserve Hollin Marsh avec les lieux A à H">
+  <rect x="1" y="1" width="398" height="298" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+  <ellipse cx="100" cy="82" rx="68" ry="44" fill="var(--water)" stroke="var(--muted)"/>
+  <text x="100" y="86" text-anchor="middle" font-style="italic">Lake</text>
+  <g fill="var(--wood)" stroke="var(--muted)" stroke-width=".6">
+    <circle cx="300" cy="40" r="26"/><circle cx="345" cy="38" r="28"/><circle cx="375" cy="80" r="22"/><circle cx="330" cy="82" r="24"/><circle cx="285" cy="88" r="18"/>
+  </g>
+  <text x="330" y="22" text-anchor="middle" font-style="italic">Woodland</text>
+  <g stroke="var(--path)" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M200 296 L200 172"/><path d="M200 172 L110 172 L110 128"/><path d="M200 172 L300 172 L300 108"/>
+    <path d="M110 128 C 60 132 26 110 30 80" stroke-width="4" stroke-dasharray="2 6"/>
+  </g>
+  <text x="200" y="292" text-anchor="middle" font-weight="600">▲ Main entrance</text>
+  <g font-family="IBM Plex Mono, monospace" font-weight="600" font-size="12">
+    ${[["A",172,250],["B",228,250],["C",178,194],["D",150,152],["E",22,72],["F",100,26],["G",326,140],["H",352,64]].map(([l,x,y]) => `<circle cx="${x}" cy="${y}" r="10" fill="var(--card)" stroke="var(--ink)" stroke-width="1.5"/><text x="${x}" y="${y+4}" text-anchor="middle">${l}</text>`).join("")}
+  </g>
+  <g transform="translate(374 262)"><path d="M0 -16 L6 2 L0 -3 L-6 2 Z" fill="var(--ink)"/><text x="0" y="16" text-anchor="middle" font-weight="600">N</text></g>
+</svg>`;
+
+let lisState = { cur: store.get("lisCur", "p1"), playing: false, played: {} };
+function renderLisTabs() {
+  $("#lis-tabs").innerHTML = LIS.map(s => `<button aria-pressed="${s.id === lisState.cur}" data-l="${s.id}">${esc(s.tab)}</button>`).join("");
+  $$("#lis-tabs button").forEach(b => b.onclick = () => { stopAudio(); lisState.cur = b.dataset.l; store.set("lisCur", lisState.cur); renderLisTabs(); renderLis(); });
+}
+function stopAudio() { lisState.playing = false; if ("speechSynthesis" in window) speechSynthesis.cancel(); }
+function renderLis() {
+  const s = LIS.find(x => x.id === lisState.cur);
+  const isLetter = s.type === "letter";
+  const qHtml = s.qs.map(q => `${q.head ? `<h4 style="margin:12px 0 2px">${esc(q.head)}</h4>` : ""}<div class="q" id="q-${s.id}-${q.n}"><span class="qn">${q.n}</span><span class="lbl">${esc(q.pre)}</span>${isLetter
+      ? `<select id="a-${s.id}-${q.n}" aria-label="Question ${q.n}"><option value="">–</option>${"ABCDEFGH".split("").map(l => `<option>${l}</option>`).join("")}</select>`
+      : `<input type="text" id="a-${s.id}-${q.n}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Question ${q.n}">`}</div>`).join("");
+  $("#lis-body").innerHTML = `<div class="panel stack">
+    <div><h3>${esc(s.title)}</h3><p class="note">${esc(s.intro)}</p></div>
+    <div class="row">
+      <button class="btn primary" id="lis-play">▶ Lancer l'écoute</button>
+      <button class="btn" id="lis-stop">■ Arrêter</button>
+      <label class="note"><input type="checkbox" id="lis-train"> Mode entraînement (réécoute autorisée)</label>
+      <span class="status" id="lis-status"></span>
+    </div>
+    <div class="instr">${s.instr}</div>
+    ${isLetter ? MAP_SVG : ""}
+    <div class="${isLetter ? "" : "form-sheet"}">${isLetter ? "" : `<div class="ttl">${s.id === "p1" ? "RIVERSIDE COMMUNITY CENTRE — ENROLMENT FORM" : "LECTURE NOTES — UNIHEMISPHERIC SLEEP"}</div>`}${qHtml}</div>
+    <div class="row"><button class="btn primary" id="lis-check">Corriger</button><button class="btn" id="lis-clear">Effacer mes réponses</button></div>
+    <div id="lis-score"></div>
+    <details><summary>Transcription (après correction)</summary><div class="transcript">${s.lines.map(l => `<p><span class="spk">${l[0] === "N" ? "SPEAKER" : l[0] === "W" ? "WOMAN" : "MAN"}</span>${esc(l[2] || l[1])}</p>`).join("")}</div></details>
+  </div>`;
+  const playBtn = $("#lis-play"), status = $("#lis-status");
+  if (!("speechSynthesis" in window)) { playBtn.disabled = true; status.textContent = "Ton navigateur ne propose pas de synthèse vocale : lis la transcription à la place."; }
+  if (lisState.played[s.id] && !$("#lis-train").checked) { playBtn.disabled = true; status.textContent = "Écoute déjà jouée. Coche le mode entraînement pour réécouter."; }
+  $("#lis-train").onchange = e => { if (e.target.checked) { playBtn.disabled = !("speechSynthesis" in window); status.textContent = ""; } };
+  playBtn.onclick = async () => {
+    if (lisState.playing) return;
+    loadVoices();
+    if (!VOICES.some(v => /^en/i.test(v.lang))) status.textContent = "Aucune voix anglaise trouvée sur l'appareil : le texte sera lu avec la voix par défaut.";
+    lisState.playing = true; lisState.played[s.id] = true;
+    playBtn.disabled = true;
+    status.textContent = "30 secondes pour lire les questions, comme à l'examen…";
+    for (let i = 30; i > 0 && lisState.playing; i--) { status.textContent = `Lis les questions : ${i} s`; await new Promise(r => setTimeout(r, 1000)); }
+    for (let i = 0; i < s.lines.length && lisState.playing; i++) {
+      status.textContent = `Lecture en cours · ${i + 1}/${s.lines.length}`;
+      const [spk, say] = s.lines[i];
+      await speakOne(say, s.cast[spk]);
+      await new Promise(r => setTimeout(r, 350));
+    }
+    if (lisState.playing) status.textContent = "Fin de l'enregistrement. Vérifie l'orthographe, puis corrige.";
+    lisState.playing = false;
+    if ($("#lis-train") && $("#lis-train").checked) playBtn.disabled = false;
+  };
+  $("#lis-stop").onclick = () => { stopAudio(); status.textContent = "Écoute arrêtée."; };
+  $("#lis-clear").onclick = () => { s.qs.forEach(q => { const el = $(`#a-${s.id}-${q.n}`); el.value = ""; $(`#q-${s.id}-${q.n}`).className = "q"; $(`#q-${s.id}-${q.n} .fix`)?.remove(); }); $("#lis-score").innerHTML = ""; };
+  $("#lis-check").onclick = () => {
+    let ok = 0;
+    s.qs.forEach(q => {
+      const el = $(`#a-${s.id}-${q.n}`), row = $(`#q-${s.id}-${q.n}`), val = el.value;
+      row.querySelector(".fix")?.remove();
+      let good = q.ans.map(norm).includes(norm(val));
+      let why = "";
+      if (good && s.maxWords && wordCountAns(val.replace(/^(a|an|the)\s+/i, "")) > s.maxWords) { good = false; why = " (limite de mots dépassée)"; }
+      row.className = "q " + (good ? "ok" : "bad");
+      if (good) ok++; else row.insertAdjacentHTML("beforeend", `<span class="fix">→ ${esc(q.ans[0])}${why}</span>`);
+    });
+    const n = s.qs.length, proj = Math.round(ok / n * 40);
+    $("#lis-score").innerHTML = `<div class="score">Score <b>${ok}/${n}</b> · rapporté sur 40 : ≈ ${proj}/40 → band ≈ ${lisBand(proj)}<br><span class="note">${ok === n ? "Sans faute. Passe aux audios Cambridge, plus rapides et moins articulés." : "Pour chaque erreur, retrouve dans la transcription le piège exact : correction de l'intervenant, distracteur, orthographe ou limite de mots."}</span></div>`;
+  };
+}
+function lisBand(r) { return r >= 39 ? "9" : r >= 37 ? "8.5" : r >= 35 ? "8" : r >= 32 ? "7.5" : r >= 30 ? "7" : r >= 26 ? "6.5" : r >= 23 ? "6" : "5.5 ou moins"; }
+function readBand(r) { return r >= 39 ? "9" : r >= 37 ? "8.5" : r >= 35 ? "8" : r >= 33 ? "7.5" : r >= 30 ? "7" : r >= 27 ? "6.5" : r >= 23 ? "6" : "5.5 ou moins"; }
+
+/* =========================================================
+   READING
+   ========================================================= */
+const PASSAGE = {
+  title: "The Return of the Night Sky",
+  paras: [
+    ["A", "For most of human history, the night sky was a shared inheritance. Anyone who stepped outside after dark could see several thousand stars and, on moonless nights, the pale band of the Milky Way. Today, according to a widely cited atlas published in 2016, more than a third of humanity can no longer see the Milky Way from where they live, and in Europe the figure is closer to sixty per cent. The cause is not cloud or smog but artificial light: the glow that rises from streets, car parks, stadiums and illuminated buildings and is scattered back down by particles in the atmosphere. Astronomers call it skyglow, and unlike most forms of pollution, it is visible to anyone who knows what they are looking at."],
+    ["B", "Astronomers were the first to complain. As early as the 1950s, observatories built close to growing cities found their most sensitive instruments increasingly blinded, and several new telescopes were eventually sited on remote mountaintops in Chile, Hawaii and the Canary Islands instead. For decades, however, the problem was treated as a niche concern, the inconvenience of a small scientific community rather than a matter of public interest. Street lighting, after all, was associated with safety and modernity, and few politicians were willing to be seen arguing for darker towns."],
+    ["C", "That perception began to shift when biologists started to document the effects of artificial light on wildlife. Newly hatched sea turtles, which instinctively crawl towards the brightest horizon, have been found heading inland towards beachfront hotels instead of out to sea. Migrating birds, many of which use the stars to navigate, collide in large numbers with lit towers. More subtly, insects are drawn to lamps in such quantities that some ecologists now consider light one of the drivers of the decline in insect populations, alongside pesticides and habitat loss, although the relative weight of each factor remains disputed."],
+    ["D", "Human health has entered the debate more recently. Our bodies regulate sleep partly through melatonin, a hormone whose production is suppressed by light, particularly at the blue end of the spectrum. Laboratory studies have established this mechanism clearly; what is less certain is how far outdoor lighting, as opposed to the screens people use indoors, contributes to disrupted sleep in real life. Some large observational studies have linked brighter neighbourhoods with shorter sleep, but researchers caution that such correlations may reflect other features of urban living, such as noise or shift work."],
+    ["E", "Ironically, the technology that was expected to solve the problem may have made it worse. Over the past fifteen years, cities around the world have replaced old sodium lamps with light-emitting diodes, or LEDs, which consume far less electricity. Yet because LEDs are cheap to run, many municipalities have installed more of them, or made them brighter, than the lamps they replaced, an example of what economists call the rebound effect. Moreover, early LED models emitted a cold, bluish light, which scatters more widely in the atmosphere than the orange glow of sodium. Satellite measurements suggest that the artificially lit area of the planet grew by around two per cent a year in the years following 2012."],
+    ["F", "None of this means that cities must choose between light and darkness. A growing number of towns have shown that careful design can cut skyglow dramatically without making streets feel less safe. Fully shielded fixtures direct light downwards, where it is needed, rather than sideways into bedrooms or upwards into the sky; warmer colour temperatures reduce scattering; and dimming systems lower light levels in the early hours, when streets are empty. More than two hundred places worldwide have now been certified as dark-sky communities, parks or reserves, and in several of them residents report that the restored view of the stars has become a source of local pride and even tourism."]
+  ],
+  headings: [
+    ["i", "A problem long dismissed as a specialist grievance"],
+    ["ii", "An unintended consequence of energy efficiency"],
+    ["iii", "Evidence of harm beyond the human world"],
+    ["iv", "A vanishing view and what lies behind it"],
+    ["v", "Practical ways of reducing the glare"],
+    ["vi", "A suspected link that remains hard to prove"],
+    ["vii", "Why astronomers abandoned the cities for good"],
+    ["viii", "The economic cost of wasted light"],
+    ["ix", "Governments move to ban decorative lighting"]
+  ],
+  headAns: { A: "iv", B: "i", C: "iii", D: "vi", E: "ii", F: "v" },
+  tfng: [
+    [7, "In Europe, a majority of people cannot see the Milky Way from where they live.", "TRUE", "« closer to sixty per cent » = une majorité. La paraphrase « a majority » remplace le chiffre."],
+    [8, "Politicians in the 1950s actively campaigned for brighter street lighting.", "NOT GIVEN", "Le texte dit seulement que peu d'élus osaient défendre des villes plus sombres. Ne pas plaider pour l'obscurité n'est pas faire campagne pour plus de lumière : l'information n'existe pas."],
+    [9, "Scientists agree that artificial light is the main cause of insect decline.", "FALSE", "« one of the drivers » + « the relative weight of each factor remains disputed » contredit à la fois « main cause » et « agree »."],
+    [10, "Indoor screen use has been shown to affect sleep more than street lighting.", "NOT GIVEN", "Le texte dit que la part de l'éclairage extérieur, comparée aux écrans, est incertaine. Rien n'établit que les écrans pèsent plus : on ne peut ni confirmer ni contredire."]
+  ],
+  summary: {
+    text: "When cities replaced sodium lamps with LEDs, many installed a greater number of lights because LEDs are inexpensive to (11) ____. Economists describe this outcome as the (12) ____. To limit skyglow, some towns now use (13) ____ that point light downwards, and (14) ____ that reduce brightness in the early hours.",
+    ans: { 11: ["run"], 12: ["rebound effect"], 13: ["shielded fixtures"], 14: ["dimming systems"] }
+  }
+};
+// "fully shielded fixtures" = 3 words; within passage wording the 2-word answer is "shielded fixtures"
+function renderPassage() {
+  const P = PASSAGE;
+  $("#read-passage").innerHTML = `<div class="two">
+    <div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h4 style="margin:0">Reading Passage</h4><span class="note">≈ ${P.paras.reduce((a, p) => a + p[1].split(/\s+/).length, 0)} mots</span></div>
+      <h3 style="font-size:1.45rem">${esc(P.title)}</h3>
+      <div class="passage">${P.paras.map(p => `<p><span class="pl">${p[0]}</span>${esc(p[1])}</p>`).join("")}</div></div>
+    <div class="panel sticky stack" style="gap:6px">
+      <div class="row" style="justify-content:space-between"><span class="timer" id="r-timer">20:00</span><div class="row"><button class="btn primary" id="r-start">Lancer 20 min</button><button class="btn" id="r-check">Corriger</button></div></div>
+      <div class="instr">Questions 1–6. The passage has six paragraphs, <b>A–F</b>. Choose the correct heading for each paragraph from the list of headings below.</div>
+      <ul class="heads">${P.headings.map(h => `<li><b>${h[0]}</b>${esc(h[1])}</li>`).join("")}</ul>
+      ${"ABCDEF".split("").map((l, i) => `<div class="q" id="rq-${i + 1}"><span class="qn">${i + 1}</span><span class="lbl">Paragraph ${l}</span><select id="ra-${i + 1}" aria-label="Paragraph ${l}"><option value="">–</option>${P.headings.map(h => `<option>${h[0]}</option>`).join("")}</select></div>`).join("")}
+      <div class="instr">Questions 7–10. Do the following statements agree with the information given in the passage? Choose <b>TRUE</b>, <b>FALSE</b> or <b>NOT GIVEN</b>.</div>
+      ${P.tfng.map(t => `<div class="q" id="rq-${t[0]}"><span class="qn">${t[0]}</span><span class="lbl">${esc(t[1])}</span><div class="radios" role="radiogroup" aria-label="Question ${t[0]}">${["TRUE", "FALSE", "NOT GIVEN"].map(v => `<label><input type="radio" name="tf-${t[0]}" value="${v}"><span>${v}</span></label>`).join("")}</div></div>`).join("")}
+      <div class="instr">Questions 11–14. Complete the summary. Choose <b>NO MORE THAN TWO WORDS</b> from the passage for each answer.</div>
+      <p style="font-family:var(--f-display);font-size:1rem">${esc(P.summary.text).replace(/\((\d+)\) ____/g, (m, n) => `<span class="qn">${n}</span><input type="text" id="ra-${n}" autocomplete="off" spellcheck="false" style="width:9em" aria-label="Question ${n}">`)}</p>
+      <div id="r-score"></div>
+      <details><summary>Explications (après correction)</summary><div id="r-expl" class="note"></div></details>
+    </div></div>`;
+  const tmr = makeTimer($("#r-timer"), 1200, () => { beep(); $("#r-check").click(); });
+  $("#r-start").onclick = () => { tmr.start(); $("#r-start").disabled = true; };
+  $("#r-check").onclick = () => {
+    tmr.stop(); let ok = 0; const expl = [];
+    "ABCDEF".split("").forEach((l, i) => { const v = $("#ra-" + (i + 1)).value, good = v === P.headAns[l]; markR(i + 1, good, P.headAns[l]); if (good) ok++; });
+    P.tfng.forEach(t => { const v = ($(`input[name=tf-${t[0]}]:checked`) || {}).value, good = v === t[2]; markR(t[0], good, t[2]); if (good) ok++; expl.push(`<p><b>${t[0]}. ${t[2]}</b> — ${esc(t[3])}</p>`); });
+    Object.entries(P.summary.ans).forEach(([n, a]) => { const el = $("#ra-" + n); let good = a.map(norm).includes(norm(el.value)) && wordCountAns(el.value) <= 2; el.style.borderColor = good ? "var(--ok)" : "var(--bad)"; el.style.background = good ? "var(--ok-soft)" : "var(--bad-soft)"; if (good) ok++; else expl.push(`<p><b>${n}.</b> Réponse : <i>${esc(a[0])}</i></p>`); });
+    expl.unshift(`<p><b>Titres :</b> A iv · B i · C iii · D vi · E ii · F v. Le distracteur vii reprend un détail du paragraphe B (les télescopes déplacés) sans en résumer l'idée principale.</p>`);
+    $("#r-expl").innerHTML = expl.join("");
+    const used = 1200 - tmr.left, proj = Math.round(ok / 14 * 40);
+    $("#r-score").innerHTML = `<div class="score">Score <b>${ok}/14</b> en ${fmtTime(used)} · rapporté sur 40 : ≈ ${proj}/40 → band ≈ ${readBand(proj)}</div>`;
+  };
+  function markR(n, good, right) { const row = $("#rq-" + n); row.className = "q " + (good ? "ok" : "bad"); row.querySelector(".fix")?.remove(); if (!good) row.insertAdjacentHTML("beforeend", `<span class="fix">→ ${esc(right)}</span>`); }
+}
+
+const DRILL = [
+  ["The museum, which opened in 1998, attracted twice as many visitors in its first year as its planners had predicted.", "Visitor numbers in the first year exceeded expectations.", "TRUE", "« twice as many … as predicted » = au-delà des prévisions. Paraphrase directe."],
+  ["Although the drug reduced symptoms in most patients, the trial was too small to draw firm conclusions about its long-term safety.", "The trial proved that the drug is safe in the long term.", "FALSE", "Le texte dit explicitement qu'on ne peut pas conclure : « proved » le contredit."],
+  ["Several coastal towns have introduced fines for leaving litter on beaches.", "The fines have reduced the amount of litter on beaches.", "NOT GIVEN", "L'effet des amendes n'est jamais mentionné. Piège classique : la conclusion « logique » n'est pas dans le texte."],
+  ["Few historians now accept the traditional view that the city was abandoned because of a single catastrophic flood.", "Most historians believe that one flood caused the city to be abandoned.", "FALSE", "« Few … accept » = la plupart n'y croient pas. L'affirmation dit l'inverse."],
+  ["The species was once common throughout the region; today it survives only in two isolated valleys.", "The species' range has contracted.", "TRUE", "De toute la région à deux vallées : l'aire de répartition s'est réduite. Vocabulaire différent, même sens."],
+  ["The author spent three years in Lisbon, where she began writing her first novel.", "The author's first novel is set in Lisbon.", "NOT GIVEN", "Écrit à Lisbonne ne veut pas dire situé à Lisbonne. Le lieu de l'intrigue n'est pas donné."],
+  ["Not until the late nineteenth century did the technique become widely used in hospitals.", "The technique was common in hospitals before 1850.", "FALSE", "L'inversion « Not until … did » place la généralisation à la fin du XIXe : avant 1850, elle n'était pas répandue."],
+  ["Critics have argued that the scheme benefits wealthy homeowners disproportionately, a claim the government rejects.", "The government accepts that the scheme favours the rich.", "FALSE", "« a claim the government rejects » contredit directement « accepts »."],
+  ["Bees can be trained to associate a particular scent with a reward of sugar water within a few hours.", "Bees can learn to link smells with food.", "TRUE", "« reward of sugar water » = nourriture ; « associate a scent » = lier une odeur."],
+  ["The bridge was the longest of its kind when completed, a record it held for nearly two decades.", "The bridge is still the longest of its kind today.", "FALSE", "« held for nearly two decades » implique qu'il a perdu le record : il ne l'est plus."],
+  ["Some economists predict that remote work will permanently reduce demand for city-centre offices.", "Demand for city-centre offices has fallen permanently.", "NOT GIVEN", "Une prédiction de certains économistes n'est pas un fait constaté. Le texte ne dit pas ce qui s'est passé."],
+  ["Unlike its predecessor, the new model can operate in temperatures below freezing.", "The earlier model could not function below 0°C.", "TRUE", "« Unlike its predecessor » implique que l'ancien modèle n'en était pas capable."],
+  ["The festival, now in its fortieth year, was founded by a group of local teachers.", "The festival was originally organised by a government agency.", "FALSE", "Fondé par des enseignants locaux, pas par une agence gouvernementale : contradiction sur le fondateur."],
+  ["Researchers interviewed 300 nurses, most of whom reported working unpaid overtime at least once a week.", "Most nurses in the country work unpaid overtime.", "NOT GIVEN", "L'échantillon porte sur 300 infirmiers interrogés, pas sur ceux de tout le pays. Généralisation non autorisée."]
+];
+let drillIdx = 0, drillScore = 0, drillDone = 0;
+function renderDrill() {
+  const d = DRILL[drillIdx];
+  $("#read-drill").innerHTML = `<div class="panel">
+    <div class="row" style="justify-content:space-between"><h4 style="margin:0">Item ${drillIdx + 1} / ${DRILL.length}</h4><span class="status">Score ${drillScore}/${drillDone}</span></div>
+    <div class="drill-ex">${esc(d[0])}</div>
+    <div class="drill-st">${esc(d[1])}</div>
+    <div class="row" id="drill-btns">${["TRUE", "FALSE", "NOT GIVEN"].map(v => `<button class="btn" data-v="${v}">${v}</button>`).join("")}</div>
+    <div id="drill-fb"></div>
+    <p class="note" style="margin-top:14px">La règle : TRUE si le texte dit la même chose, FALSE s'il dit le contraire, NOT GIVEN s'il ne permet pas de trancher. On ne s'appuie jamais sur ce qu'on sait du sujet.</p>
+  </div>`;
+  $$("#drill-btns button").forEach(b => b.onclick = () => {
+    const good = b.dataset.v === d[2]; drillDone++; if (good) drillScore++;
+    $$("#drill-btns button").forEach(x => x.disabled = true);
+    $("#drill-fb").innerHTML = `<div class="fb ${good ? "ok" : "bad"}"><b>${good ? "Juste" : "Non"} — ${d[2]}.</b> ${esc(d[3])}</div><div class="row" style="margin-top:10px"><button class="btn primary" id="drill-next">${drillIdx + 1 < DRILL.length ? "Item suivant" : "Recommencer"}</button></div>`;
+    $("#drill-next").onclick = () => { if (drillIdx + 1 < DRILL.length) drillIdx++; else { drillIdx = 0; drillScore = 0; drillDone = 0; } renderDrill(); };
+  });
+}
+$$("#read-tabs button").forEach(b => b.onclick = () => {
+  $$("#read-tabs button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+  $("#read-passage").hidden = b.dataset.r !== "passage"; $("#read-drill").hidden = b.dataset.r !== "drill";
+});
+
+/* =========================================================
+   WRITING
+   ========================================================= */
+function lineChart(cfg) {
+  const W = 560, H = 300, L = 46, R = 110, T = 20, B = 40, pw = W - L - R, ph = H - T - B;
+  const x = i => L + i * pw / (cfg.x.length - 1), y = v => T + ph - v / cfg.max * ph;
+  const dash = ["", "6 4", "2 4"];
+  let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(cfg.title)}">`;
+  for (let v = 0; v <= cfg.max; v += cfg.step) s += `<line class="grid" x1="${L}" x2="${L + pw}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${v}${cfg.unit}</text>`;
+  cfg.x.forEach((lab, i) => s += `<text x="${x(i)}" y="${H - B + 18}" text-anchor="middle">${lab}</text>`);
+  s += `<line class="axis" x1="${L}" x2="${L}" y1="${T}" y2="${T + ph}"/><line class="axis" x1="${L}" x2="${L + pw}" y1="${T + ph}" y2="${T + ph}"/>`;
+  cfg.series.forEach((se, k) => {
+    s += `<polyline fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="${dash[k]}" points="${se.v.map((v, i) => x(i) + "," + y(v)).join(" ")}"/>`;
+    se.v.forEach((v, i) => s += `<circle cx="${x(i)}" cy="${y(v)}" r="3" fill="var(--card)" stroke="var(--ink)" stroke-width="1.5"/>`);
+    const last = se.v[se.v.length - 1];
+    s += `<text x="${L + pw + 8}" y="${y(last) + 4 + (se.nudge || 0)}" font-weight="600">${esc(se.name)}</text>`;
+  });
+  return s + `</svg>`;
+}
+function barChart(cfg) {
+  const W = 560, H = 300, L = 46, R = 16, T = 34, B = 40, pw = W - L - R, ph = H - T - B;
+  const y = v => T + ph - v / cfg.max * ph, gw = pw / cfg.cats.length, bw = gw * 0.3;
+  const fills = ["var(--ink)", "var(--card)"];
+  let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(cfg.title)}">`;
+  for (let v = 0; v <= cfg.max; v += cfg.step) s += `<line class="grid" x1="${L}" x2="${L + pw}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+  cfg.cats.forEach((c, i) => {
+    const gx = L + i * gw + gw / 2;
+    cfg.series.forEach((se, k) => { const bx = gx - bw + k * bw, v = se.v[i]; s += `<rect x="${bx}" y="${y(v)}" width="${bw - 2}" height="${T + ph - y(v)}" fill="${fills[k]}" stroke="var(--ink)" stroke-width="1.2"/>`; });
+    s += `<text x="${gx}" y="${H - B + 18}" text-anchor="middle">${esc(c)}</text>`;
+  });
+  s += `<line class="axis" x1="${L}" x2="${L + pw}" y1="${T + ph}" y2="${T + ph}"/><text x="${L - 36}" y="${T - 14}">${esc(cfg.unit)}</text>`;
+  cfg.series.forEach((se, k) => s += `<rect x="${L + pw - 190 + k * 100}" y="${T - 24}" width="12" height="12" fill="${fills[k]}" stroke="var(--ink)"/><text x="${L + pw - 172 + k * 100}" y="${T - 14}">${esc(se.name)}</text>`);
+  return s + `</svg>`;
+}
+const WTASKS = [
+  { id: "t1a", task: 1, label: "Task 1 · Graphique linéaire — recyclage dans trois villes", min: 150, time: 20,
+    prompt: "The graph below shows the proportion of household waste that was recycled in three cities between 2000 and 2025.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.\n\nWrite at least 150 words.",
+    chart: () => lineChart({ title: "Household waste recycled (%), 2000–2025", x: [2000, 2005, 2010, 2015, 2020, 2025], max: 70, step: 10, unit: "%",
+      series: [{ name: "Halden", v: [12, 18, 27, 38, 46, 52], nudge: 6 }, { name: "Marrow", v: [30, 31, 33, 32, 35, 34] }, { name: "Corvin", v: [5, 9, 20, 41, 55, 61], nudge: -4 }] }),
+    data: "Line graph, % of household waste recycled. Halden: 2000 12, 2005 18, 2010 27, 2015 38, 2020 46, 2025 52. Marrow: 30, 31, 33, 32, 35, 34. Corvin: 5, 9, 20, 41, 55, 61." },
+  { id: "t1b", task: 1, label: "Task 1 · Diagramme en barres — loisirs par âge", min: 150, time: 20,
+    prompt: "The chart below compares the average number of hours per week that two age groups in one country spent on four leisure activities in 2025.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.\n\nWrite at least 150 words.",
+    chart: () => barChart({ title: "Hours per week on leisure activities, by age group", cats: ["Reading", "Video games", "Sport", "Social media"], max: 16, step: 4, unit: "Hours / week",
+      series: [{ name: "Aged 16–24", v: [2, 9, 4, 14] }, { name: "Aged 45–64", v: [5, 2, 3, 6] }] }),
+    data: "Bar chart, hours per week. Aged 16-24: reading 2, video games 9, sport 4, social media 14. Aged 45-64: reading 5, video games 2, sport 3, social media 6." },
+  { id: "t2a", task: 2, label: "Task 2 · Opinion — universités et emploi", min: 250, time: 40, prompt: "Some people believe that universities should focus on equipping graduates with skills for the workplace rather than providing knowledge for its own sake.\n\nTo what extent do you agree or disagree?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
+  { id: "t2b", task: 2, label: "Task 2 · Deux points de vue — embouteillages", min: 250, time: 40, prompt: "Some argue that the best way to reduce traffic congestion is to make public transport free, while others believe that drivers should be charged to enter city centres.\n\nDiscuss both these views and give your own opinion.\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
+  { id: "t2c", task: 2, label: "Task 2 · Problème-solution — logement des jeunes", min: 250, time: 40, prompt: "In many countries, young people are finding it increasingly difficult to afford a home of their own.\n\nWhat are the causes of this problem, and what measures could be taken to address it?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
+  { id: "t2d", task: 2, label: "Task 2 · Avantages / inconvénients — télétravail", min: 250, time: 40, prompt: "More and more companies are allowing employees to work entirely from home.\n\nDo the advantages of this development outweigh the disadvantages?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
+  { id: "t2e", task: 2, label: "Task 2 · Question double — suivre les célébrités", min: 250, time: 40, prompt: "Many people today follow the lives of celebrities closely on social media.\n\nWhy is this the case? Is it a positive or negative development?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
+  { id: "t2f", task: 2, label: "Task 2 · Opinion — exploration spatiale", min: 250, time: 40, prompt: "Governments should not spend money on space exploration until poverty has been eliminated on Earth.\n\nTo what extent do you agree or disagree?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
+  { id: "t2g", task: 2, label: "Task 2 · Deux points de vue — langues à l'école primaire", min: 250, time: 40, prompt: "Some people think children should begin learning a foreign language at primary school, while others believe it is better to wait until secondary school.\n\nDiscuss both these views and give your own opinion.\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
+  { id: "t2h", task: 2, label: "Task 2 · Opinion — IA et orientation", min: 250, time: 40, prompt: "Artificial intelligence will soon make many professional jobs unnecessary, so schools should stop preparing students for careers that may no longer exist.\n\nTo what extent do you agree or disagree?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." }
+];
+const CHECK = {
+  1: ["Introduction : paraphrase du sujet, sans recopier la consigne", "Overview en 2e paragraphe : les 2 ou 3 tendances majeures, sans chiffres", "Chiffres sélectionnés et comparés, pas une liste exhaustive", "Aucune opinion, aucune cause inventée", "Temps verbaux cohérents avec les dates (passé pour 2000–2024)", "Variété : « account for », « peak at », « roughly twice as », « by contrast »", "170–190 mots"],
+  2: ["Toutes les parties de la question traitées (piège des questions doubles)", "Position claire dès l'introduction, identique en conclusion", "Une idée centrale par paragraphe, développée jusqu'à la conséquence", "Exemples précis plutôt que généraux (« for instance, in Paris… »)", "Connecteurs variés et non mécaniques (pas de « Firstly / Secondly / Lastly » partout)", "Collocations naturelles, aucun mot « sophistiqué » mal employé", "Structures complexes justes : relatives, conditionnelles, inversions mesurées", "270–320 mots, conclusion sans idée nouvelle"]
+};
+let wTimer = null;
+function wCur() { return WTASKS.find(t => t.id === $("#w-sel").value) || WTASKS[0]; }
+function renderWriting() {
+  const t = wCur();
+  $("#w-prompt").innerHTML = `<div class="prompt">${esc(t.prompt)}</div>${t.chart ? t.chart() : ""}`;
+  $("#w-text").value = store.get("draft:" + t.id, "");
+  $("#w-check").innerHTML = CHECK[t.task].map((c, i) => `<li><input type="checkbox" id="wc-${t.task}-${i}"><label for="wc-${t.task}-${i}">${esc(c)}</label></li>`).join("");
+  wTimer && wTimer.stop();
+  wTimer = makeTimer($("#w-timer"), t.time * 60, () => { beep(); $("#w-status").textContent = "Temps écoulé. À l'examen, la copie serait ramassée."; });
+  $("#w-start").disabled = false; $("#w-result").innerHTML = ""; $("#w-status").textContent = "";
+  updateWc();
+}
+function wordsOf(s) { return (s.trim().match(/\S+/g) || []).length; }
+function updateWc() {
+  const t = wCur(), n = wordsOf($("#w-text").value);
+  const el = $("#w-wc"); el.textContent = `${n} mot${n > 1 ? "s" : ""} / ${t.min} minimum`; el.classList.toggle("under", n < t.min);
+}
+function writingPrompt() {
+  const t = wCur(), txt = $("#w-text").value.trim(), n = wordsOf(txt);
+  const crit = t.task === 1 ? "TA (Task Achievement)" : "TR (Task Response)";
+  return `You are a senior IELTS Writing examiner. Assess this IELTS Academic Writing Task ${t.task} response strictly against the official public band descriptors. The candidate is a French speaker aiming for band 8.5-9, so be exacting: identify exactly what caps each criterion below 9.
+
+TASK PROMPT:
+${t.prompt}
+${t.data ? "\nVISUAL DATA (the chart the candidate saw):\n" + t.data + "\n" : ""}
+CANDIDATE RESPONSE (${n} words; minimum ${t.min}):
+"""
+${txt}
+"""
+
+Reply with ONLY a JSON object, no other text, in exactly this shape:
+{"bands":{"TR":7.5,"CC":8,"LR":7.5,"GRA":8},"overall":7.5,"summary_fr":"2-3 phrases en français sur le niveau global","ceilings_fr":["ce qui plafonne la note, critère par critère, en français"],"errors":[{"original":"exact words from the text","correction":"corrected version","why_fr":"explication courte en français"}],"upgrades":[{"original":"correct but plain phrase from the text","better":"more natural band-9 alternative","why_fr":"pourquoi"}],"model_paragraph":"one paragraph of the candidate's response rewritten at band 9, keeping their ideas"}
+Use the key "TR" for ${crit}. Bands are whole or half numbers from 0 to 9. List every grammatical and lexical error you find (up to 15) and 4-6 upgrades. Penalise under-length responses as the descriptors require.`;
+}
+$("#w-sel").innerHTML = WTASKS.map(t => `<option value="${t.id}">${esc(t.label)}</option>`).join("");
+$("#w-sel").value = store.get("wSel", "t2a");
+$("#w-sel").onchange = () => { store.set("wSel", $("#w-sel").value); renderWriting(); };
+$("#w-text").addEventListener("input", () => { store.set("draft:" + wCur().id, $("#w-text").value); updateWc(); });
+$("#w-start").onclick = () => { wTimer.start(); $("#w-start").disabled = true; $("#w-text").focus(); };
+$("#w-reset").onclick = () => { wTimer.reset(wCur().time * 60); $("#w-start").disabled = false; };
+$("#w-copy").onclick = () => copyText(writingPrompt(), $("#w-status"));
+$("#w-grade").onclick = async () => {
+  const t = wCur();
+  if (wordsOf($("#w-text").value) < 40) { $("#w-status").textContent = "Écris au moins quelques paragraphes avant de demander une note."; return; }
+  wTimer.stop();
+  const r = await askClaude(writingPrompt(), $("#w-status"), $("#w-grade"));
+  if (!r) return;
+  const b = r.bands || {};
+  $("#w-result").innerHTML = `<h4>Estimation · overall ${esc(r.overall ?? "–")}</h4>
+    ${renderBands(b, [["TR", t.task === 1 ? "Task Achievement" : "Task Response"], ["CC", "Coherence & Cohesion"], ["LR", "Lexical Resource"], ["GRA", "Grammar"]])}
+    <p>${esc(r.summary_fr || "")}</p>
+    ${Array.isArray(r.ceilings_fr) && r.ceilings_fr.length ? `<h4>Ce qui plafonne la note</h4><ul class="tight">${r.ceilings_fr.map(c => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}
+    ${Array.isArray(r.errors) && r.errors.length ? `<h4>Erreurs</h4>${renderFixes(r.errors)}` : ""}
+    ${Array.isArray(r.upgrades) && r.upgrades.length ? `<h4 style="margin-top:14px">Formulations à monter d'un cran</h4>${renderFixes(r.upgrades)}` : ""}
+    ${r.model_paragraph ? `<h4 style="margin-top:14px">Un paragraphe réécrit au niveau band 9</h4><div class="model">${esc(r.model_paragraph)}</div>` : ""}`;
+};
+
+/* =========================================================
+   SPEAKING
+   ========================================================= */
+const P1 = {
+  "Hometown": ["Where is your hometown?", "What do you like most about it?", "Has it changed much since you were a child?", "Would you like to live there in the future? Why or why not?"],
+  "Work or studies": ["Do you work, or are you a student?", "Why did you choose that subject?", "What is the most challenging part of your studies?", "What would you like to do once you've finished?"],
+  "Reading": ["Do you enjoy reading?", "What kinds of things do you usually read?", "Did you read a lot when you were a child?", "Do you prefer paper books or e-books? Why?"],
+  "Sleep": ["How many hours do you usually sleep?", "Do you ever take naps during the day?", "What do you do when you can't get to sleep?", "Has your sleep pattern changed in recent years?"],
+  "Mornings": ["Are you a morning person?", "What's the first thing you do after you wake up?", "Have your mornings changed over the years?", "What would your ideal morning look like?"],
+  "Weather": ["What's the weather usually like where you live?", "Does the weather affect your mood?", "What kind of weather do you like best?", "Has the climate in your region changed since you were young?"]
+};
+const CARDS = [
+  { t: "Describe a skill you learned that took a long time to master.", b: ["what the skill was", "when and how you learned it", "what difficulties you had"], e: "and explain why it took you so long to master it.",
+    p3: ["What skills do you think young people should learn at school that they currently don't?", "Is it better to learn a skill from a teacher or on your own, using online resources?", "Why do some people give up when they're learning something difficult?", "How might the skills that employers value change over the next twenty years?"] },
+  { t: "Describe a time when you changed your mind about something important.", b: ["what the subject was", "what your original opinion was", "what made you change your mind"], e: "and explain how you felt about changing your mind.",
+    p3: ["Why do people find it difficult to change their opinions?", "Do you think social media makes people more open-minded or less?", "Should politicians be praised or criticised for changing their minds?", "Are older people generally more set in their ways than younger people?"] },
+  { t: "Describe a place in your country that you would recommend to visitors.", b: ["where it is", "how you know about it", "what people can do there"], e: "and explain why you would recommend it.",
+    p3: ["What are the benefits and drawbacks of tourism for local communities?", "Should popular sites limit the number of visitors they allow?", "How has the way people travel changed in recent decades?", "Is it worth preserving historic buildings even when they are expensive to maintain?"] },
+  { t: "Describe a piece of advice you received that turned out to be useful.", b: ["who gave you the advice", "what the advice was", "when you received it"], e: "and explain why it turned out to be useful.",
+    p3: ["Who do young people in your country usually turn to for advice?", "Is advice from professionals always more valuable than advice from friends?", "Why do some people refuse to take advice?", "Has the internet made it easier or harder to find good advice?"] },
+  { t: "Describe a decision that was made by a group you belonged to.", b: ["what the group was", "what the decision was", "how the decision was made"], e: "and explain whether you agreed with the decision.",
+    p3: ["What makes someone a good leader within a group?", "Are decisions made by groups usually better than those made by individuals?", "Should employees have a say in major company decisions?", "How might cultural differences affect the way groups make decisions?"] }
+];
+const EXAMINER = { lang: "en-GB", g: "f", rate: 0.95 };
+let sp = { part: "1", qi: 0, topic: null, card: store.get("card", 0), timer: null, phase: "idle" };
+function spQuestions() {
+  if (sp.part === "1") return P1[sp.topic];
+  if (sp.part === "3") return CARDS[sp.card].p3;
+  return [];
+}
+function renderSpeaking() {
+  sp.timer && sp.timer.stop(); if ("speechSynthesis" in window) speechSynthesis.cancel();
+  const body = $("#sp-body");
+  if (sp.part === "2") {
+    const c = CARDS[sp.card];
+    body.innerHTML = `<div class="row" style="justify-content:space-between"><div class="row"><span class="phase" id="sp-phase">Prêt</span><span class="timer" id="sp-timer">01:00</span></div>
+        <div class="row"><button class="btn" id="sp-other">Autre carte</button><button class="btn primary" id="sp-go">Commencer : 1 min de préparation</button></div></div>
+      <div class="cue"><b>${esc(c.t)}</b><br><span style="font-size:.95rem">You should say:</span><ul>${c.b.map(x => `<li>${esc(x)}</li>`).join("")}</ul>${esc(c.e)}</div>
+      <label for="sp-notes"><h4 style="margin:0">Tes notes de préparation (comme sur le papier fourni)</h4></label>
+      <textarea id="sp-notes" style="min-height:90px;font-family:var(--f-body);font-size:.95rem" placeholder="Mots-clés seulement, pas de phrases."></textarea>
+      <p class="note">Le jour J, l'examinateur t'arrête à 2 minutes. Viser 1 min 45 à 2 min : un temps de parole trop court plafonne Fluency & Coherence. Ensuite, l'examinateur pose souvent une ou deux questions brèves avant la Part 3.</p>
+      ${transcriptBlock()}`;
+    $("#sp-other").onclick = () => { sp.card = (sp.card + 1) % CARDS.length; store.set("card", sp.card); renderSpeaking(); };
+    $("#sp-go").onclick = async () => {
+      $("#sp-go").disabled = true;
+      await speakOne("Now, I'm going to give you a topic, and I'd like you to talk about it for one to two minutes. Before you talk, you'll have one minute to think about what you're going to say. You can make some notes if you wish.", EXAMINER);
+      $("#sp-phase").textContent = "Préparation";
+      sp.timer = makeTimer($("#sp-timer"), 60, async () => {
+        beep();
+        await speakOne("All right? Remember, you have one to two minutes for this, so don't worry if I stop you. I'll tell you when the time is up. Can you start speaking now, please?", EXAMINER);
+        $("#sp-phase").textContent = "Parle";
+        sp.timer = makeTimer($("#sp-timer"), 120, async () => { beep(); $("#sp-phase").textContent = "Terminé"; await speakOne("Thank you.", EXAMINER); $("#sp-go").disabled = false; });
+        sp.timer.start();
+      });
+      sp.timer.start();
+    };
+  } else {
+    if (sp.part === "1" && !sp.topic) sp.topic = Object.keys(P1)[0];
+    const qs = spQuestions(), per = sp.part === "1" ? 30 : 60;
+    body.innerHTML = `<div class="row" style="justify-content:space-between">
+        ${sp.part === "1" ? `<label class="row"><h4 style="margin:0">Thème</h4><select id="sp-topic">${Object.keys(P1).map(k => `<option ${k === sp.topic ? "selected" : ""}>${esc(k)}</option>`).join("")}</select></label>`
+          : `<label class="row" style="min-width:0;flex:1 1 300px"><h4 style="margin:0">Liée à la carte</h4><select id="sp-card" style="min-width:0;flex:1">${CARDS.map((c, i) => `<option value="${i}" ${i === sp.card ? "selected" : ""}>${esc(c.t)}</option>`).join("")}</select></label>`}
+        <div class="row"><span class="timer" id="sp-timer">${fmtTime(per)}</span></div></div>
+      <div class="examiner" id="sp-q"><span class="who">EXAMINER · question ${sp.qi + 1}/${qs.length}</span>${esc(qs[sp.qi])}</div>
+      <div class="row"><button class="btn primary" id="sp-ask">▶ Poser la question</button><button class="btn" id="sp-next">Question suivante</button><button class="btn" id="sp-hide">Masquer le texte</button></div>
+      <p class="note">${sp.part === "1"
+        ? "Part 1 : réponses de 2 à 4 phrases, naturelles. Réponds, développe d'une raison ou d'un exemple, et arrête-toi. Le chrono indique environ 30 s par question."
+        : "Part 3 : c'est ici que se joue le 8.5+. Donne un avis nuancé, une raison générale, un exemple, puis une concession ou une projection. Environ 45 à 60 s par réponse, et des idées abstraites plutôt que ton expérience personnelle."}</p>
+      ${transcriptBlock()}`;
+    if ($("#sp-topic")) $("#sp-topic").onchange = e => { sp.topic = e.target.value; sp.qi = 0; renderSpeaking(); };
+    if ($("#sp-card")) $("#sp-card").onchange = e => { sp.card = +e.target.value; store.set("card", sp.card); sp.qi = 0; renderSpeaking(); };
+    sp.timer = makeTimer($("#sp-timer"), per, beep);
+    $("#sp-ask").onclick = async () => { $("#sp-ask").disabled = true; sp.timer.reset(per); await speakOne(qs[sp.qi], EXAMINER); sp.timer.start(); $("#sp-ask").disabled = false; };
+    $("#sp-next").onclick = () => { sp.qi = (sp.qi + 1) % qs.length; renderSpeaking(); };
+    $("#sp-hide").onclick = e => { const q = $("#sp-q"); const hidden = q.style.filter === "blur(6px)"; q.style.filter = hidden ? "" : "blur(6px)"; e.target.textContent = hidden ? "Masquer le texte" : "Afficher le texte"; };
+  }
+  $("#sp-grade").onclick = gradeSpeaking;
+  $("#sp-copy").onclick = () => copyText(speakingPrompt(), $("#sp-status"));
+  $("#sp-tr").value = store.get("tr:" + sp.part, "");
+  $("#sp-tr").oninput = e => store.set("tr:" + sp.part, e.target.value);
+}
+function transcriptBlock() {
+  return `<details open><summary>Faire évaluer ta réponse</summary>
+    <p class="note" style="margin-top:8px">Colle ici la transcription de ton enregistrement, hésitations comprises (« erm », reprises). Les corriger fausserait la note de fluidité.</p>
+    <textarea id="sp-tr" style="min-height:140px" placeholder="Transcription de ta réponse…"></textarea>
+    <div class="row" style="margin-top:8px"><button class="btn primary" id="sp-grade">Faire évaluer par Claude</button><button class="btn" id="sp-copy">Copier la demande</button><span class="status" id="sp-status"></span></div>
+    <div id="sp-result" class="result"></div></details>`;
+}
+function speakingPrompt() {
+  const tr = ($("#sp-tr") || {}).value || "";
+  let ctx;
+  if (sp.part === "2") { const c = CARDS[sp.card]; ctx = `Part 2 cue card: "${c.t} You should say: ${c.b.join("; ")}; ${c.e}" The candidate had 1 minute to prepare and should speak for 1-2 minutes.`; }
+  else ctx = `Part ${sp.part} questions asked: ${spQuestions().map((q, i) => `(${i + 1}) ${q}`).join(" ")}`;
+  return `You are a senior IELTS Speaking examiner. Assess this transcript of a French-speaking candidate aiming for band 8.5-9, against the official public Speaking band descriptors. You only have a text transcript, so do not give a Pronunciation band; instead say in one line what to listen for in their recording.
+
+${ctx}
+
+TRANSCRIPT (may include hesitations and self-corrections, which are evidence for Fluency):
+"""
+${tr}
+"""
+
+Reply with ONLY a JSON object in exactly this shape:
+{"bands":{"FC":7.5,"LR":8,"GRA":7.5},"summary_fr":"2-3 phrases en français","pron_fr":"ce qu'il faut écouter dans l'enregistrement, en français","ceilings_fr":["ce qui plafonne chaque critère, en français"],"errors":[{"original":"exact words","correction":"corrected","why_fr":"explication courte"}],"upgrades":[{"original":"plain phrase used","better":"more idiomatic spoken alternative","why_fr":"pourquoi"}],"model_answer":"a band-9 spoken answer to the same question(s), natural and conversational, not written-style"}
+Bands are whole or half numbers. Judge length and development as the descriptors do (very short answers cap Fluency & Coherence).`;
+}
+async function gradeSpeaking() {
+  if (wordsOf($("#sp-tr").value) < 20) { $("#sp-status").textContent = "Colle d'abord une transcription d'au moins quelques phrases."; return; }
+  const r = await askClaude(speakingPrompt(), $("#sp-status"), $("#sp-grade"));
+  if (!r) return;
+  $("#sp-result").innerHTML = `${renderBands(r.bands || {}, [["FC", "Fluency & Coherence"], ["LR", "Lexical Resource"], ["GRA", "Grammar"]])}
+    <p>${esc(r.summary_fr || "")}</p>${r.pron_fr ? `<p class="note"><b>Prononciation :</b> ${esc(r.pron_fr)}</p>` : ""}
+    ${Array.isArray(r.ceilings_fr) && r.ceilings_fr.length ? `<h4>Ce qui plafonne la note</h4><ul class="tight">${r.ceilings_fr.map(c => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}
+    ${Array.isArray(r.errors) && r.errors.length ? `<h4>Erreurs</h4>${renderFixes(r.errors)}` : ""}
+    ${Array.isArray(r.upgrades) && r.upgrades.length ? `<h4 style="margin-top:14px">Plus idiomatique</h4>${renderFixes(r.upgrades)}` : ""}
+    ${r.model_answer ? `<h4 style="margin-top:14px">Réponse modèle band 9</h4><div class="model">${esc(r.model_answer)}</div><div class="row" style="margin-top:8px"><button class="btn small" id="sp-hear">▶ Écouter la réponse modèle</button></div>` : ""}`;
+  const hear = $("#sp-hear"); if (hear) hear.onclick = () => speakOne(r.model_answer, { lang: "en-GB", g: "m" });
+}
+$$("#sp-tabs button").forEach(b => b.onclick = () => {
+  $$("#sp-tabs button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+  sp.part = b.dataset.p; sp.qi = 0; renderSpeaking();
+});
+
+/* =========================================================
+   PLAN
+   ========================================================= */
+const PLAN = [
+  ["J-14", "Diagnostic", "Ici : les trois sections Listening, le passage Reading, une Task 2 notée par Claude. Note chaque erreur par type de question.", false],
+  ["J-13", "Examen blanc n°1 (L + R + W)", "Cambridge IELTS, un test complet en conditions réelles, 2 h 40 d'affilée. Speaking ici, Parts 1 à 3.", true],
+  ["J-12", "Correction de l'examen blanc", "Classe chaque erreur : distracteur, orthographe, limite de mots, False contre Not Given, temps. Le type qui revient devient la priorité de la semaine.", false],
+  ["J-11", "Reading : types faibles", "Drill True / False / Not Given ici, puis deux passages Cambridge en 18 min chacun. Task 1 graphique linéaire.", false],
+  ["J-10", "Listening Parts 3 et 4", "Deux Parts 3 et deux Parts 4 Cambridge. Réécoute avec transcription, repère les reformulations. Task 2 « discuss both views ».", false],
+  ["J-9", "Writing intensif", "Task 1 diagramme en barres + une Task 2, notées. Réécris le paragraphe le plus faible en t'appuyant sur la version band 9.", false],
+  ["J-8", "Examen blanc n°2 (complet)", "Cambridge, L + R + W d'affilée, puis Speaking complet de 14 min enregistré.", true],
+  ["J-7", "Correction + Speaking Part 3", "Correction de l'examen blanc. Trois séries de Part 3 ici, évaluées. Objectif : 45 à 60 s par réponse, idées abstraites.", false],
+  ["J-6", "Task 1 : processus et plans", "Types absents de cette page : prends-les dans Cambridge. Vocabulaire du processus (passif) et du changement de plan (« was replaced by », « was relocated »).", false],
+  ["J-5", "Reading + Listening en vitesse", "Un test Reading en 55 min pour créer une marge. Deux Parts 1–2 de Listening sans pause.", false],
+  ["J-4", "Examen blanc n°3 (complet)", "Dernier test complet en conditions réelles, même horaire que le jour J si possible.", true],
+  ["J-3", "Correction ciblée", "Uniquement les erreurs de l'examen blanc n°3. Une Task 2 de plus, notée.", false],
+  ["J-2", "Speaking à froid", "Deux simulations complètes, cartes jamais vues. Revois ta liste personnelle d'erreurs fréquentes.", false],
+  ["J-1", "Léger", "30 min de Listening pour garder l'oreille, rien de nouveau. Vérifie l'heure, le lieu, la pièce d'identité. Dors.", false]
+];
+$("#plan-list").innerHTML = PLAN.map(p => `<li class="${p[3] ? "mock" : ""}"><span class="d">${p[0]}</span><div><div class="what">${esc(p[1])}</div><div class="how">${esc(p[2])}</div></div></li>`).join("");
+
+/* ---------------- boot ---------------- */
+renderLisTabs(); renderLis(); renderPassage(); renderDrill(); renderWriting(); renderSpeaking();
+showTab(store.get("tab", "format"));
+getSample();
+</script>
+</body>
+</html>

@@ -1,8 +1,9 @@
 /* 990 — service worker : cache offline (app shell) */
-const CACHE = '990-v32';
+const CACHE = '990-v33';
 const ASSETS = [
   'index.html',
-  'app.js?v=28',
+  'ielts.html',
+  'app.js?v=29',
   'lime.js?v=6',
   'diapason-data.js?v=1',
   'diapason.js?v=1',

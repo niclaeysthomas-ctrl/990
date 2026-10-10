@@ -282,6 +282,7 @@ const app = document.getElementById('app');
 let view = 'home';
 
 function setView(v) {
+  if (v === 'ielts') { location.href = 'ielts.html'; return; }
   view = v;
   document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
   render();
@@ -497,6 +498,12 @@ function renderHome() {
       <div class="body"><div class="t">Revoir mes erreurs</div><div class="d">Rejoue les questions ratées jusqu'à les maîtriser</div></div>
       <div class="badge" style="background:var(--bad);color:#2a0509">${mistakeCount()}</div>
     </button>` : ''}
+
+    <button class="tile" onclick="setView('ielts')">
+      <div class="ic e">🎓</div>
+      <div class="body"><div class="t">IELTS · Salle d'examen</div><div class="d">Les 4 épreuves au format réel, chronométrées · plan 14 jours</div></div>
+      <div class="badge">C2</div>
+    </button>
 
     <button class="tile" onclick="startReview()">
       <div class="ic a">🃏</div>
