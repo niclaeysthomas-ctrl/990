@@ -189,6 +189,24 @@ audio{max-width:100%}
 #td-tasks li:last-child{border-bottom:0}
 .watch{margin:0;padding-left:20px}
 .watch li{margin:6px 0;font-size:.93rem}
+.fb.warn{background:var(--warn-soft);color:var(--ink);border-left:3px solid var(--warn)}
+.fb q{font-family:var(--f-display);font-style:italic;quotes:"« " " »"}
+.rv-sum{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.rv-sum span{font:600 .8rem var(--f-mono);padding:4px 8px;border-radius:3px}
+.rv-sum .b{background:var(--bad-soft);color:var(--bad)} .rv-sum .w{background:var(--warn-soft);color:var(--warn)} .rv-sum .o{background:var(--ok-soft);color:var(--ok)}
+.bars{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+.bar{display:grid;grid-template-columns:minmax(0,9.5em) minmax(0,1fr) 2.2em;gap:8px;align-items:center;font-size:.88rem}
+.bar .track{height:10px;background:var(--accent-soft);border-radius:2px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent)}
+.bar.top .fill{background:var(--bad)}
+.bar .n{font:600 .82rem var(--f-mono);text-align:right;font-variant-numeric:tabular-nums}
+.cn-list{width:100%;border-collapse:collapse;font-size:.86rem;margin-top:8px}
+.cn-list td{border-top:1px solid var(--line);padding:5px 6px;vertical-align:top}
+.cn-list .tag{font:600 .72rem var(--f-mono);white-space:nowrap}
+table.mini{border-collapse:collapse;margin:12px auto 0;font-size:.92rem}
+table.mini th,table.mini td{border:1px solid var(--line);padding:6px 10px;text-align:right}
+table.mini th:first-child,table.mini td:first-child{text-align:left}
+table.mini th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
 .today-title{font-family:var(--f-display);font-weight:600;font-size:1.55rem;margin:0}
 .back{display:inline-block;font:600 .8rem var(--f-mono);text-decoration:none;margin-bottom:10px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -230,6 +248,7 @@ audio{max-width:100%}
   </div>
   <div class="grid4">
     <div class="panel"><h4>Tes bandes</h4><div id="td-bands"></div></div>
+    <div class="panel"><h4>Ce qui te coûte le plus (7 jours)</h4><div class="bars" id="td-cn"></div><button class="btn small" data-go="plan" id="td-cn-go">Ouvrir le carnet</button></div>
     <div class="panel"><h4>Atelier · tes derniers scores</h4><div class="row" id="td-at"></div><p class="note" style="margin-top:8px">10 à 15 minutes par jour, sur ce qui a plafonné ta dernière Task 2.</p></div>
   </div>
   <div class="panel">
@@ -346,10 +365,12 @@ audio{max-width:100%}
     </div>
     <textarea id="w-text" spellcheck="false" placeholder="Écris ta réponse ici. Le correcteur orthographique est désactivé, comme le jour de l'examen."></textarea>
     <div class="row">
-      <button class="btn primary" id="w-grade">Faire noter par Claude</button>
+      <button class="btn primary" id="w-review">Relire ma copie</button>
+      <button class="btn" id="w-grade">Faire noter par Claude</button>
       <button class="btn" id="w-copy">Copier la demande de correction</button>
       <span class="status" id="w-status"></span>
     </div>
+    <div id="w-rv"></div>
     <div id="w-result" class="result"></div>
     <details>
       <summary>Tes points de vigilance (copie du 20/09)</summary>
@@ -431,6 +452,20 @@ audio{max-width:100%}
     <div class="track-grid" id="tr-grid"></div>
     <div class="score" id="tr-overall"></div>
     <div class="tbl-wrap"><table class="hist" id="tr-hist"></table></div>
+  </div>
+
+  <div class="panel" id="carnet">
+    <h4>Carnet d'erreurs</h4>
+    <p class="note">Les erreurs des exercices Listening et Reading de l'app s'ajoutent toutes seules, classées par type. Ajoute celles de tes examens blancs Cambridge et des corrections de Claude : le carnet montre ce qui te coûte le plus de points.</p>
+    <div class="row" style="margin-top:8px">
+      <select id="cn-sec" aria-label="Épreuve"><option value="L">Listening</option><option value="R">Reading</option><option value="W">Writing</option><option value="S">Speaking</option></select>
+      <select id="cn-type" aria-label="Type d'erreur"></select>
+      <input type="text" id="cn-note" placeholder="Ex. Cambridge 19 T2 Q27 : « accomodation »" style="flex:1 1 220px;min-width:0" aria-label="Détail">
+      <button class="btn primary" id="cn-add">Ajouter</button>
+    </div>
+    <div class="row" style="margin-top:10px;justify-content:space-between"><h4 style="margin:0">Les 7 derniers jours</h4><span class="status" id="cn-count"></span></div>
+    <div class="bars" id="cn-bars"></div>
+    <details><summary>Dernières erreurs</summary><div class="tbl-wrap"><table class="cn-list" id="cn-list"></table></div></details>
   </div>
 
   <div class="panel">
@@ -582,12 +617,20 @@ function pickVoice(lang, gender) {
 }
 function speakOne(text, cfg) {
   return new Promise(res => {
-    if (!("speechSynthesis" in window)) return res();
+    if (!("speechSynthesis" in window)) return res("none");
+    if (!VOICES.length) loadVoices();
     const u = new SpeechSynthesisUtterance(text);
     const v = pickVoice(cfg.lang, cfg.g);
     if (v) { u.voice = v; u.lang = v.lang; } else u.lang = cfg.lang;
     u.rate = cfg.rate || 1; u.pitch = cfg.pitch || (cfg.g === "f" ? 1.1 : 0.9);
-    u.onend = res; u.onerror = res;
+    let started = false, done = false, tm = null;
+    const finish = r => { if (done) return; done = true; clearTimeout(tm); res(r); };
+    u.onstart = () => { started = true; };
+    u.onend = () => finish("ok");
+    u.onerror = () => finish(started ? "ok" : "error");
+    // filet de sécurité : certains téléphones n'envoient jamais « onend »
+    tm = setTimeout(() => finish(started ? "ok" : "timeout"), 3000 + text.split(/\s+/).length * 520 / (cfg.rate || 1));
+    try { speechSynthesis.resume(); } catch (e) {}
     speechSynthesis.speak(u);
   });
 }
@@ -732,6 +775,40 @@ const LIS = [
   ]
 },
 {
+  id: "p2b", tab: "Part 2 · QCM", title: "Part 2 — Briefing des bénévoles d'un festival",
+  intro: "You will hear a volunteer coordinator briefing volunteers before a food festival.",
+  instr: "Questions 11–20. Listen and answer the questions.",
+  cast: { N: { lang: "en-GB", g: "m" } },
+  names: { N: "GREG" },
+  lines: [
+    ["N", "Hello everyone, and thank you all for volunteering at this year's Harbourside Food Festival. I'm Greg, the volunteer coordinator, and I'll run through a few things before you start."],
+    ["N", "First of all, timings. The festival opens to the public at ten, but we need all volunteers here by half past eight. I know the email you received said nine o'clock, but the deliveries are arriving earlier than we'd planned, so we'll need the extra time."],
+    ["N", "You'll each be given a T-shirt and a lanyard with your name badge. Please keep the badge on at all times, because that's what security will check. The T-shirts are optional if it gets too hot. Those of you on car park duty will also get a high-visibility jacket, but only while you're actually working there."],
+    ["N", "Now, lunch. In previous years we handed out vouchers for the food stalls, but far too many of them went unused. So this year there's a free hot lunch in the volunteers' tent behind the main stage, served between twelve and two."],
+    ["N", "If anyone is taken ill or there's an accident, please don't try to deal with it yourself, even if you have first-aid training. Radio the first-aid team straight away. They're based right next to the information desk."],
+    ["N", "And at the end of the day, before you go home, please hand your radio back at the information desk. You're welcome to keep the T-shirt as a thank-you from us."],
+    ["N", "Right, your areas for the day. Priya, you said you'd prefer something quieter, so I've put you on the information desk rather than the ticket gates."],
+    ["N", "Tom, I had you down for the ticket gates first thing. Actually, wait, I've just been told we've got enough people there, so Tom, you'll be on the recycling points instead, helping visitors sort their waste."],
+    ["N", "Megan, as you've worked with young people before, you'll be running the activities in the children's area."],
+    ["N", "Daniel, you asked to be near the music, but the main stage team is already full, I'm afraid. So you're on car park duty. At least it's close to the stage."],
+    ["N", "And finally, Sofia, you're on the ticket gates, scanning tickets and checking bags. Any questions? No? Great, let's get started."]
+  ],
+  qs: [
+    { n: 11, instr: "Questions 11–15. Choose the correct letter, <b>A, B or C</b>.", pre: "Volunteers must arrive by", opts: ["8.00 a.m.", "8.30 a.m.", "9.00 a.m."], ans: ["B"] },
+    { n: 12, pre: "What must volunteers wear at all times?", opts: ["a festival T-shirt", "a name badge", "a high-visibility jacket"], ans: ["B"] },
+    { n: 13, pre: "How will volunteers get lunch this year?", opts: ["with vouchers for the food stalls", "in a tent behind the main stage", "from a packed lunch handed out in the morning"], ans: ["B"] },
+    { n: 14, pre: "If someone is injured, volunteers should", opts: ["give first aid if they are trained.", "contact the first-aid team.", "take the person to the information desk."], ans: ["B"] },
+    { n: 15, pre: "At the end of the day, volunteers must return", opts: ["their T-shirt.", "their name badge.", "their radio."], ans: ["C"] },
+    { n: 16, instr: "Questions 16–20. Which area will each volunteer work in? Choose <b>FIVE</b> answers from the box and write the correct letter, <b>A–F</b>.",
+      box: [["A", "car park"], ["B", "information desk"], ["C", "main stage"], ["D", "recycling points"], ["E", "children's area"], ["F", "ticket gates"]],
+      pre: "Priya", sel: "ABCDEF", ans: ["B"] },
+    { n: 17, pre: "Tom", sel: "ABCDEF", ans: ["D"] },
+    { n: 18, pre: "Megan", sel: "ABCDEF", ans: ["E"] },
+    { n: 19, pre: "Daniel", sel: "ABCDEF", ans: ["A"] },
+    { n: 20, pre: "Sofia", sel: "ABCDEF", ans: ["F"] }
+  ]
+},
+{
   id: "p3", tab: "Part 3 · Discussion", title: "Part 3 — Deux étudiants préparent leur rapport",
   intro: "You will hear two environmental science students, Maya and Liam, discussing their research project on urban beekeeping.",
   instr: "Questions 21–30. Listen and answer the questions.",
@@ -854,6 +931,7 @@ function renderLis() {
     <div class="row">
       <button class="btn primary" id="lis-play">▶ Lancer l'écoute</button>
       <button class="btn" id="lis-stop">■ Arrêter</button>
+      <button class="btn" id="lis-test">Tester le son</button>
       <label class="note"><input type="checkbox" id="lis-train"> Mode entraînement (réécoute autorisée)</label>
       <span class="status" id="lis-status"></span>
     </div>
@@ -868,14 +946,20 @@ function renderLis() {
   if (!("speechSynthesis" in window)) { playBtn.disabled = true; status.textContent = "Ton navigateur ne propose pas de synthèse vocale : lis la transcription à la place."; }
   if (lisState.played[s.id] && !$("#lis-train").checked) { playBtn.disabled = true; status.textContent = "Écoute déjà jouée. Coche le mode entraînement pour réécouter."; }
   $("#lis-train").onchange = e => { if (e.target.checked) { playBtn.disabled = !("speechSynthesis" in window); status.textContent = ""; } };
+  $("#lis-test").onclick = () => soundTest(status);
   playBtn.onclick = async () => {
     if (lisState.playing) return;
-    loadVoices();
-    if (!VOICES.some(v => /^en/i.test(v.lang))) status.textContent = "Aucune voix anglaise trouvée sur l'appareil : le texte sera lu avec la voix par défaut.";
+    unlockAudio(); loadVoices();
     lisState.playing = true; lisState.played[s.id] = true;
     playBtn.disabled = true;
-    status.textContent = "30 secondes pour lire les questions, comme à l'examen…";
-    for (let i = 30; i > 0 && lisState.playing; i--) { status.textContent = `Lis les questions : ${i} s`; await new Promise(r => setTimeout(r, 1000)); }
+    // la consigne est lue tout de suite, pendant l'appui : c'est ce qui autorise le son sur téléphone
+    status.textContent = "Consigne…";
+    const first = s.cast[Object.keys(s.cast)[0]];
+    const r0 = await speakOne(s.intro + " First, you have some time to look at the questions.", first);
+    if (r0 === "timeout" || r0 === "error") status.textContent = "Pas de son ? Touche « Tester le son ». Sur iPhone, coupe le mode silencieux.";
+    if (!VOICES.some(v => /^en/i.test(v.lang))) status.textContent = "Aucune voix anglaise trouvée sur l'appareil : le texte sera lu avec la voix par défaut.";
+    await new Promise(r => setTimeout(r, 1200));
+    for (let i = 30; i > 0 && lisState.playing; i--) { if (!/Pas de son|Aucune voix/.test(status.textContent) || i < 27) status.textContent = `Lis les questions : ${i} s`; await new Promise(r => setTimeout(r, 1000)); }
     for (let i = 0; i < s.lines.length && lisState.playing; i++) {
       status.textContent = `Lecture en cours · ${i + 1}/${s.lines.length}`;
       const [spk, say] = s.lines[i];
@@ -889,7 +973,8 @@ function renderLis() {
   $("#lis-stop").onclick = () => { stopAudio(); status.textContent = "Écoute arrêtée."; };
   $("#lis-clear").onclick = () => { s.qs.forEach(q => { if (q.opts) $$(`input[name="a-${s.id}-${q.n}"]`).forEach(r => r.checked = false); else $(`#a-${s.id}-${q.n}`).value = ""; $(`#q-${s.id}-${q.n}`).className = "q" + (q.opts ? " mcq" : ""); $(`#q-${s.id}-${q.n} .fix`)?.remove(); }); $("#lis-score").innerHTML = ""; };
   $("#lis-check").onclick = () => {
-    let ok = 0;
+    let ok = 0; const src = "App · Listening " + s.tab; errClearAuto(src);
+    const answered = s.qs.filter(q => String(lisVal(s, q)).trim()).length, skipBlank = answered < s.qs.length / 2;
     s.qs.forEach(q => {
       const row = $(`#q-${s.id}-${q.n}`), val = lisVal(s, q);
       row.querySelector(".fix")?.remove();
@@ -897,9 +982,11 @@ function renderLis() {
       let why = "";
       if (good && s.maxWords && wordCountAns(val.replace(/^(a|an|the)\s+/i, "")) > s.maxWords) { good = false; why = " (limite de mots dépassée)"; }
       row.className = "q " + (q.opts ? "mcq " : "") + (good ? "ok" : "bad");
+      if (!good && !(skipBlank && !String(val).trim())) errLog({ sec: "L", src, q: q.n, type: guessL(s, q, val, why), given: val, right: q.ans[0] });
       if (good) ok++; else row.insertAdjacentHTML(q.opts ? "afterbegin" : "beforeend", `<span class="fix"${q.opts ? ' style="order:3;margin-left:auto"' : ""}>→ ${esc(q.ans[0])}${why}</span>`);
     });
     const n = s.qs.length, proj = Math.round(ok / n * 40);
+    renderCarnet();
     $("#lis-score").innerHTML = `<div class="score">Score <b>${ok}/${n}</b> · rapporté sur 40 : ≈ ${proj}/40 → band ≈ ${lisBand(proj)}<br><span class="note">${ok === n ? "Sans faute. Passe aux audios Cambridge, plus rapides et moins articulés." : "Pour chaque erreur, retrouve dans la transcription le piège exact : correction de l'intervenant, distracteur, orthographe ou limite de mots."}</span></div>`;
   };
 }
@@ -1022,6 +1109,41 @@ const PASSAGES = [
         text: "Ebbinghaus tested himself using lists of (27) ____ syllables.\nA task that is too demanding results in (28) ____ instead of learning.",
         ans: { 27: ["meaningless"], 28: ["frustration"] } }
     ]
+  },
+  {
+    id: "r3", tab: "Passage 3", title: "Rewilding: Restoring Nature or Rewriting It?",
+    paras: [
+      ["A", "Few ideas in conservation have spread as quickly, or caused as much disagreement, as rewilding. The term emerged among North American conservationists in the 1990s to describe a specific strategy: protecting large areas of wilderness, connecting them with corridors, and restoring the predators that once regulated ecosystems. Three decades on, the word is applied to projects as different as returning wolves to mountain ranges and leaving a suburban lawn unmown. Critics argue that a term which can mean almost anything is in danger of meaning nothing at all."],
+      ["B", "Supporters respond that the diversity of projects is a strength rather than a weakness. What unites them, according to the ecologist Elena Varga, is a shift in attitude: instead of managing land to preserve a particular landscape, rewilding aims to restore natural processes and then step back. 'Traditional conservation often freezes nature at a moment chosen by humans,' she argues. 'Rewilding asks what the land would do if we let it.' The outcome, she concedes, is inherently unpredictable, and that is precisely what makes some landowners uneasy."],
+      ["C", "The best-known example of a predator transforming an ecosystem comes from the reintroduction of wolves to a large national park in the 1990s. Early accounts described a dramatic chain reaction: wolves reduced the number of deer, vegetation along rivers recovered, and riverbanks stabilised. More recent research has complicated this story. The ecologist Marcus Hale points out that deer numbers were also affected by hunting outside the park and by several severe winters, and that the vegetation recovered unevenly. 'The wolves mattered,' he says, 'but the idea that they single-handedly restored the park is a myth that has been repeated so often it now passes for fact.'"],
+      ["D", "Economic arguments have become increasingly central to the debate. In many parts of Europe, farming on marginal upland land survives only because of subsidies, and younger people are leaving rural areas. The economist Tom Okafor has calculated that, in some regions, nature-based tourism already generates more local employment per hectare than sheep farming. Yet he cautions against treating tourism as a universal solution: visitors are concentrated in a few accessible sites, and the income they bring rarely reaches the communities that bear the costs of living alongside large predators."],
+      ["E", "Those costs are not merely financial. Farmers whose livestock are killed by wolves or lynx usually receive compensation, but compensation schemes are slow and, many say, fail to recognise the distress of losing animals that have been bred over generations. Sarah Dunmore, who represents hill farmers in northern England, argues that the debate is too often framed as a contest between progressive environmentalists and backward-looking landowners. 'Most farmers I work with care deeply about wildlife,' she says. 'What they object to is having decisions made about their land by people who will never have to live with the consequences.'"],
+      ["F", "Historians have raised a more fundamental question: restored to what? The landscapes that rewilding seeks to recreate are often imagined as natural, yet humans have shaped them for thousands of years. The historian James Whitlock notes that many of Europe's most valued habitats, such as wildflower meadows, exist only because of centuries of grazing and mowing, and would disappear if left alone. In his view, the choice is not between human influence and its absence, but between different kinds of human influence."],
+      ["G", "Perhaps the most promising projects are those that abandon the idea of a single target landscape altogether. On several former farms, large grazing animals such as cattle, ponies and pigs have been allowed to roam with minimal intervention, and the resulting mosaic of scrub, grassland and woodland has attracted species that had not been recorded there for decades. These experiments are small, and their long-term trajectory is uncertain. But they suggest that rewilding may be most useful not as a fixed blueprint, but as a willingness to let ecological processes surprise us."]
+    ],
+    blocks: [
+      { kind: "match", letters: "ABCDE", instr: "Questions 29–33. Look at the following statements and the list of people below. Match each statement with the correct person, <b>A–E</b>. <b>NB</b> You may use any letter more than once.",
+        box: [["A", "Elena Varga"], ["B", "Marcus Hale"], ["C", "Tom Okafor"], ["D", "Sarah Dunmore"], ["E", "James Whitlock"]],
+        items: [
+          [29, "The financial benefits of a new activity are unevenly distributed.", "C", "Okafor : « the income they bring rarely reaches the communities that bear the costs »."],
+          [30, "A widely repeated account of a success has been overstated.", "B", "Hale : « a myth that has been repeated so often it now passes for fact »."],
+          [31, "Some highly valued landscapes depend on continued human activity.", "E", "Whitlock : les prairies fleuries « exist only because of centuries of grazing and mowing »."],
+          [32, "Uncertain outcomes are an inherent part of the approach.", "A", "Varga : « The outcome, she concedes, is inherently unpredictable »."],
+          [33, "People affected by decisions are not adequately consulted.", "D", "Dunmore : « decisions made about their land by people who will never have to live with the consequences »."]
+        ] },
+      { kind: "boxgap", instr: "Questions 34–37. Complete the summary using the list of words, <b>A–H</b>, below.",
+        box: [["A", "vegetation"], ["B", "winters"], ["C", "uneven"], ["D", "myth"], ["E", "predators"], ["F", "rapid"], ["G", "farmers"], ["H", "subsidies"]],
+        text: "The reintroduction of wolves to a national park is often cited as proof that predators can transform ecosystems. Early reports claimed that the wolves reduced deer numbers, which allowed riverside (34) ____ to recover. However, deer were also affected by hunting and by harsh (35) ____, and the recovery itself was (36) ____. One researcher describes the claim that wolves alone were responsible as a (37) ____.",
+        ans: { 34: "A", 35: "B", 36: "C", 37: "D" },
+        expl: "Résumé : 34 A vegetation · 35 B winters · 36 C uneven (« recovered unevenly » ; F « rapid » est le piège logique) · 37 D myth. Dans un résumé à cases, vérifie d'abord la nature du mot attendu (nom, adjectif) : cela élimine la moitié de la liste." },
+      { kind: "match", letters: "ABCDEF", instr: "Questions 38–40. Complete each sentence with the correct ending, <b>A–F</b>, below.",
+        box: [["A", "do not reflect the full impact of losing livestock."], ["B", "have been rejected by most environmental groups."], ["C", "has become too broad to be useful."], ["D", "depend on the reintroduction of large predators."], ["E", "have attracted species that had been absent for many years."], ["F", "were first developed in northern England."]],
+        items: [
+          [38, "Critics are concerned that the term 'rewilding'", "C", "§A : « a term which can mean almost anything is in danger of meaning nothing at all »."],
+          [39, "According to many farmers, compensation schemes", "A", "§E : ils « fail to recognise the distress of losing animals »."],
+          [40, "Projects using large grazing animals", "E", "§G : « attracted species that had not been recorded there for decades ». D est le piège : ces projets n'impliquent pas de prédateurs."]
+        ] }
+    ]
   }
 ];
 
@@ -1034,12 +1156,14 @@ function renderPassageX(P, host) {
     let h = `<div class="instr">${b.instr}</div>`;
     if (b.kind === "heading") h += `<ul class="heads">${b.list.map(x => `<li><b>${x[0]}</b>${esc(x[1])}</li>`).join("")}</ul>` + b.items.map(it => row(it[0], `Paragraph ${it[1]}`, sel(it[0], b.list.map(x => x[0])))).join("");
     if (b.kind === "tf") h += b.items.map(it => row(it[0], esc(it[1]), radios(it[0], b.vals))).join("");
+    if (b.box) h += `<div class="optbox">${b.box.map(x => `<div><b>${x[0]}</b>${esc(x[1])}</div>`).join("")}</div>`;
+    if (b.kind === "boxgap") h += `<p class="gaptext">${esc(b.text).replace(/\((\d+)\) ____/g, (m, n) => `<span class="qn">${n}</span>${sel(n, b.box.map(x => x[0]))}`)}</p>`;
     if (b.kind === "match") h += b.items.map(it => row(it[0], esc(it[1]), sel(it[0], b.letters.split("")))).join("");
     if (b.kind === "mcq") h += b.items.map(it => row(it[0], esc(it[1]), `<div class="mcq-opts">${it[2].map((o, i) => { const L = "ABCD"[i]; return `<label><input type="radio" name="${pid}-r${it[0]}" value="${L}"> <b>${L}</b> ${esc(o)}</label>`; }).join("")}</div>`, " mcq")).join("");
     if (b.kind === "gap") h += `<p class="gaptext">${esc(b.text).replace(/\((\d+)\) ____/g, (m, n) => `<span class="qn">${n}</span><input type="text" id="${pid}-a${n}" autocomplete="off" autocapitalize="off" spellcheck="false" style="width:9em" aria-label="Question ${n}">`)}</p>`;
     return h;
   }).join("");
-  const nQ = P.blocks.reduce((a, b) => a + (b.kind === "gap" ? Object.keys(b.ans).length : b.items.length), 0);
+  const nQ = P.blocks.reduce((a, b) => a + (b.items ? b.items.length : Object.keys(b.ans).length), 0);
   const first = P.blocks[0].items ? P.blocks[0].items[0][0] : +Object.keys(P.blocks[0].ans)[0];
   host.innerHTML = `<div class="two">
     <div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h4 style="margin:0">Reading Passage · Questions ${first}–${first + nQ - 1}</h4><span class="note">≈ ${P.paras.reduce((a, p) => a + p[1].split(/\s+/).length, 0)} mots</span></div>
@@ -1056,12 +1180,18 @@ function renderPassageX(P, host) {
   const mark = (n, good, right) => { const r = $(`#${pid}-q${n}`); if (!r) return; const mcq = r.classList.contains("mcq"); r.className = "q" + (mcq ? " mcq " : " ") + (good ? "ok" : "bad"); r.querySelector(".fix")?.remove(); if (!good) r.insertAdjacentHTML("beforeend", `<span class="fix">→ ${esc(right)}</span>`); };
   $(`#${pid}-check`).onclick = () => {
     tmr.stop(); let ok = 0; const expl = [];
+    const src = "App · Reading " + P.tab; errClearAuto(src);
+    const filled = $$(`#${pid}-check`).length ? $$(`[id^="${pid}-a"]`).filter(el => el.value).length + $$(`input[name^="${pid}-r"]:checked`).length : 0;
+    const skipBlank = filled < nQ / 2;
+    const lg = (n, type, given, right) => { if (skipBlank && !String(given || "").trim()) return; errLog({ sec: "R", src, q: n, type, given, right }); };
     P.blocks.forEach(b => {
-      if (b.kind === "heading") { b.items.forEach(it => { const good = $(`#${pid}-a${it[0]}`).value === it[2]; mark(it[0], good, it[2]); if (good) ok++; }); if (b.note) expl.push(`<p><b>${esc(b.note)}</b></p>`); }
-      if (b.kind === "match") b.items.forEach(it => { const good = $(`#${pid}-a${it[0]}`).value === it[2]; mark(it[0], good, it[2]); if (good) ok++; expl.push(`<p><b>${it[0]}. ${it[2]}</b> — ${esc(it[3])}</p>`); });
-      if (b.kind === "tf" || b.kind === "mcq") b.items.forEach(it => { const ans = b.kind === "tf" ? it[2] : it[3], ex = b.kind === "tf" ? it[3] : it[4]; const v = ($(`input[name="${pid}-r${it[0]}"]:checked`) || {}).value; const good = v === ans; mark(it[0], good, ans); if (good) ok++; expl.push(`<p><b>${it[0]}. ${ans}</b> — ${esc(ex)}</p>`); });
-      if (b.kind === "gap") Object.entries(b.ans).forEach(([n, a]) => { const el = $(`#${pid}-a${n}`); const good = a.map(norm).includes(norm(el.value)) && wordCountAns(el.value) <= b.max; el.style.borderColor = good ? "var(--ok)" : "var(--bad)"; el.style.background = good ? "var(--ok-soft)" : "var(--bad-soft)"; if (good) ok++; else expl.push(`<p><b>${n}.</b> Réponse : <i>${esc(a[0])}</i>${wordCountAns(el.value) > b.max ? " (ta réponse dépasse la limite de mots)" : ""}</p>`); });
+      if (b.kind === "heading") { b.items.forEach(it => { const v = $(`#${pid}-a${it[0]}`).value, good = v === it[2]; mark(it[0], good, it[2]); if (good) ok++; else lg(it[0], v ? "Titres" : "Temps / non répondu", v, it[2]); }); if (b.note) expl.push(`<p><b>${esc(b.note)}</b></p>`); }
+      if (b.kind === "match") b.items.forEach(it => { const v = $(`#${pid}-a${it[0]}`).value, good = v === it[2]; mark(it[0], good, it[2]); if (good) ok++; else lg(it[0], v ? "Appariement" : "Temps / non répondu", v, it[2]); expl.push(`<p><b>${it[0]}. ${it[2]}</b> — ${esc(it[3])}</p>`); });
+      if (b.kind === "tf" || b.kind === "mcq") b.items.forEach(it => { const ans = b.kind === "tf" ? it[2] : it[3], ex = b.kind === "tf" ? it[3] : it[4]; const v = ($(`input[name="${pid}-r${it[0]}"]:checked`) || {}).value; const good = v === ans; mark(it[0], good, ans); if (good) ok++; else lg(it[0], !v ? "Temps / non répondu" : b.kind === "mcq" ? "Distracteur" : (v === "NOT GIVEN" || ans === "NOT GIVEN") ? "Not Given" : "True / False", v || "", ans); expl.push(`<p><b>${it[0]}. ${ans}</b> — ${esc(ex)}</p>`); });
+      if (b.kind === "gap") Object.entries(b.ans).forEach(([n, a]) => { const el = $(`#${pid}-a${n}`); const good = a.map(norm).includes(norm(el.value)) && wordCountAns(el.value) <= b.max; el.style.borderColor = good ? "var(--ok)" : "var(--bad)"; el.style.background = good ? "var(--ok-soft)" : "var(--bad-soft)"; if (good) ok++; else { lg(+n, guessGap(el.value, a, b.max), el.value, a[0]); } if (!good) expl.push(`<p><b>${n}.</b> Réponse : <i>${esc(a[0])}</i>${wordCountAns(el.value) > b.max ? " (ta réponse dépasse la limite de mots)" : ""}</p>`); });
+      if (b.kind === "boxgap") { Object.entries(b.ans).forEach(([n, a]) => { const el = $(`#${pid}-a${n}`), v = el.value, good = v === a; el.style.borderColor = good ? "var(--ok)" : "var(--bad)"; el.style.background = good ? "var(--ok-soft)" : "var(--bad-soft)"; if (good) ok++; else lg(+n, v ? "Résumé à cases" : "Temps / non répondu", v, a); }); if (b.expl) expl.push(`<p>${esc(b.expl)}</p>`); }
     });
+    renderCarnet();
     $(`#${pid}-expl`).innerHTML = expl.join("");
     const used = 1200 - tmr.left, proj = Math.round(ok / nQ * 40);
     $(`#${pid}-score`).innerHTML = `<div class="score">Score <b>${ok}/${nQ}</b> en ${fmtTime(used)} · rapporté sur 40 : ≈ ${proj}/40 → band ≈ ${readBand(proj)}<br><span class="note">Pour chaque erreur, retrouve la phrase du texte qui donne la réponse. Si tu ne la trouves pas, c'était probablement Not Given.</span></div>`;
@@ -1169,6 +1299,10 @@ const WTASKS = [
     prompt: "The diagram below shows how glass bottles are recycled.\n\nSummarise the information by selecting and reporting the main features.\n\nWrite at least 150 words.",
     chart: () => processChart(),
     data: "Process diagram, glass bottle recycling, 8 stages in a cycle: 1 used bottles collected from bottle banks; 2 transported by truck to a recycling plant; 3 sorted by colour (clear, green, brown); 4 washed to remove labels and dirt; 5 crushed into small pieces called cullet; 6 cullet melted with sand at 1,500°C; 7 molten glass moulded into new bottles; 8 new bottles filled and delivered to shops, then sold to consumers (back to stage 1)." },
+  { id: "t1d", task: 1, label: "Task 1 · Tableau — fréquentation de quatre musées", min: 150, time: 20,
+    prompt: "The table below shows the number of visitors (in thousands) to four museums in one city in 2005, 2015 and 2025.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.\n\nWrite at least 150 words.",
+    chart: () => `<div class="tbl-wrap"><table class="mini mono"><tr><th>Museum</th><th>2005</th><th>2015</th><th>2025</th></tr><tr><td>Science</td><td>420</td><td>610</td><td>890</td></tr><tr><td>Art</td><td>530</td><td>560</td><td>540</td></tr><tr><td>History</td><td>300</td><td>250</td><td>190</td></tr><tr><td>Maritime</td><td>150</td><td>290</td><td>350</td></tr></table></div>`,
+    data: "Table, visitors in thousands. Science museum: 2005 420, 2015 610, 2025 890. Art: 530, 560, 540. History: 300, 250, 190. Maritime: 150, 290, 350." },
   { id: "t2a", task: 2, label: "Task 2 · Opinion — universités et emploi", min: 250, time: 40, prompt: "Some people believe that universities should focus on equipping graduates with skills for the workplace rather than providing knowledge for its own sake.\n\nTo what extent do you agree or disagree?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
   { id: "t2b", task: 2, label: "Task 2 · Deux points de vue — embouteillages", min: 250, time: 40, prompt: "Some argue that the best way to reduce traffic congestion is to make public transport free, while others believe that drivers should be charged to enter city centres.\n\nDiscuss both these views and give your own opinion.\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
   { id: "t2c", task: 2, label: "Task 2 · Problème-solution — logement des jeunes", min: 250, time: 40, prompt: "In many countries, young people are finding it increasingly difficult to afford a home of their own.\n\nWhat are the causes of this problem, and what measures could be taken to address it?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
@@ -1176,6 +1310,10 @@ const WTASKS = [
   { id: "t2e", task: 2, label: "Task 2 · Question double — suivre les célébrités", min: 250, time: 40, prompt: "Many people today follow the lives of celebrities closely on social media.\n\nWhy is this the case? Is it a positive or negative development?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
   { id: "t2f", task: 2, label: "Task 2 · Opinion — exploration spatiale", min: 250, time: 40, prompt: "Governments should not spend money on space exploration until poverty has been eliminated on Earth.\n\nTo what extent do you agree or disagree?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
   { id: "t2g", task: 2, label: "Task 2 · Deux points de vue — langues à l'école primaire", min: 250, time: 40, prompt: "Some people think children should begin learning a foreign language at primary school, while others believe it is better to wait until secondary school.\n\nDiscuss both these views and give your own opinion.\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
+  { id: "t2i", task: 2, label: "Task 2 · Problème-solution — écart riches / pauvres", min: 250, time: 40, prompt: "In many countries, the gap between the rich and the poor is widening.\n\nWhat problems does this cause, and what solutions can you suggest?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
+  { id: "t2j", task: 2, label: "Task 2 · Deux points de vue — musées : éduquer ou divertir", min: 250, time: 40, prompt: "Some people say that the main purpose of museums and galleries is to educate, while others think that they should mainly entertain.\n\nDiscuss both these views and give your own opinion.\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
+  { id: "t2k", task: 2, label: "Task 2 · Question double — voiture contre transports", min: 250, time: 40, prompt: "Nowadays, more and more people choose to own a car rather than use public transport.\n\nWhy is this the case? What can be done to encourage people to use public transport?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
+  { id: "t2l", task: 2, label: "Task 2 · Opinion — aide des pays riches", min: 250, time: 40, prompt: "Wealthy nations have a duty to share their wealth with poorer nations.\n\nTo what extent do you agree or disagree?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
   { id: "t2h", task: 2, label: "Task 2 · Opinion — IA et orientation", min: 250, time: 40, prompt: "Artificial intelligence will soon make many professional jobs unnecessary, so schools should stop preparing students for careers that may no longer exist.\n\nTo what extent do you agree or disagree?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." }
 ];
 const CHECK = {
@@ -1191,7 +1329,7 @@ function renderWriting() {
   $("#w-check").innerHTML = CHECK[t.task].map((c, i) => `<li><input type="checkbox" id="wc-${t.task}-${i}"><label for="wc-${t.task}-${i}">${esc(c)}</label></li>`).join("");
   wTimer && wTimer.stop();
   wTimer = makeTimer($("#w-timer"), t.time * 60, () => { beep(); $("#w-status").textContent = "Temps écoulé. À l'examen, la copie serait ramassée."; });
-  $("#w-start").disabled = false; $("#w-result").innerHTML = ""; $("#w-status").textContent = "";
+  $("#w-start").disabled = false; $("#w-result").innerHTML = ""; $("#w-rv").innerHTML = ""; $("#w-status").textContent = "";
   updateWc();
 }
 function wordsOf(s) { return (s.trim().match(/\S+/g) || []).length; }
@@ -1442,7 +1580,7 @@ const PLAN = [
     [15, "Atelier · Thèse : 6 sujets", "atelier:these"],
     [30, "Listening : Parts 1 et 3 ici, une seule écoute chacune", "listening:p1"],
     [20, "Reading : passage 2 ici, 20 min", "reading:r2"],
-    [45, "Writing : Task 2 « universités et emploi », plan de 5 min puis 35 min d'écriture, puis notation", "writing:t2a"],
+    [45, "Writing : Task 2 « universités et emploi », plan de 5 min, 35 min d'écriture, « Relire ma copie », puis notation", "writing:t2a"],
     [5, "Entre tes résultats dans le suivi, puis copie ton bilan pour Claude", "today"]]],
   [13, "Examen blanc n°1", "Ta ligne de départ officielle, dans les conditions du 24.", true, [
     [160, "Cambridge IELTS Academic : un test complet, Listening, Reading et Writing d'affilée"],
@@ -1456,7 +1594,7 @@ const PLAN = [
   [11, "Reading et Task 1", "Zéro erreur sur Not Given, et une Task 1 avec un vrai overview.", false, [
     [10, "Atelier · Plan en 5 min", "atelier:plan"],
     [40, "Deux passages Cambridge, 18 min chacun"],
-    [20, "Reading : passage 1 ici", "reading:r1"],
+    [20, "Reading : passage 3 ici (le plus dur : appariement de personnes, résumé à cases)", "reading:r3"],
     [30, "Writing : Task 1 « processus », notée", "writing:t1c"],
     [10, "Atelier · Connecteurs", "atelier:connect"]]],
   [10, "Listening universitaire", "Les Parts 3 et 4 séparent 8 et 9.", false, [
@@ -1500,7 +1638,7 @@ const PLAN = [
     [20, "Listening : une Part 4 Cambridge"],
     [15, "Relis tes points de vigilance et la Lime", "today"]]],
   [1, "Léger", "Arriver reposé. Rien de nouveau.", false, [
-    [20, "Listening : une partie, pour garder l'oreille", "listening:p2"],
+    [20, "Listening : Part 2 QCM ici, pour garder l'oreille", "listening:p2b"],
     [10, "Relis « Le jour J » et ta convocation", "plan"],
     [10, "Prépare pièce d'identité, eau, crayons. Couche-toi tôt."]]],
   [0, "Examen", "Listening, Reading et Writing d'affilée. Speaking le même jour ou dans les sept jours.", true, [
@@ -1879,6 +2017,8 @@ function renderToday() {
   $("#td-watch").innerHTML = WATCH.map(w => `<li><b>${esc(w[0])}.</b> ${esc(w[1])}</li>`).join("");
   $("#td-at").innerHTML = AT_SETS.map(s => { const r = store.get("at:" + s.id, null); return `<button class="btn small" data-go="atelier:${s.id}">${esc(s.name)}${r && r.last ? " · " + esc(r.last) : ""}</button>`; }).join("");
   $$("#td-at [data-go]").forEach(b => b.onclick = () => goTo(b.dataset.go));
+  renderErrBars($("#td-cn"), 4);
+  $("#td-cn-go").onclick = () => { goTo("plan"); setTimeout(() => $("#carnet").scrollIntoView(), 50); };
   $("#td-note").value = store.get("note:" + key, "");
   $("#td-note").oninput = e => store.set("note:" + key, e.target.value);
 }
@@ -1898,10 +2038,191 @@ function buildReport() {
   if (!sc.length) lines.push("(aucune)"); else sc.forEach(e => lines.push(`- ${e.d} · ${SK[e.k]} : ${e.band.toFixed(1)}${e.raw != null ? ` (${e.raw}/40)` : ""}${e.src ? " · " + e.src : ""}`));
   lines.push("", "## Atelier");
   AT_SETS.forEach(s => { const r = store.get("at:" + s.id, null); lines.push(`- ${s.name} : ${r && r.last ? `dernier ${r.last}${s.kind !== "plan" ? `, meilleur ${Math.round((r.best || 0) * 100)} %` : ""}, ${r.runs} série(s), le ${r.date}` : "pas encore fait"}`); });
+  const st = errStats(7);
+  lines.push("", "## Carnet d'erreurs (7 jours)");
+  if (!st.length) lines.push("(aucune erreur enregistrée)"); else st.forEach(([k, n]) => lines.push(`- ${k} : ${n}`));
   lines.push("", "## Mon ressenti", ($("#td-note").value || "").trim() || "(rien noté)", "", "---",
     "Claude, tu es mon guide IELTS jusqu'au 24 octobre. Mes points faibles connus : position qui change entre l'introduction et la conclusion, paragraphes qui sortent du sujet, connecteurs imprécis, registre trop oral, temps verbaux ; dernière Task 2 notée 6/9 (TR 6, CC 6, LR 7, GRA 6).",
     "À partir de ce bilan, réponds en trois parties courtes : 1) ce qui progresse et ce qui bloque, en trois lignes ; 2) ce que tu changes au programme de demain et pourquoi ; 3) un exercice ciblé de 10 minutes pour demain, avec son corrigé à part.");
   return lines.join("\n");
+}
+
+/* =========================================================
+   CARNET D'ERREURS
+   ========================================================= */
+const ERR_TYPES = {
+  L: ["Orthographe", "Limite de mots", "Pluriel", "Distracteur", "Compréhension", "Non répondu"],
+  R: ["Not Given", "True / False", "Titres", "Appariement", "Résumé à cases", "Distracteur", "Orthographe", "Limite de mots", "Compréhension", "Temps / non répondu"],
+  W: ["Position qui change", "Hors sujet", "Partie de la question oubliée", "Idée neuve en conclusion", "Overview manquant", "Connecteur", "Registre", "Temps verbal", "Articles / accords", "Prépositions", "Longueur / temps"],
+  S: ["Réponses trop courtes", "Hésitations", "Grammaire", "Vocabulaire", "Prononciation"]
+};
+function lev(a, b) {
+  const m = a.length, n = b.length; if (!m) return n; if (!n) return m;
+  let prev = Array.from({ length: n + 1 }, (_, j) => j);
+  for (let i = 1; i <= m; i++) { const cur = [i]; for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); prev = cur; }
+  return prev[n];
+}
+function guessGap(val, answers, max) {
+  if (!String(val || "").trim()) return "Temps / non répondu";
+  if (max && wordCountAns(val) > max) return "Limite de mots";
+  const v = norm(val), r = answers.map(norm);
+  if (r.some(x => x.replace(/s$/, "") === v.replace(/s$/, ""))) return "Pluriel";
+  if (r.some(x => lev(v, x) <= Math.max(1, Math.floor(x.length / 5)))) return "Orthographe";
+  return "Compréhension";
+}
+function guessL(s, q, val, why) {
+  if (!String(val || "").trim()) return "Non répondu";
+  if (q.opts || q.sel || s.type === "letter") return "Distracteur";
+  if (why || (s.maxWords && wordCountAns(String(val).replace(/^(a|an|the)\s+/i, "")) > s.maxWords)) return "Limite de mots";
+  const g = guessGap(val, q.ans, 0);
+  return g === "Temps / non répondu" ? "Non répondu" : g;
+}
+function errAll() { return store.get("errors", []); }
+function errClearAuto(src) { const d = isoDay(new Date()); store.set("errors", errAll().filter(e => !(e.auto && e.src === src && e.d === d))); }
+function errLog(e) { const all = errAll(); all.push(Object.assign({ d: isoDay(new Date()), auto: true }, e)); store.set("errors", all.slice(-600)); }
+function errStats(days) {
+  const from = new Date(); from.setDate(from.getDate() - days + 1); const f = isoDay(from);
+  const c = {}; errAll().filter(e => e.d >= f).forEach(e => { const k = ({ L: "Listening", R: "Reading", W: "Writing", S: "Speaking" })[e.sec] + " · " + e.type; c[k] = (c[k] || 0) + 1; });
+  return Object.entries(c).sort((a, b) => b[1] - a[1]);
+}
+function renderErrBars(host, max) {
+  const st = errStats(7).slice(0, max || 8);
+  if (!st.length) { host.innerHTML = `<p class="note">Rien pour l'instant. Les erreurs des exercices de l'app apparaîtront ici dès ta première correction.</p>`; return; }
+  const top = st[0][1];
+  host.innerHTML = st.map(([k, n], i) => `<div class="bar${i < 2 ? " top" : ""}"><span>${esc(k)}</span><span class="track"><span class="fill" style="width:${Math.round(n / top * 100)}%;display:block"></span></span><span class="n">${n}</span></div>`).join("");
+}
+function renderCarnet() {
+  if (!$("#cn-bars")) return;
+  renderErrBars($("#cn-bars"));
+  const all = errAll();
+  const st = errStats(7);
+  $("#cn-count").textContent = `${st.reduce((a, x) => a + x[1], 0)} erreur(s) · ${all.length} au total`;
+  $("#cn-list").innerHTML = all.map((e, i) => ({ e, i })).reverse().slice(0, 30).map(({ e, i }) =>
+    `<tr><td class="mono">${esc(e.d.slice(5))}</td><td class="tag">${esc(e.sec)} · ${esc(e.type)}</td><td>${esc(e.src || "")}${e.q ? " · Q" + e.q : ""}${e.right ? ` · <i>${esc(e.given || "–")}</i> → <b>${esc(e.right)}</b>` : ""}${e.note ? " · " + esc(e.note) : ""}</td><td style="text-align:right"><button class="btn small" data-cdel="${i}" aria-label="Supprimer">×</button></td></tr>`).join("") || `<tr><td class="note">Aucune erreur enregistrée.</td></tr>`;
+  $$("#cn-list [data-cdel]").forEach(b => b.onclick = () => { const a = errAll(); a.splice(+b.dataset.cdel, 1); store.set("errors", a); renderCarnet(); if ($("#td-cn")) renderErrBars($("#td-cn"), 4); });
+  if ($("#td-cn")) renderErrBars($("#td-cn"), 4);
+}
+function initCarnet() {
+  const fill = () => { $("#cn-type").innerHTML = ERR_TYPES[$("#cn-sec").value].map(t => `<option>${esc(t)}</option>`).join(""); };
+  $("#cn-sec").onchange = fill; fill();
+  $("#cn-add").onclick = () => {
+    errLog({ sec: $("#cn-sec").value, type: $("#cn-type").value, note: $("#cn-note").value.trim(), src: "Manuel", auto: false });
+    $("#cn-note").value = ""; renderCarnet();
+  };
+  renderCarnet();
+}
+
+/* =========================================================
+   RELECTURE AUTOMATIQUE (Writing)
+   ========================================================= */
+const RV_RULES = [
+  // [regex, severity b=coûte des points / w=à vérifier, titre, explication]
+  [/\b(glaringly obvious|crystal clear|obviously|totally (?:agree|disagree)|undoubtedly|everyone knows|it goes without saying)\b/gi, "b", "Ton absolu", "Une affirmation péremptoire fragilise la position et t'oblige à te contredire plus loin (copie du 20/09). Préfère « There is a strong case that », « arguably », « I would argue that »."],
+  [/\b(a lot of|lots of|loads of|kids|guys|stuff|super|pretty much|okay|ok|gonna|wanna)\b/gi, "b", "Registre oral", "À remplacer : many / much, children, things → un nom précis, very → un adjectif plus fort."],
+  [/\b(see the problem|all day|for ever and ever|at the end of the day|in a nutshell|last but not least|to sum up|needless to say)\b/gi, "b", "Tournure orale ou cliché", "Les examinateurs repèrent les formules apprises. Énonce directement : « Herein lies the problem », « In conclusion »."],
+  [/\b\w+n't\b|\b(I'm|it's|that's|there's|they're|we're|you're|I've|we've|they've|I'll|it'll|I'd|let's)\b/gi, "b", "Contractions", "Pas de contractions en Writing : « do not », « it is », « there is »."],
+  [/\bsoccer\b/gi, "w", "Anglais américain", "Le sujet est en anglais britannique : football, footballer. Reste cohérent."],
+  [/\bConversely\b/g, "w", "« Conversely »", "Seulement pour une opposition symétrique (rareté → hausse ; abondance → baisse). Pour concéder : « Admittedly », « Granted »."],
+  [/\bBesides\b/g, "w", "« Besides »", "Familier en tête de phrase. « Moreover » ou « What is more »."],
+  [/\b(the most people|the most of)\b/gi, "b", "« the most people »", "« most people », sans article."],
+  [/\b(in|of|for|to|on) the society\b/gi, "b", "« the society »", "Au sens général : « society », sans article."],
+  [/\b(informations|advices|researches|knowledges|evidences|equipments|furnitures|homeworks|feedbacks)\b/gi, "b", "Indénombrable au pluriel", "information, advice, research, knowledge, evidence, equipment : jamais de -s."],
+  [/\b(despite of|discuss about|according to me|explain me|more better|most best|in the same time|make a research|people is|since \d+ (?:years|months|decades))\b/gi, "b", "Calque du français", "despite + nom ; discuss + objet direct ; in my view ; explain to me ; better ; at the same time ; do research ; people are ; for ten years."],
+  [/\bsince (?:two|three|four|five|six|seven|eight|nine|ten|many|several|a few) (?:years|months|decades|weeks)\b/gi, "b", "« since » + durée", "Une durée prend « for » : « for ten years ». « since » introduit un point de départ."],
+  [/\b(actually|eventually|sensible|actual|assist(?:ed)? at)\b/gi, "w", "Faux ami possible", "actually = en fait (actuellement = currently) ; eventually = finalement (éventuellement = possibly) ; sensible = raisonnable ; actual = réel ; assister à = attend."],
+  [/\b(the WW2|the WWII|WW2|WWII)\b/g, "b", "« WW2 »", "À l'écrit : « the Second World War » ou « World War II »."],
+  [/\s[?!;:](?=\s|$)/g, "b", "Espace avant la ponctuation", "En anglais, aucune espace avant ? ! ; :"],
+  [/\b(Firstly|First of all)\b/g, "w", "Ouverture mécanique", "Acceptable une fois. Évite la chaîne Firstly / Secondly / Lastly : relie plutôt les idées par leur contenu."]
+];
+function sentencesOf(t) { return t.split(/(?<=[.!?])\s+/).filter(x => x.trim()); }
+function reviewEssay(task, txt, usedSec) {
+  const out = []; const t = String(txt || "").trim();
+  if (wordsOf(t) < 40) return [["w", "Copie trop courte pour être relue", "Écris au moins quelques paragraphes."]];
+  const n = wordsOf(t), paras = t.split(/\n+/).map(x => x.trim()).filter(Boolean);
+  // longueur et temps
+  const lo = task.task === 1 ? 170 : 270, hi = task.task === 1 ? 200 : 320;
+  if (n < task.min) out.push(["b", `Longueur : ${n} mots`, `Sous le minimum de ${task.min} mots : pénalité directe en Task ${task.task === 1 ? "Achievement" : "Response"}.`]);
+  else if (n > hi + 40) out.push(["w", `Longueur : ${n} mots`, `Plus long n'est pas mieux noté. Au-delà de ${hi} mots, le risque d'erreurs et de dérive augmente : vise ${lo}–${hi}.`]);
+  else out.push(["o", `Longueur : ${n} mots`, `Dans la cible (${lo}–${hi}).`]);
+  if (usedSec > 60 && usedSec < task.time * 60 * 0.8) out.push(["w", `Temps : ${fmtTime(usedSec)} sur ${task.time} min`, `Il te reste ${Math.round((task.time * 60 - usedSec) / 60)} min : relis articles, accords, prépositions et temps avant de rendre. Le 20/09, tu as rendu au bout de 28 min.`]);
+  // paragraphes
+  if (paras.length < 3) out.push(["b", `${paras.length} paragraphe(s)`, "Saute une ligne entre les paragraphes. Sans paragraphes visibles, la Coherence & Cohesion plafonne."]);
+  else if (task.task === 2 && paras.length > 6) out.push(["w", `${paras.length} paragraphes`, "Beaucoup de paragraphes courts : une idée par paragraphe, mais développée jusqu'au bout."]);
+  // couverture du sujet
+  const kw = keyWords(task.prompt), low = t.toLowerCase();
+  const miss = kw.filter(w => !low.includes(w.slice(0, 5)));
+  if (miss.length) out.push([miss.length > kw.length / 3 ? "b" : "w", "Éléments du sujet absents de ta copie", `${miss.join(", ")}. Vérifie que tu traites toute la question (le 20/09, banquiers et enseignants avaient disparu).`]);
+  else out.push(["o", "Sujet couvert", "Tous les mots-clés du sujet apparaissent dans ta copie."]);
+  if (task.task === 2) {
+    const intro = paras[0] || "", concl = paras[paras.length - 1] || "";
+    if (!/(I (?:\w+ )?(?:believe|argue|agree|disagree|maintain|contend|consider)|in my (?:view|opinion)|from my perspective|this essay (?:will )?argue|my view is|I am convinced)/i.test(intro)) out.push(["b", "Pas de position repérable dans l'introduction", "La thèse doit apparaître dès le premier paragraphe : « I would argue that… », « In my view… »."]);
+    if (!/^(In conclusion|To conclude|Overall|On balance|All things considered|In summary|Ultimately)/i.test(concl)) out.push(["w", "Conclusion non signalée", "Ouvre le dernier paragraphe par « In conclusion » ou « On balance » pour que l'examinateur la repère."]);
+    const a = contentWords(intro), b = contentWords(concl), common = [...a].filter(w => b.has(w));
+    if (paras.length >= 3 && common.length < 3) out.push(["b", "Introduction et conclusion peu reliées", "Elles ne partagent presque aucun mot-clé. Vérifie que ta conclusion défend la même position que ta thèse (le défaut principal de ta copie du 20/09)."]);
+    if (/\b(that (?:does not|doesn't) mean|on the other hand|however|nevertheless|yet)\b/i.test(concl) && /\b(agree|believe|argue)\b/i.test(intro)) out.push(["w", "Retournement possible en conclusion", "Ta conclusion contient une opposition (« however », « that does not mean »…). Assure-toi qu'elle nuance ta thèse sans la contredire."]);
+    const rest = new Set([...contentWords(paras.slice(0, -1).join(" ")), ...contentWords(task.prompt)]);
+    const fresh = [...b].filter(w => w.length >= 6 && !rest.has(w) && !STOP.has(w));
+    if (fresh.length >= 3) out.push(["w", "Mots nouveaux en conclusion", `${fresh.slice(0, 6).join(", ")}. S'ils lancent une idée neuve, retire-la : la conclusion reformule, elle n'ajoute rien.`]);
+    const q = (t.match(/\?/g) || []).length;
+    if (q) out.push(["b", `${q} question(s) rhétorique(s)`, "En Task 2, on énonce. « See the problem? » → « Herein lies the problem. »"]);
+    if (/!/.test(t)) out.push(["b", "Point d'exclamation", "Aucun en Writing : registre oral."]);
+  } else {
+    if (!/\b(overall|in general|it is clear|the most (?:striking|noticeable)|broadly|in summary)\b/i.test(t)) out.push(["b", "Pas d'overview repérable", "Sans vue d'ensemble (« Overall, … »), la Task Achievement plafonne à 5. Place-la en deuxième paragraphe."]);
+    if (/\b(I think|I believe|in my (?:view|opinion)|because|due to the fact|this is probably|this may be explained)\b/i.test(t)) out.push(["b", "Opinion ou explication en Task 1", "On décrit, on ne commente pas et on n'invente aucune cause."]);
+    if (!/\d/.test(t)) out.push(["b", "Aucun chiffre", "Appuie les tendances sur quelques chiffres choisis."]);
+  }
+  // temps avec since
+  sentencesOf(t).forEach(sn => {
+    const m = sn.match(/\b(\w+ed|was|were|became|grew|rose|fell|began|went|made|took)\b[^.?!]{0,50}\bsince\b(?!\s+(?:then|that|it|they|he|she|we|I|the\s+\w+\s+(?:is|are|was|were)))/i);
+    if (m && !/\b(has|have|had)\s+(?:\w+\s+)?\w+\b[^.?!]{0,50}\bsince\b/i.test(sn) && !/^\s*since\b/i.test(sn)) out.push(["w", "« since » et le temps du verbe", `« …${m[0].trim()}… » : avec « since » + point de départ, le verbe est au present perfect. Ignore si « since » veut dire « parce que ».`]);
+  });
+  // règles lexicales
+  RV_RULES.forEach(([rx, sev, title, why]) => {
+    const found = [...new Set((t.match(rx) || []).map(x => x.trim()))];
+    if (!found.length) return;
+    if (/Ouverture mécanique/.test(title) && !/\b(Secondly|Thirdly|Lastly)\b/.test(t)) return;
+    out.push([sev, title, `${found.slice(0, 5).map(f => `« ${f} »`).join(", ")}. ${why}`]);
+  });
+  const add = (t.match(/\b(Moreover|Furthermore|In addition|Additionally|What is more)\b/g) || []).length;
+  if (add >= 3) out.push(["w", `${add} connecteurs d'addition`, "Moreover / Furthermore à répétition sonne mécanique à 8+. Relie par le contenu : « This shift… », « Such measures… »."]);
+  // phrases longues et répétitions
+  const long = sentencesOf(t).filter(x => wordsOf(x) > 45);
+  if (long.length) out.push(["w", `${long.length} phrase(s) de plus de 45 mots`, "Les phrases très longues concentrent les erreurs de grammaire. Coupe-en une."]);
+  const freq = {}; (low.match(/[a-z]{5,}/g) || []).filter(w => !STOP.has(w)).forEach(w => freq[w] = (freq[w] || 0) + 1);
+  const rep = Object.entries(freq).filter(([, c]) => c >= 6).sort((a, b) => b[1] - a[1]).slice(0, 3);
+  if (rep.length) out.push(["w", "Répétitions", `${rep.map(([w, c]) => `« ${w} » ×${c}`).join(", ")}. Varie avec des synonymes ou des reprises (« this », « such »).`]);
+  return out;
+}
+function renderReview(items) {
+  const nb = items.filter(i => i[0] === "b").length, nw = items.filter(i => i[0] === "w").length, no = items.filter(i => i[0] === "o").length;
+  const order = { b: 0, w: 1, o: 2 }, cls = { b: "bad", w: "warn", o: "ok" };
+  return `<h4 style="margin-top:6px">Relecture automatique</h4>
+    <div class="rv-sum"><span class="b">${nb} coûte des points</span><span class="w">${nw} à vérifier</span><span class="o">${no} OK</span></div>
+    ${items.slice().sort((a, b) => order[a[0]] - order[b[0]]).map(([sv, t, d]) => `<div class="fb ${cls[sv]}" style="margin-top:6px"><b>${esc(t)}.</b> ${esc(d)}</div>`).join("")}
+    <p class="note" style="margin-top:8px">Une relecture automatique repère des signaux, pas la qualité de tes idées : certaines alertes peuvent être fausses. Corrige ce qui est juste, puis fais noter ta copie par Claude.</p>`;
+}
+
+/* =========================================================
+   SON : déblocage sur téléphone + test
+   ========================================================= */
+let audioUnlocked = false;
+function unlockAudio() {
+  try {
+    if ("speechSynthesis" in window) { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(" "); u.volume = 0; speechSynthesis.speak(u); speechSynthesis.resume(); }
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    audioUnlocked = true;
+  } catch (e) {}
+}
+document.addEventListener("pointerdown", () => { if (!audioUnlocked) unlockAudio(); }, { passive: true });
+function soundTest(statusEl) {
+  unlockAudio(); loadVoices();
+  const en = VOICES.filter(v => /^en/i.test(v.lang));
+  if (!("speechSynthesis" in window)) { statusEl.textContent = "Ce navigateur ne propose pas de synthèse vocale. Utilise Chrome ou Safari à jour."; return; }
+  statusEl.textContent = en.length ? `${en.length} voix anglaise(s) trouvée(s). Tu devrais entendre une phrase.` : "Aucune voix anglaise trouvée sur l'appareil : la voix par défaut va lire la phrase.";
+  speakOne("This is a sound check. If you can hear this, the listening test will work.", { lang: "en-GB", g: "f" }).then(r => {
+    if (r === "timeout") statusEl.textContent += " Rien entendu ? Sur iPhone, coupe le mode silencieux (bouton sur le côté) et monte le volume ; sur Android, vérifie le volume multimédia et que la synthèse vocale Google est installée.";
+  });
 }
 
 /* ---------------- boot ---------------- */
@@ -1912,6 +2233,8 @@ if (!store.get("seeded:w0920", false)) {
 }
 renderLisTabs(); renderLis(); renderReadTabs(); renderWriting(); renderSpeaking(); renderAtTabs(); renderAt(); renderPlan(); renderTracker(); renderToday();
 $("#w-watch").innerHTML = WATCH.map(w => `<li><b>${esc(w[0])}.</b> ${esc(w[1])}</li>`).join("");
+initCarnet();
+$("#w-review").onclick = () => { const t = wCur(); const used = wTimer ? t.time * 60 - wTimer.left : 0; $("#w-rv").innerHTML = renderReview(reviewEssay(t, $("#w-text").value, used)); };
 $("#td-report").onclick = () => copyText(buildReport(), $("#td-st"));
 showTab(store.get("tab2", "today"));
 getSample();
