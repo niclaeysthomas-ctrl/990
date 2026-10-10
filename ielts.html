@@ -149,6 +149,36 @@ ul.tight{margin:4px 0 10px;padding-left:20px}
 ul.tight li{margin:2px 0}
 .band-calc select{min-width:5em}
 a{color:var(--accent)}
+.q.mcq{align-items:flex-start}
+.mcq-opts{flex-basis:100%;display:flex;flex-direction:column;gap:4px;padding:6px 0 2px 2.6em;font-size:.95rem}
+.mcq-opts label{display:flex;gap:8px;align-items:baseline;cursor:pointer}
+.mcq-opts b{font-family:var(--f-mono);font-size:.82rem}
+.q.ok .mcq-opts,.q.bad .mcq-opts{border-left:3px solid var(--line)}
+.q.ok .mcq-opts{border-color:var(--ok)} .q.bad .mcq-opts{border-color:var(--bad)}
+.gaptext{font-family:var(--f-display);font-size:1rem;white-space:pre-line;line-height:2}
+.optbox{border:1.5px solid var(--ink);border-radius:2px;padding:8px 12px;margin:6px 0 4px;font-size:.95rem}
+.optbox div{padding:1px 0}
+.optbox b{font-family:var(--f-mono);font-size:.82rem;display:inline-block;min-width:1.8em}
+.plan li.today{background:var(--accent-soft);margin:0 -12px;padding-left:12px;padding-right:12px;border-radius:4px}
+.plan li.past{opacity:.55}
+.plan .date{display:block;font:400 .72rem var(--f-mono);color:var(--muted);margin-top:2px}
+.track-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:10px 0}
+@media (max-width:560px){.track-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tcell{border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:var(--card)}
+.tcell small{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.tcell b{font:600 1.35rem var(--f-mono)}
+.tcell .gap{font:.75rem var(--f-mono)}
+.tcell .gap.ok{color:var(--ok)} .tcell .gap.bad{color:var(--bad)}
+.hist{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:10px}
+.hist td{border-top:1px solid var(--line);padding:5px 6px}
+.combo{border-collapse:collapse;font-size:.9rem;margin:8px 0}
+.combo td,.combo th{border-bottom:1px solid var(--line);padding:5px 10px;text-align:center}
+.combo th{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.combo .hit{color:var(--ok);font-weight:600} .combo .miss{color:var(--bad);font-weight:600}
+.recbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:8px}
+.recdot{width:10px;height:10px;border-radius:50%;background:var(--bad);display:inline-block;margin-right:4px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.2}}
+audio{max-width:100%}
 .back{display:inline-block;font:600 .8rem var(--f-mono);text-decoration:none;margin-bottom:10px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -171,7 +201,7 @@ a{color:var(--accent)}
   <button role="tab" data-tab="reading" aria-selected="false">Reading</button>
   <button role="tab" data-tab="writing" aria-selected="false">Writing</button>
   <button role="tab" data-tab="speaking" aria-selected="false">Speaking</button>
-  <button role="tab" data-tab="plan" aria-selected="false">Plan 14 jours</button>
+  <button role="tab" data-tab="plan" aria-selected="false">Plan &amp; suivi</button>
 </nav>
 
 <!-- ============ FORMAT ============ -->
@@ -242,7 +272,7 @@ a{color:var(--accent)}
 <section id="tab-listening" class="stack" hidden>
   <div>
     <h2>Listening</h2>
-    <p class="lede">Trois sections au format officiel (Parts 1, 2 et 4, questions numérotées comme à l'examen). L'audio est lu par la synthèse vocale de ton appareil, avec des voix britannique, australienne et américaine quand elles sont installées. C'est plus lent et plus net qu'un vrai enregistrement : sers-t'en pour les réflexes de format et l'orthographe, et fais tes examens blancs avec les audios officiels Cambridge.</p>
+    <p class="lede">Les quatre parties au format officiel, questions numérotées de 1 à 40 comme à l'examen : formulaire, plan, discussion universitaire à QCM et appariement, cours magistral. L'audio est lu par la synthèse vocale de ton appareil, avec des voix britannique, australienne et américaine quand elles sont installées. C'est plus lent et plus net qu'un vrai enregistrement : sers-t'en pour les réflexes de format et l'orthographe, et fais tes examens blancs avec les audios officiels Cambridge.</p>
   </div>
   <div class="subtabs" id="lis-tabs"></div>
   <div id="lis-body"></div>
@@ -252,14 +282,10 @@ a{color:var(--accent)}
 <section id="tab-reading" class="stack" hidden>
   <div>
     <h2>Reading</h2>
-    <p class="lede">Un passage académique complet de 14 questions en 20 minutes, puis un entraînement ciblé sur True / False / Not Given, le type de question qui coûte le plus de points au-dessus de 8.</p>
+    <p class="lede">Deux passages académiques complets de 14 questions, 20 minutes chacun, qui couvrent les types de questions de l'examen : titres de paragraphes, True / False / Not Given, Yes / No / Not Given, appariement d'informations, QCM, résumé et phrases à compléter. Puis un drill sur Not Given, le piège qui coûte le plus de points au-dessus de 8.</p>
   </div>
-  <div class="subtabs" id="read-tabs">
-    <button aria-pressed="true" data-r="passage">Passage chronométré</button>
-    <button aria-pressed="false" data-r="drill">Drill True / False / Not Given</button>
-  </div>
-  <div id="read-passage"></div>
-  <div id="read-drill" hidden></div>
+  <div class="subtabs" id="read-tabs"></div>
+  <div id="read-host"></div>
 </section>
 
 <!-- ============ WRITING ============ -->
@@ -289,6 +315,15 @@ a{color:var(--accent)}
       <summary>Checklist band 8+ avant de rendre</summary>
       <ul class="checklist" id="w-check"></ul>
     </details>
+    <details>
+      <summary>Ce qui sépare un 7 d'un 8.5 en Writing</summary>
+      <div class="grid4" style="margin-top:10px">
+        <div><h4>Task Response</h4><ul class="tight"><li>Band 7 : position claire, idées parfois trop générales.</li><li>Band 8–9 : chaque idée est poussée jusqu'à sa conséquence, avec un exemple précis. Pas de liste de trois arguments survolés.</li></ul></div>
+        <div><h4>Coherence</h4><ul class="tight"><li>Band 7 : connecteurs présents, parfois mécaniques.</li><li>Band 8–9 : on ne remarque pas la cohésion. Les références (« this shift », « such measures ») relient les phrases plus que les connecteurs.</li></ul></div>
+        <div><h4>Lexical Resource</h4><ul class="tight"><li>Band 7 : quelques mots rares, des collocations approximatives.</li><li>Band 8–9 : collocations exactes (« exacerbate inequality », « a marked decline »). Un mot recherché mal employé coûte plus qu'il ne rapporte.</li></ul></div>
+        <div><h4>Grammar</h4><ul class="tight"><li>Band 7 : phrases complexes fréquentes, quelques erreurs.</li><li>Band 8–9 : la majorité des phrases sans aucune erreur, articles et accords compris. Chez un francophone, ce sont les articles et les prépositions qui plafonnent.</li></ul></div>
+      </div>
+    </details>
   </div>
 </section>
 
@@ -296,7 +331,7 @@ a{color:var(--accent)}
 <section id="tab-speaking" class="stack" hidden>
   <div>
     <h2>Speaking</h2>
-    <p class="lede">L'examinateur lit les questions à voix haute et le chrono tourne comme le jour J. Enregistre-toi sur ton téléphone (dictaphone) pendant que tu réponds. Ensuite, colle la transcription (la dictée vocale du téléphone suffit) : la page prépare la demande pour que Claude évalue la fluidité, lexique et grammaire. La prononciation ne peut pas être jugée à partir d'un texte : réécoute-toi pour ça.</p>
+    <p class="lede">L'examinateur lit les questions à voix haute et le chrono tourne comme le jour J. Appuie sur « Enregistrer » : la page enregistre ta voix et transcrit en direct (Chrome, Edge et Safari récents). Réécoute-toi ensuite, puis fais évaluer la transcription par Claude : fluidité, lexique et grammaire. La prononciation ne peut pas être jugée à partir d'un texte, c'est à l'oreille, en te réécoutant.</p>
   </div>
   <div class="subtabs" id="sp-tabs">
     <button aria-pressed="true" data-p="1">Part 1 · Entretien</button>
@@ -309,17 +344,75 @@ a{color:var(--accent)}
 <!-- ============ PLAN ============ -->
 <section id="tab-plan" class="stack" hidden>
   <div>
-    <h2>Plan sur 14 jours</h2>
-    <p class="lede">Compté à rebours depuis le jour de l'examen. Trois examens blancs complets avec du matériel officiel, et entre eux, du travail ciblé sur tes erreurs. Environ 2 h par jour, 3 h les jours d'examen blanc.</p>
+    <h2>Plan &amp; suivi</h2>
+    <p class="lede">Deux semaines ne suffisent pas pour gagner un niveau d'anglais. Elles suffisent pour arrêter de perdre des points sur le format, et c'est là que se trouve l'essentiel de l'écart entre un C1 solide et une note de 8.5.</p>
   </div>
-  <div class="panel"><ul class="plan" id="plan-list"></ul></div>
+
   <div class="panel">
-    <h4>Matériel officiel à utiliser pour les examens blancs</h4>
+    <h4>Ce qui est réaliste en deux semaines</h4>
+    <p>La note globale est la moyenne des quatre épreuves, arrondie. Il faut une moyenne d'au moins <b>8.25</b> pour obtenir 8.5. Tu n'as donc pas besoin d'être à 8.5 partout :</p>
+    <div class="tbl-wrap"><table class="combo mono">
+      <tr><th>Listening</th><th>Reading</th><th>Writing</th><th>Speaking</th><th>Moyenne</th><th>Note</th></tr>
+      <tr><td>9</td><td>9</td><td>7.5</td><td>7.5</td><td>8.25</td><td class="hit">8.5</td></tr>
+      <tr><td>8.5</td><td>8.5</td><td>8</td><td>8</td><td>8.25</td><td class="hit">8.5</td></tr>
+      <tr><td>9</td><td>8.5</td><td>7.5</td><td>8</td><td>8.25</td><td class="hit">8.5</td></tr>
+      <tr><td>8.5</td><td>8.5</td><td>7.5</td><td>8</td><td>8.125</td><td class="miss">8</td></tr>
+    </table></div>
     <ul class="tight">
-      <li><b>Cambridge IELTS Academic</b> (les volumes les plus récents) : de vrais sujets passés, avec les vrais audios. C'est la seule source dont le niveau et l'accent correspondent à l'examen.</li>
-      <li><a href="https://ielts.org/take-a-test/preparation-resources" target="_blank" rel="noopener">ielts.org — ressources de préparation</a> : tests d'entraînement gratuits.</li>
-      <li><a href="https://takeielts.britishcouncil.org/take-ielts/prepare/free-ielts-english-practice-tests" target="_blank" rel="noopener">British Council — tests gratuits</a>, dont la version sur ordinateur si tu passes l'examen ainsi.</li>
+      <li><b>Listening et Reading</b> sont les deux épreuves où tu peux gagner le plus en deux semaines. À ton niveau, presque toutes les erreurs viennent du format : orthographe, limite de mots, distracteurs, Not Given, gestion du temps. L'objectif est 39 ou 40/40.</li>
+      <li><b>Writing et Speaking</b> bougent lentement. Ce sont eux qui décident si 8.5 est atteignable. Vise 7.5 minimum en éliminant ce qui plafonne la note : overview manquant, idées non développées, réponses trop courtes, erreurs récurrentes.</li>
+      <li>Si tes premiers examens blancs donnent du 7 en Writing ou en Speaking, 8.5 au global devient très improbable dans ce délai. Mieux vaut le savoir dès J-13.</li>
     </ul>
+  </div>
+
+  <div class="panel">
+    <h4>Suivi de tes bandes</h4>
+    <p class="note">Entre chaque résultat d'examen blanc Cambridge et chaque note de Claude. Le suivi montre où se trouve l'écart. Il est enregistré sur cet appareil uniquement.</p>
+    <div class="row" style="margin-top:8px">
+      <select id="tr-skill" aria-label="Épreuve"><option value="L">Listening</option><option value="R">Reading</option><option value="W">Writing</option><option value="S">Speaking</option></select>
+      <span id="tr-input"></span>
+      <input type="text" id="tr-src" placeholder="Source (ex. Cambridge 19 Test 2)" style="flex:1 1 200px;min-width:0" aria-label="Source">
+      <button class="btn primary" id="tr-add">Ajouter</button>
+    </div>
+    <div class="track-grid" id="tr-grid"></div>
+    <div class="score" id="tr-overall"></div>
+    <div class="tbl-wrap"><table class="hist" id="tr-hist"></table></div>
+  </div>
+
+  <div class="panel">
+    <div class="row" style="justify-content:space-between">
+      <label class="row" for="exam-date"><h4 style="margin:0">Date de l'examen</h4><input type="date" id="exam-date"></label>
+      <span class="status" id="countdown"></span>
+    </div>
+    <ul class="plan" id="plan-list"></ul>
+  </div>
+
+  <div class="grid4">
+    <div class="panel">
+      <h4>Dans 990, à garder</h4>
+      <ul class="tight">
+        <li><b>La Plume</b> : d'autres sujets IELTS Task 1 et Task 2, avec le relecteur hors ligne.</li>
+        <li><b>La Lime et la Moisson</b> : tes erreurs récurrentes, 10 minutes par jour.</li>
+        <li><b>Le Diapason</b> : la prononciation compte pour un quart de la note de Speaking.</li>
+        <li><b>Les cartes dues</b> : les révisions seulement, pas de nouvelles cartes.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h4>À mettre de côté jusqu'à l'examen</h4>
+      <ul class="tight">
+        <li>Le Blanc et le test de niveau : format TOEIC.</li>
+        <li>La grammaire Part 5 et le Scalpel : format TOEIC.</li>
+        <li>Les verbes irréguliers, Jane Eyre et les nouvelles cartes de vocabulaire : utiles à long terme, pas en deux semaines.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h4>Matériel officiel pour les examens blancs</h4>
+      <ul class="tight">
+        <li><b>Cambridge IELTS Academic</b> (volumes récents) : vrais sujets, vrais audios. La seule source au niveau exact de l'examen.</li>
+        <li><a href="https://ielts.org/take-a-test/preparation-resources" target="_blank" rel="noopener">ielts.org — ressources</a></li>
+        <li><a href="https://takeielts.britishcouncil.org/take-ielts/prepare/free-ielts-english-practice-tests" target="_blank" rel="noopener">British Council — tests gratuits</a>, y compris sur ordinateur.</li>
+      </ul>
+    </div>
   </div>
 </section>
 </div>
@@ -468,6 +561,7 @@ const LIS = [
 {
   id: "p1", tab: "Part 1 · Formulaire", title: "Part 1 — Inscription à un cours du soir",
   intro: "You will hear a man phoning a community centre to enrol on a course.",
+  sheet: "RIVERSIDE COMMUNITY CENTRE — ENROLMENT FORM",
   instr: "Complete the form below. Write <b>NO MORE THAN TWO WORDS AND/OR A NUMBER</b> for each answer.",
   maxWords: 2,
   cast: { W: { lang: "en-GB", g: "f" }, M: { lang: "en-GB", g: "m" } },
@@ -532,8 +626,57 @@ const LIS = [
   ]
 },
 {
+  id: "p3", tab: "Part 3 · Discussion", title: "Part 3 — Deux étudiants préparent leur rapport",
+  intro: "You will hear two environmental science students, Maya and Liam, discussing their research project on urban beekeeping.",
+  instr: "Questions 21–30. Listen and answer the questions.",
+  cast: { W: { lang: "en-GB", g: "f" }, M: { lang: "en-AU", g: "m" } },
+  names: { W: "MAYA", M: "LIAM" },
+  lines: [
+    ["W", "So, Liam, have you had a chance to go through the survey results?"],
+    ["M", "I have. About a fifth of the people we asked said they'd object to hives in their street, which is more or less what we predicted."],
+    ["W", "Yes, no surprises there. But I really thought the main objection would be about getting stung."],
+    ["M", "So did I. But actually, the most common concern was that honeybees would compete with wild bees for food. I didn't expect people to know about that."],
+    ["W", "Neither did I. A few people even said they kept bees themselves, so they knew what they were talking about."],
+    ["M", "And it's a fair point, isn't it? That study from Hamburg found that wild bee numbers dropped in areas with a lot of hives."],
+    ["W", "It did, although I'm not sure how much weight we should give it."],
+    ["M", "Well, it was carefully done, I'll give them that. My problem is that it only looked at one city, with a very different climate. I'm not convinced it tells us much about a place like ours."],
+    ["W", "Fair enough. Remind me, for the introduction, why did we choose this topic? I know the urban ecology module came into it."],
+    ["M", "It was part of it, but mainly it was because there's almost no data on our own city. Nearly everything published comes from Germany or the US. And Dr Patel had actually suggested we look at street trees, remember?"],
+    ["W", "Oh, that's right. OK, methodology. I think the interviews with beekeepers went really well."],
+    ["M", "They did, though I did wonder whether twelve was enough."],
+    ["W", "Dr Patel said twelve was fine for a qualitative study. And the survey itself was well designed, I think. What worries me is the honey sampling. We only managed to get samples from three sites."],
+    ["M", "Yes, that's definitely the weakest part. Should we try to get a few more?"],
+    ["W", "There's no time, and most beekeepers have closed up their hives for the winter anyway. And Dr Patel told us not to bother contacting any more beekeepers. So I'll rewrite the introduction to explain the limitation honestly."],
+    ["M", "Good idea. Now, the report itself. The literature review is nearly two thousand words."],
+    ["W", "Way too long. Dr Patel said a thousand at most. Let's cut it down."],
+    ["M", "Agreed. What about the interview findings? I was wondering whether we should add more quotations."],
+    ["W", "Honestly, I think that section works well. It's balanced. I'd leave it alone."],
+    ["M", "OK. And the full survey questionnaire, does that need to be in the main text?"],
+    ["W", "Not really. Nobody's going to read it there. Let's put it at the end, in an appendix."],
+    ["M", "Fine. The honey analysis is very short now, just one paragraph. We could expand it."],
+    ["W", "But there's nothing more to say with three samples. Why don't we merge it into the discussion section instead?"],
+    ["M", "That makes sense. And finally, the recommendations. They're a bit vague at the moment."],
+    ["W", "They are. Let's expand them, with specific examples of what the city council could actually do."]
+  ],
+  qs: [
+    { n: 21, instr: "Questions 21–25. Choose the correct letter, <b>A, B or C</b>.", pre: "What surprised both students about the survey results?", opts: ["the proportion of people who objected to hives", "the main concern that people expressed", "the number of people who kept bees"], ans: ["B"] },
+    { n: 22, pre: "What does Liam think about the Hamburg study?", opts: ["It was poorly designed.", "Its findings may not apply to their city.", "It used out-of-date methods."], ans: ["B"] },
+    { n: 23, pre: "Why did the students choose this topic?", opts: ["It followed on from a module they had taken.", "Very little research existed on their city.", "Their tutor recommended it."], ans: ["B"] },
+    { n: 24, pre: "Which part of the methodology do they agree is weakest?", opts: ["the number of interviews", "the design of the survey", "the honey sampling"], ans: ["C"] },
+    { n: 25, pre: "What will Maya do next?", opts: ["contact more beekeepers", "collect further honey samples", "rewrite the introduction"], ans: ["C"] },
+    { n: 26, instr: "Questions 26–30. What do the students decide to do with each section of the report? Choose <b>FIVE</b> answers from the box and write the correct letter, <b>A–E</b>.",
+      box: [["A", "shorten it"], ["B", "expand it"], ["C", "move it to an appendix"], ["D", "merge it with another section"], ["E", "leave it unchanged"]],
+      pre: "literature review", sel: "ABCDE", ans: ["A"] },
+    { n: 27, pre: "interview findings", sel: "ABCDE", ans: ["E"] },
+    { n: 28, pre: "survey questionnaire", sel: "ABCDE", ans: ["C"] },
+    { n: 29, pre: "honey analysis", sel: "ABCDE", ans: ["D"] },
+    { n: 30, pre: "recommendations", sel: "ABCDE", ans: ["B"] }
+  ]
+},
+{
   id: "p4", tab: "Part 4 · Cours magistral", title: "Part 4 — Cours : le sommeil unihémisphérique",
   intro: "You will hear part of a lecture on sleep in animals.",
+  sheet: "LECTURE NOTES — UNIHEMISPHERIC SLEEP",
   instr: "Complete the notes below. Write <b>ONE WORD AND/OR A NUMBER</b> for each answer.",
   maxWords: 1,
   cast: { N: { lang: "en-US", g: "m" } },
@@ -585,12 +728,21 @@ function renderLisTabs() {
   $$("#lis-tabs button").forEach(b => b.onclick = () => { stopAudio(); lisState.cur = b.dataset.l; store.set("lisCur", lisState.cur); renderLisTabs(); renderLis(); });
 }
 function stopAudio() { lisState.playing = false; if ("speechSynthesis" in window) speechSynthesis.cancel(); }
+function lisCtrl(s, q) {
+  const id = `a-${s.id}-${q.n}`;
+  if (q.opts) return `<div class="mcq-opts" role="radiogroup" aria-label="Question ${q.n}">${q.opts.map((o, i) => { const L = "ABCD"[i]; return `<label><input type="radio" name="${id}" value="${L}"> <b>${L}</b> ${esc(o)}</label>`; }).join("")}</div>`;
+  const letters = q.sel || (s.type === "letter" ? "ABCDEFGH" : "");
+  if (letters) return `<select id="${id}" aria-label="Question ${q.n}"><option value="">–</option>${letters.split("").map(l => `<option>${l}</option>`).join("")}</select>`;
+  return `<input type="text" id="${id}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Question ${q.n}">`;
+}
+function lisVal(s, q) {
+  if (q.opts) { const c = $(`input[name="a-${s.id}-${q.n}"]:checked`); return c ? c.value : ""; }
+  const el = $(`#a-${s.id}-${q.n}`); return el ? el.value : "";
+}
 function renderLis() {
   const s = LIS.find(x => x.id === lisState.cur);
   const isLetter = s.type === "letter";
-  const qHtml = s.qs.map(q => `${q.head ? `<h4 style="margin:12px 0 2px">${esc(q.head)}</h4>` : ""}<div class="q" id="q-${s.id}-${q.n}"><span class="qn">${q.n}</span><span class="lbl">${esc(q.pre)}</span>${isLetter
-      ? `<select id="a-${s.id}-${q.n}" aria-label="Question ${q.n}"><option value="">–</option>${"ABCDEFGH".split("").map(l => `<option>${l}</option>`).join("")}</select>`
-      : `<input type="text" id="a-${s.id}-${q.n}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Question ${q.n}">`}</div>`).join("");
+  const qHtml = s.qs.map(q => `${q.instr ? `<div class="instr">${q.instr}</div>` : ""}${q.box ? `<div class="optbox">${q.box.map(b => `<div><b>${b[0]}</b>${esc(b[1])}</div>`).join("")}</div>` : ""}${q.head ? `<h4 style="margin:12px 0 2px">${esc(q.head)}</h4>` : ""}<div class="q${q.opts ? " mcq" : ""}" id="q-${s.id}-${q.n}"><span class="qn">${q.n}</span><span class="lbl">${esc(q.pre)}</span>${lisCtrl(s, q)}</div>`).join("");
   $("#lis-body").innerHTML = `<div class="panel stack">
     <div><h3>${esc(s.title)}</h3><p class="note">${esc(s.intro)}</p></div>
     <div class="row">
@@ -601,10 +753,10 @@ function renderLis() {
     </div>
     <div class="instr">${s.instr}</div>
     ${isLetter ? MAP_SVG : ""}
-    <div class="${isLetter ? "" : "form-sheet"}">${isLetter ? "" : `<div class="ttl">${s.id === "p1" ? "RIVERSIDE COMMUNITY CENTRE — ENROLMENT FORM" : "LECTURE NOTES — UNIHEMISPHERIC SLEEP"}</div>`}${qHtml}</div>
+    <div class="${s.sheet ? "form-sheet" : ""}">${s.sheet ? `<div class="ttl">${esc(s.sheet)}</div>` : ""}${qHtml}</div>
     <div class="row"><button class="btn primary" id="lis-check">Corriger</button><button class="btn" id="lis-clear">Effacer mes réponses</button></div>
     <div id="lis-score"></div>
-    <details><summary>Transcription (après correction)</summary><div class="transcript">${s.lines.map(l => `<p><span class="spk">${l[0] === "N" ? "SPEAKER" : l[0] === "W" ? "WOMAN" : "MAN"}</span>${esc(l[2] || l[1])}</p>`).join("")}</div></details>
+    <details><summary>Transcription (après correction)</summary><div class="transcript">${s.lines.map(l => `<p><span class="spk">${(s.names && s.names[l[0]]) || (l[0] === "N" ? "SPEAKER" : l[0] === "W" ? "WOMAN" : "MAN")}</span>${esc(l[2] || l[1])}</p>`).join("")}</div></details>
   </div>`;
   const playBtn = $("#lis-play"), status = $("#lis-status");
   if (!("speechSynthesis" in window)) { playBtn.disabled = true; status.textContent = "Ton navigateur ne propose pas de synthèse vocale : lis la transcription à la place."; }
@@ -629,17 +781,17 @@ function renderLis() {
     if ($("#lis-train") && $("#lis-train").checked) playBtn.disabled = false;
   };
   $("#lis-stop").onclick = () => { stopAudio(); status.textContent = "Écoute arrêtée."; };
-  $("#lis-clear").onclick = () => { s.qs.forEach(q => { const el = $(`#a-${s.id}-${q.n}`); el.value = ""; $(`#q-${s.id}-${q.n}`).className = "q"; $(`#q-${s.id}-${q.n} .fix`)?.remove(); }); $("#lis-score").innerHTML = ""; };
+  $("#lis-clear").onclick = () => { s.qs.forEach(q => { if (q.opts) $$(`input[name="a-${s.id}-${q.n}"]`).forEach(r => r.checked = false); else $(`#a-${s.id}-${q.n}`).value = ""; $(`#q-${s.id}-${q.n}`).className = "q" + (q.opts ? " mcq" : ""); $(`#q-${s.id}-${q.n} .fix`)?.remove(); }); $("#lis-score").innerHTML = ""; };
   $("#lis-check").onclick = () => {
     let ok = 0;
     s.qs.forEach(q => {
-      const el = $(`#a-${s.id}-${q.n}`), row = $(`#q-${s.id}-${q.n}`), val = el.value;
+      const row = $(`#q-${s.id}-${q.n}`), val = lisVal(s, q);
       row.querySelector(".fix")?.remove();
       let good = q.ans.map(norm).includes(norm(val));
       let why = "";
       if (good && s.maxWords && wordCountAns(val.replace(/^(a|an|the)\s+/i, "")) > s.maxWords) { good = false; why = " (limite de mots dépassée)"; }
-      row.className = "q " + (good ? "ok" : "bad");
-      if (good) ok++; else row.insertAdjacentHTML("beforeend", `<span class="fix">→ ${esc(q.ans[0])}${why}</span>`);
+      row.className = "q " + (q.opts ? "mcq " : "") + (good ? "ok" : "bad");
+      if (good) ok++; else row.insertAdjacentHTML(q.opts ? "afterbegin" : "beforeend", `<span class="fix"${q.opts ? ' style="order:3;margin-left:auto"' : ""}>→ ${esc(q.ans[0])}${why}</span>`);
     });
     const n = s.qs.length, proj = Math.round(ok / n * 40);
     $("#lis-score").innerHTML = `<div class="score">Score <b>${ok}/${n}</b> · rapporté sur 40 : ≈ ${proj}/40 → band ≈ ${lisBand(proj)}<br><span class="note">${ok === n ? "Sans faute. Passe aux audios Cambridge, plus rapides et moins articulés." : "Pour chaque erreur, retrouve dans la transcription le piège exact : correction de l'intervenant, distracteur, orthographe ou limite de mots."}</span></div>`;
@@ -684,39 +836,6 @@ const PASSAGE = {
     ans: { 11: ["run"], 12: ["rebound effect"], 13: ["shielded fixtures"], 14: ["dimming systems"] }
   }
 };
-// "fully shielded fixtures" = 3 words; within passage wording the 2-word answer is "shielded fixtures"
-function renderPassage() {
-  const P = PASSAGE;
-  $("#read-passage").innerHTML = `<div class="two">
-    <div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h4 style="margin:0">Reading Passage</h4><span class="note">≈ ${P.paras.reduce((a, p) => a + p[1].split(/\s+/).length, 0)} mots</span></div>
-      <h3 style="font-size:1.45rem">${esc(P.title)}</h3>
-      <div class="passage">${P.paras.map(p => `<p><span class="pl">${p[0]}</span>${esc(p[1])}</p>`).join("")}</div></div>
-    <div class="panel sticky stack" style="gap:6px">
-      <div class="row" style="justify-content:space-between"><span class="timer" id="r-timer">20:00</span><div class="row"><button class="btn primary" id="r-start">Lancer 20 min</button><button class="btn" id="r-check">Corriger</button></div></div>
-      <div class="instr">Questions 1–6. The passage has six paragraphs, <b>A–F</b>. Choose the correct heading for each paragraph from the list of headings below.</div>
-      <ul class="heads">${P.headings.map(h => `<li><b>${h[0]}</b>${esc(h[1])}</li>`).join("")}</ul>
-      ${"ABCDEF".split("").map((l, i) => `<div class="q" id="rq-${i + 1}"><span class="qn">${i + 1}</span><span class="lbl">Paragraph ${l}</span><select id="ra-${i + 1}" aria-label="Paragraph ${l}"><option value="">–</option>${P.headings.map(h => `<option>${h[0]}</option>`).join("")}</select></div>`).join("")}
-      <div class="instr">Questions 7–10. Do the following statements agree with the information given in the passage? Choose <b>TRUE</b>, <b>FALSE</b> or <b>NOT GIVEN</b>.</div>
-      ${P.tfng.map(t => `<div class="q" id="rq-${t[0]}"><span class="qn">${t[0]}</span><span class="lbl">${esc(t[1])}</span><div class="radios" role="radiogroup" aria-label="Question ${t[0]}">${["TRUE", "FALSE", "NOT GIVEN"].map(v => `<label><input type="radio" name="tf-${t[0]}" value="${v}"><span>${v}</span></label>`).join("")}</div></div>`).join("")}
-      <div class="instr">Questions 11–14. Complete the summary. Choose <b>NO MORE THAN TWO WORDS</b> from the passage for each answer.</div>
-      <p style="font-family:var(--f-display);font-size:1rem">${esc(P.summary.text).replace(/\((\d+)\) ____/g, (m, n) => `<span class="qn">${n}</span><input type="text" id="ra-${n}" autocomplete="off" spellcheck="false" style="width:9em" aria-label="Question ${n}">`)}</p>
-      <div id="r-score"></div>
-      <details><summary>Explications (après correction)</summary><div id="r-expl" class="note"></div></details>
-    </div></div>`;
-  const tmr = makeTimer($("#r-timer"), 1200, () => { beep(); $("#r-check").click(); });
-  $("#r-start").onclick = () => { tmr.start(); $("#r-start").disabled = true; };
-  $("#r-check").onclick = () => {
-    tmr.stop(); let ok = 0; const expl = [];
-    "ABCDEF".split("").forEach((l, i) => { const v = $("#ra-" + (i + 1)).value, good = v === P.headAns[l]; markR(i + 1, good, P.headAns[l]); if (good) ok++; });
-    P.tfng.forEach(t => { const v = ($(`input[name=tf-${t[0]}]:checked`) || {}).value, good = v === t[2]; markR(t[0], good, t[2]); if (good) ok++; expl.push(`<p><b>${t[0]}. ${t[2]}</b> — ${esc(t[3])}</p>`); });
-    Object.entries(P.summary.ans).forEach(([n, a]) => { const el = $("#ra-" + n); let good = a.map(norm).includes(norm(el.value)) && wordCountAns(el.value) <= 2; el.style.borderColor = good ? "var(--ok)" : "var(--bad)"; el.style.background = good ? "var(--ok-soft)" : "var(--bad-soft)"; if (good) ok++; else expl.push(`<p><b>${n}.</b> Réponse : <i>${esc(a[0])}</i></p>`); });
-    expl.unshift(`<p><b>Titres :</b> A iv · B i · C iii · D vi · E ii · F v. Le distracteur vii reprend un détail du paragraphe B (les télescopes déplacés) sans en résumer l'idée principale.</p>`);
-    $("#r-expl").innerHTML = expl.join("");
-    const used = 1200 - tmr.left, proj = Math.round(ok / 14 * 40);
-    $("#r-score").innerHTML = `<div class="score">Score <b>${ok}/14</b> en ${fmtTime(used)} · rapporté sur 40 : ≈ ${proj}/40 → band ≈ ${readBand(proj)}</div>`;
-  };
-  function markR(n, good, right) { const row = $("#rq-" + n); row.className = "q " + (good ? "ok" : "bad"); row.querySelector(".fix")?.remove(); if (!good) row.insertAdjacentHTML("beforeend", `<span class="fix">→ ${esc(right)}</span>`); }
-}
 
 const DRILL = [
   ["The museum, which opened in 1998, attracted twice as many visitors in its first year as its planners had predicted.", "Visitor numbers in the first year exceeded expectations.", "TRUE", "« twice as many … as predicted » = au-delà des prévisions. Paraphrase directe."],
@@ -734,32 +853,170 @@ const DRILL = [
   ["The festival, now in its fortieth year, was founded by a group of local teachers.", "The festival was originally organised by a government agency.", "FALSE", "Fondé par des enseignants locaux, pas par une agence gouvernementale : contradiction sur le fondateur."],
   ["Researchers interviewed 300 nurses, most of whom reported working unpaid overtime at least once a week.", "Most nurses in the country work unpaid overtime.", "NOT GIVEN", "L'échantillon porte sur 300 infirmiers interrogés, pas sur ceux de tout le pays. Généralisation non autorisée."]
 ];
+
+/* --- harder drill items (C2 traps) --- */
+DRILL.push(
+  ["The committee's report, published last spring, stopped short of recommending an outright ban.", "The committee recommended a ban.", "FALSE", "« stopped short of recommending » = n'est pas allé jusqu'à recommander. Le comité ne l'a pas recommandé."],
+  ["Only a handful of the manuscripts survived the fire.", "Most of the manuscripts were destroyed.", "TRUE", "« Only a handful survived » : seule une poignée a survécu, donc la plupart ont été détruits."],
+  ["The policy was introduced in 2019, two years after a similar scheme was abandoned in Denmark.", "The Danish scheme was abandoned because it was too expensive.", "NOT GIVEN", "Le texte date l'abandon du programme danois, mais n'en donne pas la cause."],
+  ["While the method is quicker, it is by no means cheaper than conventional techniques.", "The method costs less than conventional techniques.", "FALSE", "« by no means cheaper » = absolument pas moins cher. L'affirmation dit l'inverse."],
+  ["Attendance at the gallery has risen every year since admission charges were abolished.", "Abolishing admission charges caused attendance to rise.", "NOT GIVEN", "Le texte établit une chronologie, pas une cause. Corrélation n'est pas causalité : c'est le piège Not Given favori des passages de niveau 3."],
+  ["The engineers had expected the dam to last a century; it showed signs of failure within thirty years.", "The dam deteriorated sooner than anticipated.", "TRUE", "Prévu pour un siècle, des signes de défaillance en trente ans : plus tôt que prévu."],
+  ["No other language in the region has as many speakers.", "It is the most widely spoken language in the region.", "TRUE", "Aucune autre langue n'a autant de locuteurs = la plus parlée. Comparatif négatif reformulé en superlatif."],
+  ["The species is thought to have originated in Asia, though fossil evidence remains scarce.", "Fossil evidence proves that the species came from Asia.", "FALSE", "« is thought » et « evidence remains scarce » contredisent « proves ». Les preuves fossiles sont rares, elles ne prouvent rien."],
+  ["The novel was rejected by several publishers before it became a bestseller.", "The author was surprised by the novel's success.", "NOT GIVEN", "Les sentiments de l'auteur ne sont jamais mentionnés. Une réaction plausible n'est pas une information du texte."]
+);
+
+/* --- passage engine --- */
+const PASSAGES = [
+  {
+    id: "r1", tab: "Passage 1", title: PASSAGE.title, paras: PASSAGE.paras,
+    blocks: [
+      { kind: "heading", instr: "Questions 1–6. The passage has six paragraphs, <b>A–F</b>. Choose the correct heading for each paragraph from the list of headings below.",
+        list: PASSAGE.headings, items: "ABCDEF".split("").map((l, i) => [i + 1, l, PASSAGE.headAns[l]]),
+        note: "Titres : A iv · B i · C iii · D vi · E ii · F v. Le distracteur vii reprend un détail du paragraphe B (les télescopes déplacés) sans en résumer l'idée principale." },
+      { kind: "tf", vals: ["TRUE", "FALSE", "NOT GIVEN"], instr: "Questions 7–10. Do the following statements agree with the information given in the passage? Choose <b>TRUE</b>, <b>FALSE</b> or <b>NOT GIVEN</b>.", items: PASSAGE.tfng },
+      { kind: "gap", max: 2, instr: "Questions 11–14. Complete the summary. Choose <b>NO MORE THAN TWO WORDS</b> from the passage for each answer.", text: PASSAGE.summary.text, ans: PASSAGE.summary.ans }
+    ]
+  },
+  {
+    id: "r2", tab: "Passage 2", title: "The Uses of Forgetting",
+    paras: [
+      ["A", "In 1885 the German psychologist Hermann Ebbinghaus published the results of an experiment he had conducted on a single subject: himself. Over many months, he memorised lists of meaningless syllables such as 'DAX' and 'BOK', then tested how many he could still recall after intervals ranging from twenty minutes to a month. The results, plotted as what became known as the forgetting curve, showed that memory declines steeply at first, with more than half the material lost within a day, and then much more gradually. Remarkably, when a Dutch team repeated the experiment in 2015, their curve closely matched the original, confirming one of psychology's oldest findings."],
+      ["B", "For most of the following century, forgetting was regarded as a simple failure: information was stored and then, through neglect, it decayed, much as an unused path becomes overgrown. Educators drew the obvious conclusion that the remedy was repetition, and that the more often material was rehearsed, the more securely it would be held. Yet this account struggled to explain a common experience. A name that cannot be recalled one moment often returns unbidden an hour later, which suggests that it was never actually lost."],
+      ["C", "An influential alternative was proposed by the psychologists Robert and Elizabeth Bjork, who distinguished between two properties of any memory. 'Storage strength' reflects how well something has been learned and, in their view, never declines; 'retrieval strength' reflects how easily it can be accessed at a given moment, and fluctuates constantly. On this model, forgetting is not erasure but a temporary loss of access. More provocatively, the Bjorks argued that a partial loss of retrieval strength is actually useful, because the effort of recalling something that has become difficult to retrieve increases its storage strength far more than effortless review does."],
+      ["D", "This idea underpins what the Bjorks called 'desirable difficulties'. Spacing study sessions apart rather than massing them together, testing oneself rather than rereading, and mixing different types of problem rather than practising one type at a time all make learning feel slower and less successful. Students consistently rate such methods as less effective. In controlled studies, however, they produce markedly better retention weeks later. The feeling of fluency that comes from rereading a chapter, it seems, is a poor guide to how much will be remembered."],
+      ["E", "Neuroscience has added a further twist. Researchers working with mice have identified molecular processes that appear to actively weaken stored memories, suggesting that the brain devotes resources to forgetting rather than merely failing to remember. One explanation is that a memory system which retained every detail would generalise poorly: an animal that remembered each encounter with a predator in all its particulars might fail to recognise the next one, which would inevitably differ in some respect. Forgetting detail, on this view, allows the essential pattern to emerge."],
+      ["F", "There are, of course, limits to how far forgetting can be celebrated. For people with dementia, the loss of memory is neither temporary nor beneficial, and nothing in the research on desirable difficulties applies to their condition. Nor do the findings imply that teachers should simply make lessons harder. Difficulties are only desirable if learners are equipped to overcome them, and a task that is too demanding produces frustration rather than learning."],
+      ["G", "What the research does suggest is that some widespread habits deserve rethinking. Cramming the night before an examination can produce adequate performance the next day but leaves little behind a month later. Highlighting and rereading notes, the most popular revision techniques among university students, are among the least effective. A brief, effortful attempt to recall material, made just as it is beginning to fade, may be worth more than an hour of comfortable review."]
+    ],
+    blocks: [
+      { kind: "match", letters: "ABCDEFG", instr: "Questions 15–19. The passage has seven paragraphs, <b>A–G</b>. Which paragraph contains the following information? Write the correct letter, <b>A–G</b>. <b>NB</b> You may use any letter more than once.",
+        items: [
+          [15, "a reference to an experiment being repeated", "A", "« when a Dutch team repeated the experiment in 2015 »."],
+          [16, "an example of a memory returning without effort", "B", "« returns unbidden an hour later » : sans effort, de lui-même."],
+          [17, "a warning against misapplying a theory", "F", "« Nor do the findings imply that teachers should simply make lessons harder »."],
+          [18, "a possible reason why forgetting could help an animal survive", "E", "L'animal qui retiendrait chaque détail ne reconnaîtrait pas le prochain prédateur."],
+          [19, "a contrast between how learners judge a method and how well it works", "D", "« Students consistently rate such methods as less effective. In controlled studies, however… »."]
+        ] },
+      { kind: "tf", vals: ["YES", "NO", "NOT GIVEN"], instr: "Questions 20–23. Do the following statements agree with the claims of the writer? Choose <b>YES</b>, <b>NO</b> or <b>NOT GIVEN</b>.",
+        items: [
+          [20, "Recent research has supported Ebbinghaus's findings.", "YES", "« confirming one of psychology's oldest findings »."],
+          [21, "The idea that memories simply decay accounted well for everyday experience.", "NO", "« this account struggled to explain a common experience »."],
+          [22, "The Bjorks' model has been widely adopted in schools.", "NOT GIVEN", "Le texte présente le modèle et ses applications possibles, jamais son adoption dans les écoles."],
+          [23, "Desirable difficulties could help people with dementia.", "NO", "« nothing in the research on desirable difficulties applies to their condition »."]
+        ] },
+      { kind: "mcq", instr: "Questions 24–26. Choose the correct letter, <b>A, B, C or D</b>.",
+        items: [
+          [24, "According to the Bjorks, storage strength", ["decreases when material is not reviewed.", "can be measured by how easily something is recalled.", "does not diminish over time.", "depends on retrieval strength."], "C", "« 'Storage strength' … in their view, never declines ». B décrit la retrieval strength."],
+          [25, "What does the writer say about the research on mice?", ["It proves that humans forget in the same way.", "It suggests that forgetting may be an active process.", "It shows that memories are stored in a single location.", "It contradicts the idea of desirable difficulties."], "B", "« processes that appear to actively weaken stored memories »."],
+          [26, "Which revision habit does the writer recommend?", ["reviewing notes repeatedly the night before an exam", "highlighting the key passages in a textbook", "trying to recall material just as it starts to fade", "practising one type of problem at a time"], "C", "« A brief, effortful attempt to recall material, made just as it is beginning to fade, may be worth more… ». A, B et D sont cités comme peu efficaces."]
+        ] },
+      { kind: "gap", max: 1, instr: "Questions 27–28. Complete the sentences below. Choose <b>ONE WORD ONLY</b> from the passage for each answer.",
+        text: "Ebbinghaus tested himself using lists of (27) ____ syllables.\nA task that is too demanding results in (28) ____ instead of learning.",
+        ans: { 27: ["meaningless"], 28: ["frustration"] } }
+    ]
+  }
+];
+
+function renderPassageX(P, host) {
+  const pid = P.id;
+  const row = (n, lbl, ctrl, cls = "") => `<div class="q${cls}" id="${pid}-q${n}"><span class="qn">${n}</span><span class="lbl">${lbl}</span>${ctrl}</div>`;
+  const sel = (n, opts) => `<select id="${pid}-a${n}" aria-label="Question ${n}"><option value="">–</option>${opts.map(o => `<option>${o}</option>`).join("")}</select>`;
+  const radios = (n, vals) => `<div class="radios" role="radiogroup" aria-label="Question ${n}">${vals.map(v => `<label><input type="radio" name="${pid}-r${n}" value="${v}"><span>${v}</span></label>`).join("")}</div>`;
+  const blocksHtml = P.blocks.map(b => {
+    let h = `<div class="instr">${b.instr}</div>`;
+    if (b.kind === "heading") h += `<ul class="heads">${b.list.map(x => `<li><b>${x[0]}</b>${esc(x[1])}</li>`).join("")}</ul>` + b.items.map(it => row(it[0], `Paragraph ${it[1]}`, sel(it[0], b.list.map(x => x[0])))).join("");
+    if (b.kind === "tf") h += b.items.map(it => row(it[0], esc(it[1]), radios(it[0], b.vals))).join("");
+    if (b.kind === "match") h += b.items.map(it => row(it[0], esc(it[1]), sel(it[0], b.letters.split("")))).join("");
+    if (b.kind === "mcq") h += b.items.map(it => row(it[0], esc(it[1]), `<div class="mcq-opts">${it[2].map((o, i) => { const L = "ABCD"[i]; return `<label><input type="radio" name="${pid}-r${it[0]}" value="${L}"> <b>${L}</b> ${esc(o)}</label>`; }).join("")}</div>`, " mcq")).join("");
+    if (b.kind === "gap") h += `<p class="gaptext">${esc(b.text).replace(/\((\d+)\) ____/g, (m, n) => `<span class="qn">${n}</span><input type="text" id="${pid}-a${n}" autocomplete="off" autocapitalize="off" spellcheck="false" style="width:9em" aria-label="Question ${n}">`)}</p>`;
+    return h;
+  }).join("");
+  const nQ = P.blocks.reduce((a, b) => a + (b.kind === "gap" ? Object.keys(b.ans).length : b.items.length), 0);
+  const first = P.blocks[0].items ? P.blocks[0].items[0][0] : +Object.keys(P.blocks[0].ans)[0];
+  host.innerHTML = `<div class="two">
+    <div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h4 style="margin:0">Reading Passage · Questions ${first}–${first + nQ - 1}</h4><span class="note">≈ ${P.paras.reduce((a, p) => a + p[1].split(/\s+/).length, 0)} mots</span></div>
+      <h3 style="font-size:1.45rem">${esc(P.title)}</h3>
+      <div class="passage">${P.paras.map(p => `<p><span class="pl">${p[0]}</span>${esc(p[1])}</p>`).join("")}</div></div>
+    <div class="panel sticky stack" style="gap:6px">
+      <div class="row" style="justify-content:space-between"><span class="timer" id="${pid}-timer">20:00</span><div class="row"><button class="btn primary" id="${pid}-start">Lancer 20 min</button><button class="btn" id="${pid}-check">Corriger</button></div></div>
+      ${blocksHtml}
+      <div id="${pid}-score"></div>
+      <details><summary>Explications (après correction)</summary><div id="${pid}-expl" class="note"></div></details>
+    </div></div>`;
+  const tmr = makeTimer($(`#${pid}-timer`), 1200, () => { beep(); $(`#${pid}-check`).click(); });
+  $(`#${pid}-start`).onclick = () => { tmr.start(); $(`#${pid}-start`).disabled = true; };
+  const mark = (n, good, right) => { const r = $(`#${pid}-q${n}`); if (!r) return; const mcq = r.classList.contains("mcq"); r.className = "q" + (mcq ? " mcq " : " ") + (good ? "ok" : "bad"); r.querySelector(".fix")?.remove(); if (!good) r.insertAdjacentHTML("beforeend", `<span class="fix">→ ${esc(right)}</span>`); };
+  $(`#${pid}-check`).onclick = () => {
+    tmr.stop(); let ok = 0; const expl = [];
+    P.blocks.forEach(b => {
+      if (b.kind === "heading") { b.items.forEach(it => { const good = $(`#${pid}-a${it[0]}`).value === it[2]; mark(it[0], good, it[2]); if (good) ok++; }); if (b.note) expl.push(`<p><b>${esc(b.note)}</b></p>`); }
+      if (b.kind === "match") b.items.forEach(it => { const good = $(`#${pid}-a${it[0]}`).value === it[2]; mark(it[0], good, it[2]); if (good) ok++; expl.push(`<p><b>${it[0]}. ${it[2]}</b> — ${esc(it[3])}</p>`); });
+      if (b.kind === "tf" || b.kind === "mcq") b.items.forEach(it => { const ans = b.kind === "tf" ? it[2] : it[3], ex = b.kind === "tf" ? it[3] : it[4]; const v = ($(`input[name="${pid}-r${it[0]}"]:checked`) || {}).value; const good = v === ans; mark(it[0], good, ans); if (good) ok++; expl.push(`<p><b>${it[0]}. ${ans}</b> — ${esc(ex)}</p>`); });
+      if (b.kind === "gap") Object.entries(b.ans).forEach(([n, a]) => { const el = $(`#${pid}-a${n}`); const good = a.map(norm).includes(norm(el.value)) && wordCountAns(el.value) <= b.max; el.style.borderColor = good ? "var(--ok)" : "var(--bad)"; el.style.background = good ? "var(--ok-soft)" : "var(--bad-soft)"; if (good) ok++; else expl.push(`<p><b>${n}.</b> Réponse : <i>${esc(a[0])}</i>${wordCountAns(el.value) > b.max ? " (ta réponse dépasse la limite de mots)" : ""}</p>`); });
+    });
+    $(`#${pid}-expl`).innerHTML = expl.join("");
+    const used = 1200 - tmr.left, proj = Math.round(ok / nQ * 40);
+    $(`#${pid}-score`).innerHTML = `<div class="score">Score <b>${ok}/${nQ}</b> en ${fmtTime(used)} · rapporté sur 40 : ≈ ${proj}/40 → band ≈ ${readBand(proj)}<br><span class="note">Pour chaque erreur, retrouve la phrase du texte qui donne la réponse. Si tu ne la trouves pas, c'était probablement Not Given.</span></div>`;
+  };
+}
+
 let drillIdx = 0, drillScore = 0, drillDone = 0;
-function renderDrill() {
+function renderDrill(host) {
   const d = DRILL[drillIdx];
-  $("#read-drill").innerHTML = `<div class="panel">
+  host.innerHTML = `<div class="panel">
     <div class="row" style="justify-content:space-between"><h4 style="margin:0">Item ${drillIdx + 1} / ${DRILL.length}</h4><span class="status">Score ${drillScore}/${drillDone}</span></div>
     <div class="drill-ex">${esc(d[0])}</div>
     <div class="drill-st">${esc(d[1])}</div>
     <div class="row" id="drill-btns">${["TRUE", "FALSE", "NOT GIVEN"].map(v => `<button class="btn" data-v="${v}">${v}</button>`).join("")}</div>
     <div id="drill-fb"></div>
-    <p class="note" style="margin-top:14px">La règle : TRUE si le texte dit la même chose, FALSE s'il dit le contraire, NOT GIVEN s'il ne permet pas de trancher. On ne s'appuie jamais sur ce qu'on sait du sujet.</p>
+    <p class="note" style="margin-top:14px">La règle : TRUE si le texte dit la même chose, FALSE s'il dit le contraire, NOT GIVEN s'il ne permet pas de trancher. On ne s'appuie jamais sur ce qu'on sait du sujet, ni sur ce qui serait logique.</p>
   </div>`;
   $$("#drill-btns button").forEach(b => b.onclick = () => {
     const good = b.dataset.v === d[2]; drillDone++; if (good) drillScore++;
     $$("#drill-btns button").forEach(x => x.disabled = true);
-    $("#drill-fb").innerHTML = `<div class="fb ${good ? "ok" : "bad"}"><b>${good ? "Juste" : "Non"} — ${d[2]}.</b> ${esc(d[3])}</div><div class="row" style="margin-top:10px"><button class="btn primary" id="drill-next">${drillIdx + 1 < DRILL.length ? "Item suivant" : "Recommencer"}</button></div>`;
-    $("#drill-next").onclick = () => { if (drillIdx + 1 < DRILL.length) drillIdx++; else { drillIdx = 0; drillScore = 0; drillDone = 0; } renderDrill(); };
+    $("#drill-fb").innerHTML = `<div class="fb ${good ? "ok" : "bad"}"><b>${good ? "Juste" : "Non"} — ${d[2]}.</b> ${esc(d[3])}</div><div class="row" style="margin-top:10px"><button class="btn primary" id="drill-next">${drillIdx + 1 < DRILL.length ? "Item suivant" : `Terminé : ${drillScore}/${drillDone}. Recommencer`}</button></div>`;
+    $("#drill-next").onclick = () => { if (drillIdx + 1 < DRILL.length) drillIdx++; else { drillIdx = 0; drillScore = 0; drillDone = 0; } renderDrill(host); };
   });
 }
-$$("#read-tabs button").forEach(b => b.onclick = () => {
-  $$("#read-tabs button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
-  $("#read-passage").hidden = b.dataset.r !== "passage"; $("#read-drill").hidden = b.dataset.r !== "drill";
-});
+
+const READ_TABS = [...PASSAGES.map(p => [p.id, p.tab]), ["drill", "Drill Not Given · " + DRILL.length + " items"]];
+let readCur = store.get("readCur", "r1");
+const readHosts = {};
+function renderReadTabs() {
+  const host = $("#read-host");
+  if (!Object.keys(readHosts).length) READ_TABS.forEach(([id]) => { const d = document.createElement("div"); d.id = "read-" + id; host.appendChild(d); readHosts[id] = d; });
+  if (!readHosts[readCur]) readCur = "r1";
+  $("#read-tabs").innerHTML = READ_TABS.map(([id, label]) => `<button aria-pressed="${id === readCur}" data-r="${id}">${esc(label)}</button>`).join("");
+  $$("#read-tabs button").forEach(b => b.onclick = () => { readCur = b.dataset.r; store.set("readCur", readCur); renderReadTabs(); });
+  READ_TABS.forEach(([id]) => {
+    const h = readHosts[id]; h.hidden = id !== readCur;
+    if (!h.dataset.ready) { if (id === "drill") renderDrill(h); else renderPassageX(PASSAGES.find(p => p.id === id), h); h.dataset.ready = "1"; }
+  });
+}
 
 /* =========================================================
    WRITING
    ========================================================= */
+function processChart() {
+  const st = [["1", "Collected from", "bottle banks"], ["2", "Taken by truck", "to recycling plant"], ["3", "Sorted by colour", "clear · green · brown"], ["4", "Washed", "labels & dirt removed"],
+              ["5", "Crushed into", "small pieces (cullet)"], ["6", "Melted with sand", "at 1,500°C"], ["7", "Moulded into", "new bottles"], ["8", "Filled & delivered", "to shops"]];
+  const W = 600, H = 300, bw = 128, bh = 70, gx = 24, x0 = 14, row = [40, 196];
+  const pos = i => i < 4 ? [x0 + i * (bw + gx), row[0]] : [x0 + (7 - i) * (bw + gx), row[1]];
+  let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Recyclage des bouteilles en verre, 8 étapes en cycle"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="var(--ink)"/></marker></defs>`;
+  st.forEach((t, i) => { const [x, y] = pos(i);
+    s += `<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="3" fill="var(--card)" stroke="var(--ink)" stroke-width="1.4"/>
+      <text x="${x + 8}" y="${y + 16}" font-family="IBM Plex Mono, monospace" font-weight="600">${t[0]}</text>
+      <text x="${x + bw / 2}" y="${y + 38}" text-anchor="middle" font-weight="600">${esc(t[1])}</text>
+      <text x="${x + bw / 2}" y="${y + 55}" text-anchor="middle">${esc(t[2])}</text>`; });
+  const line = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--ink)" stroke-width="1.6" marker-end="url(#arr)"/>`;
+  for (let i = 0; i < 3; i++) { const [x, y] = pos(i); s += line(x + bw + 2, y + bh / 2, x + bw + gx - 2, y + bh / 2); }
+  { const [x, y] = pos(3); s += line(x + bw / 2, y + bh + 2, x + bw / 2, row[1] - 3); }
+  for (let i = 4; i < 7; i++) { const [x, y] = pos(i); s += line(x - 2, y + bh / 2, x - gx + 2, y + bh / 2); }
+  { const [x, y] = pos(7); s += line(x + bw / 2, y - 2, x + bw / 2, row[0] + bh + 3); s += `<text x="${x + bw / 2 + 8}" y="${(row[0] + bh + row[1]) / 2 + 4}" font-style="italic">sold, used, returned</text>`; }
+  return s + `</svg>`;
+}
 function lineChart(cfg) {
   const W = 560, H = 300, L = 46, R = 110, T = 20, B = 40, pw = W - L - R, ph = H - T - B;
   const x = i => L + i * pw / (cfg.x.length - 1), y = v => T + ph - v / cfg.max * ph;
@@ -802,6 +1059,10 @@ const WTASKS = [
     chart: () => barChart({ title: "Hours per week on leisure activities, by age group", cats: ["Reading", "Video games", "Sport", "Social media"], max: 16, step: 4, unit: "Hours / week",
       series: [{ name: "Aged 16–24", v: [2, 9, 4, 14] }, { name: "Aged 45–64", v: [5, 2, 3, 6] }] }),
     data: "Bar chart, hours per week. Aged 16-24: reading 2, video games 9, sport 4, social media 14. Aged 45-64: reading 5, video games 2, sport 3, social media 6." },
+  { id: "t1c", task: 1, label: "Task 1 · Processus — recyclage du verre", min: 150, time: 20,
+    prompt: "The diagram below shows how glass bottles are recycled.\n\nSummarise the information by selecting and reporting the main features.\n\nWrite at least 150 words.",
+    chart: () => processChart(),
+    data: "Process diagram, glass bottle recycling, 8 stages in a cycle: 1 used bottles collected from bottle banks; 2 transported by truck to a recycling plant; 3 sorted by colour (clear, green, brown); 4 washed to remove labels and dirt; 5 crushed into small pieces called cullet; 6 cullet melted with sand at 1,500°C; 7 molten glass moulded into new bottles; 8 new bottles filled and delivered to shops, then sold to consumers (back to stage 1)." },
   { id: "t2a", task: 2, label: "Task 2 · Opinion — universités et emploi", min: 250, time: 40, prompt: "Some people believe that universities should focus on equipping graduates with skills for the workplace rather than providing knowledge for its own sake.\n\nTo what extent do you agree or disagree?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
   { id: "t2b", task: 2, label: "Task 2 · Deux points de vue — embouteillages", min: 250, time: 40, prompt: "Some argue that the best way to reduce traffic congestion is to make public transport free, while others believe that drivers should be charged to enter city centres.\n\nDiscuss both these views and give your own opinion.\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
   { id: "t2c", task: 2, label: "Task 2 · Problème-solution — logement des jeunes", min: 250, time: 40, prompt: "In many countries, young people are finding it increasingly difficult to afford a home of their own.\n\nWhat are the causes of this problem, and what measures could be taken to address it?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
@@ -812,7 +1073,7 @@ const WTASKS = [
   { id: "t2h", task: 2, label: "Task 2 · Opinion — IA et orientation", min: 250, time: 40, prompt: "Artificial intelligence will soon make many professional jobs unnecessary, so schools should stop preparing students for careers that may no longer exist.\n\nTo what extent do you agree or disagree?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." }
 ];
 const CHECK = {
-  1: ["Introduction : paraphrase du sujet, sans recopier la consigne", "Overview en 2e paragraphe : les 2 ou 3 tendances majeures, sans chiffres", "Chiffres sélectionnés et comparés, pas une liste exhaustive", "Aucune opinion, aucune cause inventée", "Temps verbaux cohérents avec les dates (passé pour 2000–2024)", "Variété : « account for », « peak at », « roughly twice as », « by contrast »", "170–190 mots"],
+  1: ["Introduction : paraphrase du sujet, sans recopier la consigne", "Overview en 2e paragraphe : les 2 ou 3 tendances majeures, sans chiffres", "Chiffres sélectionnés et comparés, pas une liste exhaustive", "Aucune opinion, aucune cause inventée", "Temps cohérents : passé pour des dates passées, présent passif pour un processus (« the bottles are then crushed »)", "Variété : « account for », « peak at », « roughly twice as », « by contrast »", "170–190 mots"],
   2: ["Toutes les parties de la question traitées (piège des questions doubles)", "Position claire dès l'introduction, identique en conclusion", "Une idée centrale par paragraphe, développée jusqu'à la conséquence", "Exemples précis plutôt que généraux (« for instance, in Paris… »)", "Connecteurs variés et non mécaniques (pas de « Firstly / Secondly / Lastly » partout)", "Collocations naturelles, aucun mot « sophistiqué » mal employé", "Structures complexes justes : relatives, conditionnelles, inversions mesurées", "270–320 mots, conclusion sans idée nouvelle"]
 };
 let wTimer = null;
@@ -881,6 +1142,9 @@ const P1 = {
   "Reading": ["Do you enjoy reading?", "What kinds of things do you usually read?", "Did you read a lot when you were a child?", "Do you prefer paper books or e-books? Why?"],
   "Sleep": ["How many hours do you usually sleep?", "Do you ever take naps during the day?", "What do you do when you can't get to sleep?", "Has your sleep pattern changed in recent years?"],
   "Mornings": ["Are you a morning person?", "What's the first thing you do after you wake up?", "Have your mornings changed over the years?", "What would your ideal morning look like?"],
+  "Neighbours": ["Do you know your neighbours well?", "How often do you see them?", "What makes someone a good neighbour?", "Is it common for neighbours to help each other where you live?"],
+  "Photographs": ["Do you like taking photographs?", "What do you usually take photos of?", "Do you prefer taking photos or being in them?", "Do you ever print your photos?"],
+  "Public transport": ["How do you usually get around your city?", "What do you think of public transport where you live?", "Did you use public transport much as a child?", "What would make you use it more?"],
   "Weather": ["What's the weather usually like where you live?", "Does the weather affect your mood?", "What kind of weather do you like best?", "Has the climate in your region changed since you were young?"]
 };
 const CARDS = [
@@ -895,6 +1159,14 @@ const CARDS = [
   { t: "Describe a decision that was made by a group you belonged to.", b: ["what the group was", "what the decision was", "how the decision was made"], e: "and explain whether you agreed with the decision.",
     p3: ["What makes someone a good leader within a group?", "Are decisions made by groups usually better than those made by individuals?", "Should employees have a say in major company decisions?", "How might cultural differences affect the way groups make decisions?"] }
 ];
+CARDS.push(
+  { t: "Describe a time when you had to wait for something for a long time.", b: ["what you were waiting for", "how long you had to wait", "what you did while you were waiting"], e: "and explain how you felt when the wait was over.",
+    p3: ["Why are people today less patient than in the past, if indeed they are?", "Are there situations in which waiting is actually beneficial?", "How do businesses try to reduce the frustration of waiting?", "Should children be taught to delay gratification? How?"] },
+  { t: "Describe a website or app that you find particularly useful.", b: ["what it is", "how you found out about it", "what you use it for"], e: "and explain why you find it so useful.",
+    p3: ["How has technology changed the way people learn?", "Should governments regulate what large technology companies do with personal data?", "Do you think people rely too much on their phones?", "What are the risks of getting most of our news online?"] },
+  { t: "Describe a person you know who is good at their job.", b: ["who this person is", "what their job is", "how you know them"], e: "and explain what makes them good at their job.",
+    p3: ["Is job satisfaction more important than a high salary?", "What qualities do employers value most today?", "Should people stay in one career for their whole working life?", "How might artificial intelligence change the jobs that people value?"] }
+);
 const EXAMINER = { lang: "en-GB", g: "f", rate: 0.95 };
 let sp = { part: "1", qi: 0, topic: null, card: store.get("card", 0), timer: null, phase: "idle" };
 function spQuestions() {
@@ -902,7 +1174,61 @@ function spQuestions() {
   if (sp.part === "3") return CARDS[sp.card].p3;
   return [];
 }
+/* ---- enregistrement + transcription en direct ---- */
+const SRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+const canRecord = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+let rec = null;
+async function warmMic() {
+  if (!canRecord) return;
+  try { const st = await navigator.mediaDevices.getUserMedia({ audio: true }); st.getTracks().forEach(t => t.stop()); } catch (e) {}
+}
+async function startRec() {
+  if (rec || !canRecord) return;
+  const st = $("#rec-st"), btn = $("#rec-btn"), tr = $("#sp-tr");
+  let stream;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+  catch (e) { if (st) st.textContent = "Micro refusé ou indisponible. Autorise le micro pour ce site, ou enregistre-toi avec le dictaphone du téléphone."; return; }
+  const R = { stream, chunks: [], t0: Date.now(), finalText: "", base: tr ? tr.value.trim() : "", sr: null, mr: null };
+  rec = R;
+  try { R.mr = new MediaRecorder(stream); R.mr.ondataavailable = e => { if (e.data && e.data.size) R.chunks.push(e.data); }; R.mr.start(); } catch (e) { R.mr = null; }
+  if (SRec) {
+    const sr = new SRec(); sr.lang = "en-GB"; sr.continuous = true; sr.interimResults = true;
+    sr.onresult = ev => {
+      let interim = "";
+      for (let i = ev.resultIndex; i < ev.results.length; i++) { const r = ev.results[i]; if (r.isFinal) R.finalText += r[0].transcript.trim() + " "; else interim += r[0].transcript; }
+      const box = $("#sp-tr"); if (box) { box.value = (R.base ? R.base + "\n" : "") + R.finalText + interim; store.set("tr:" + sp.part, box.value); }
+    };
+    sr.onend = () => { if (rec === R) { try { sr.start(); } catch (e) {} } };
+    sr.onerror = e => { if (e.error === "not-allowed" || e.error === "service-not-allowed") { R.sr = null; const s2 = $("#rec-st"); if (s2) s2.dataset.note = " · transcription indisponible sur ce navigateur"; } };
+    try { sr.start(); R.sr = sr; } catch (e) {}
+  }
+  if (btn) btn.innerHTML = "■ Arrêter l'enregistrement";
+  R.iv = setInterval(() => { const s2 = $("#rec-st"); if (s2) s2.innerHTML = `<span class="recdot"></span>${fmtTime((Date.now() - R.t0) / 1000)}${R.sr ? " · transcription en direct" : " · enregistrement audio seul"}${esc(s2.dataset.note || "")}`; }, 300);
+}
+function stopRec() {
+  if (!rec) return;
+  const R = rec; rec = null;
+  clearInterval(R.iv);
+  if (R.sr) { try { R.sr.stop(); } catch (e) {} }
+  const secs = (Date.now() - R.t0) / 1000;
+  const finish = () => {
+    R.stream.getTracks().forEach(t => t.stop());
+    const a = $("#rec-audio");
+    if (a && R.chunks.length) { a.src = URL.createObjectURL(new Blob(R.chunks, { type: (R.mr && R.mr.mimeType) || "audio/webm" })); a.hidden = false; }
+  };
+  if (R.mr && R.mr.state !== "inactive") { R.mr.onstop = finish; R.mr.stop(); } else finish();
+  const words = wordsOf(R.finalText), st = $("#rec-st");
+  if (st) st.textContent = `Durée ${fmtTime(secs)}` + (words ? ` · ${words} mots · ${Math.round(words / (secs / 60))} mots/min` : "") + " · réécoute-toi ci-dessous";
+  const btn = $("#rec-btn"); if (btn) btn.innerHTML = "● Enregistrer";
+}
+function wireRecorder() {
+  const btn = $("#rec-btn"); if (!btn) return;
+  if (!canRecord) { btn.disabled = true; $("#rec-st").textContent = "Ce navigateur ne donne pas accès au micro. Utilise le dictaphone du téléphone et colle la transcription."; return; }
+  btn.onclick = () => rec ? stopRec() : startRec();
+}
+
 function renderSpeaking() {
+  if (rec) stopRec();
   sp.timer && sp.timer.stop(); if ("speechSynthesis" in window) speechSynthesis.cancel();
   const body = $("#sp-body");
   if (sp.part === "2") {
@@ -912,18 +1238,20 @@ function renderSpeaking() {
       <div class="cue"><b>${esc(c.t)}</b><br><span style="font-size:.95rem">You should say:</span><ul>${c.b.map(x => `<li>${esc(x)}</li>`).join("")}</ul>${esc(c.e)}</div>
       <label for="sp-notes"><h4 style="margin:0">Tes notes de préparation (comme sur le papier fourni)</h4></label>
       <textarea id="sp-notes" style="min-height:90px;font-family:var(--f-body);font-size:.95rem" placeholder="Mots-clés seulement, pas de phrases."></textarea>
-      <p class="note">Le jour J, l'examinateur t'arrête à 2 minutes. Viser 1 min 45 à 2 min : un temps de parole trop court plafonne Fluency & Coherence. Ensuite, l'examinateur pose souvent une ou deux questions brèves avant la Part 3.</p>
+      <p class="note">L'enregistrement démarre tout seul quand tu dois parler et s'arrête à 2 minutes. Le jour J, l'examinateur t'arrête aussi à 2 minutes. Viser 1 min 45 à 2 min : un temps de parole trop court plafonne Fluency & Coherence. Ensuite, l'examinateur pose souvent une ou deux questions brèves avant la Part 3.</p>
       ${transcriptBlock()}`;
     $("#sp-other").onclick = () => { sp.card = (sp.card + 1) % CARDS.length; store.set("card", sp.card); renderSpeaking(); };
     $("#sp-go").onclick = async () => {
       $("#sp-go").disabled = true;
+      warmMic();
       await speakOne("Now, I'm going to give you a topic, and I'd like you to talk about it for one to two minutes. Before you talk, you'll have one minute to think about what you're going to say. You can make some notes if you wish.", EXAMINER);
       $("#sp-phase").textContent = "Préparation";
       sp.timer = makeTimer($("#sp-timer"), 60, async () => {
         beep();
         await speakOne("All right? Remember, you have one to two minutes for this, so don't worry if I stop you. I'll tell you when the time is up. Can you start speaking now, please?", EXAMINER);
         $("#sp-phase").textContent = "Parle";
-        sp.timer = makeTimer($("#sp-timer"), 120, async () => { beep(); $("#sp-phase").textContent = "Terminé"; await speakOne("Thank you.", EXAMINER); $("#sp-go").disabled = false; });
+        startRec();
+        sp.timer = makeTimer($("#sp-timer"), 120, async () => { beep(); stopRec(); $("#sp-phase").textContent = "Terminé"; await speakOne("Thank you.", EXAMINER); $("#sp-go").disabled = false; });
         sp.timer.start();
       });
       sp.timer.start();
@@ -936,7 +1264,7 @@ function renderSpeaking() {
           : `<label class="row" style="min-width:0;flex:1 1 300px"><h4 style="margin:0">Liée à la carte</h4><select id="sp-card" style="min-width:0;flex:1">${CARDS.map((c, i) => `<option value="${i}" ${i === sp.card ? "selected" : ""}>${esc(c.t)}</option>`).join("")}</select></label>`}
         <div class="row"><span class="timer" id="sp-timer">${fmtTime(per)}</span></div></div>
       <div class="examiner" id="sp-q"><span class="who">EXAMINER · question ${sp.qi + 1}/${qs.length}</span>${esc(qs[sp.qi])}</div>
-      <div class="row"><button class="btn primary" id="sp-ask">▶ Poser la question</button><button class="btn" id="sp-next">Question suivante</button><button class="btn" id="sp-hide">Masquer le texte</button></div>
+      <div class="row"><button class="btn primary" id="sp-ask">▶ Poser la question</button><button class="btn" id="sp-next">Question suivante</button><button class="btn" id="sp-hide">Masquer le texte</button><label class="note"><input type="checkbox" id="sp-auto" checked> Enregistrer dès la fin de la question</label></div>
       <p class="note">${sp.part === "1"
         ? "Part 1 : réponses de 2 à 4 phrases, naturelles. Réponds, développe d'une raison ou d'un exemple, et arrête-toi. Le chrono indique environ 30 s par question."
         : "Part 3 : c'est ici que se joue le 8.5+. Donne un avis nuancé, une raison générale, un exemple, puis une concession ou une projection. Environ 45 à 60 s par réponse, et des idées abstraites plutôt que ton expérience personnelle."}</p>
@@ -944,18 +1272,21 @@ function renderSpeaking() {
     if ($("#sp-topic")) $("#sp-topic").onchange = e => { sp.topic = e.target.value; sp.qi = 0; renderSpeaking(); };
     if ($("#sp-card")) $("#sp-card").onchange = e => { sp.card = +e.target.value; store.set("card", sp.card); sp.qi = 0; renderSpeaking(); };
     sp.timer = makeTimer($("#sp-timer"), per, beep);
-    $("#sp-ask").onclick = async () => { $("#sp-ask").disabled = true; sp.timer.reset(per); await speakOne(qs[sp.qi], EXAMINER); sp.timer.start(); $("#sp-ask").disabled = false; };
+    $("#sp-ask").onclick = async () => { $("#sp-ask").disabled = true; sp.timer.reset(per); await speakOne(qs[sp.qi], EXAMINER); sp.timer.start(); if (!rec && $("#sp-auto") && $("#sp-auto").checked) startRec(); $("#sp-ask").disabled = false; };
     $("#sp-next").onclick = () => { sp.qi = (sp.qi + 1) % qs.length; renderSpeaking(); };
     $("#sp-hide").onclick = e => { const q = $("#sp-q"); const hidden = q.style.filter === "blur(6px)"; q.style.filter = hidden ? "" : "blur(6px)"; e.target.textContent = hidden ? "Masquer le texte" : "Afficher le texte"; };
   }
+  wireRecorder();
   $("#sp-grade").onclick = gradeSpeaking;
   $("#sp-copy").onclick = () => copyText(speakingPrompt(), $("#sp-status"));
   $("#sp-tr").value = store.get("tr:" + sp.part, "");
   $("#sp-tr").oninput = e => store.set("tr:" + sp.part, e.target.value);
 }
 function transcriptBlock() {
-  return `<details open><summary>Faire évaluer ta réponse</summary>
-    <p class="note" style="margin-top:8px">Colle ici la transcription de ton enregistrement, hésitations comprises (« erm », reprises). Les corriger fausserait la note de fluidité.</p>
+  return `<div class="recbar"><button class="btn primary" id="rec-btn">● Enregistrer</button><span class="status" id="rec-st"></span></div>
+    <audio id="rec-audio" controls hidden></audio>
+    <details open><summary>Faire évaluer ta réponse</summary>
+    <p class="note" style="margin-top:8px">La transcription automatique s'affiche ici. Elle efface souvent les « erm » et les reprises : rajoute-les en te réécoutant, sinon la note de fluidité sera trop généreuse. Tu peux aussi coller une transcription faite ailleurs.</p>
     <textarea id="sp-tr" style="min-height:140px" placeholder="Transcription de ta réponse…"></textarea>
     <div class="row" style="margin-top:8px"><button class="btn primary" id="sp-grade">Faire évaluer par Claude</button><button class="btn" id="sp-copy">Copier la demande</button><span class="status" id="sp-status"></span></div>
     <div id="sp-result" class="result"></div></details>`;
@@ -999,25 +1330,88 @@ $$("#sp-tabs button").forEach(b => b.onclick = () => {
    PLAN
    ========================================================= */
 const PLAN = [
-  ["J-14", "Diagnostic", "Ici : les trois sections Listening, le passage Reading, une Task 2 notée par Claude. Note chaque erreur par type de question.", false],
-  ["J-13", "Examen blanc n°1 (L + R + W)", "Cambridge IELTS, un test complet en conditions réelles, 2 h 40 d'affilée. Speaking ici, Parts 1 à 3.", true],
-  ["J-12", "Correction de l'examen blanc", "Classe chaque erreur : distracteur, orthographe, limite de mots, False contre Not Given, temps. Le type qui revient devient la priorité de la semaine.", false],
-  ["J-11", "Reading : types faibles", "Drill True / False / Not Given ici, puis deux passages Cambridge en 18 min chacun. Task 1 graphique linéaire.", false],
-  ["J-10", "Listening Parts 3 et 4", "Deux Parts 3 et deux Parts 4 Cambridge. Réécoute avec transcription, repère les reformulations. Task 2 « discuss both views ».", false],
-  ["J-9", "Writing intensif", "Task 1 diagramme en barres + une Task 2, notées. Réécris le paragraphe le plus faible en t'appuyant sur la version band 9.", false],
-  ["J-8", "Examen blanc n°2 (complet)", "Cambridge, L + R + W d'affilée, puis Speaking complet de 14 min enregistré.", true],
-  ["J-7", "Correction + Speaking Part 3", "Correction de l'examen blanc. Trois séries de Part 3 ici, évaluées. Objectif : 45 à 60 s par réponse, idées abstraites.", false],
-  ["J-6", "Task 1 : processus et plans", "Types absents de cette page : prends-les dans Cambridge. Vocabulaire du processus (passif) et du changement de plan (« was replaced by », « was relocated »).", false],
-  ["J-5", "Reading + Listening en vitesse", "Un test Reading en 55 min pour créer une marge. Deux Parts 1–2 de Listening sans pause.", false],
-  ["J-4", "Examen blanc n°3 (complet)", "Dernier test complet en conditions réelles, même horaire que le jour J si possible.", true],
-  ["J-3", "Correction ciblée", "Uniquement les erreurs de l'examen blanc n°3. Une Task 2 de plus, notée.", false],
-  ["J-2", "Speaking à froid", "Deux simulations complètes, cartes jamais vues. Revois ta liste personnelle d'erreurs fréquentes.", false],
-  ["J-1", "Léger", "30 min de Listening pour garder l'oreille, rien de nouveau. Vérifie l'heure, le lieu, la pièce d'identité. Dors.", false]
+  [14, "Diagnostic", "Ici : les quatre parties Listening, les deux passages Reading, une Task 2 notée. Entre chaque résultat dans le suivi ci-dessus.", false],
+  [13, "Examen blanc n°1 (L + R + W)", "Cambridge IELTS, un test complet en conditions réelles, 2 h 40 d'affilée. Puis un Speaking complet ici, enregistré. Ces quatre bandes sont ton point de départ.", true],
+  [12, "Correction de l'examen blanc", "Classe chaque erreur : distracteur, orthographe, limite de mots, False contre Not Given, temps. Le type qui revient le plus devient la priorité de la semaine.", false],
+  [11, "Reading : les pièges", "Drill Not Given jusqu'à 100 %, puis deux passages Cambridge en 18 min chacun. Task 1 processus (ici), notée.", false],
+  [10, "Listening Parts 3 et 4", "Part 3 ici, puis deux Parts 3 et deux Parts 4 Cambridge. Réécoute avec la transcription et repère chaque reformulation. Task 2 « discuss both views ».", false],
+  [9, "Writing intensif", "Une Task 1 et une Task 2, notées. Réécris le paragraphe le plus faible à partir de la version band 9, puis ajoute tes erreurs à la Lime.", false],
+  [8, "Examen blanc n°2 (complet)", "Cambridge, L + R + W d'affilée, puis Speaking complet de 14 min enregistré. Compare les bandes avec J-13.", true],
+  [7, "Correction + Speaking Part 3", "Correction de l'examen blanc. Trois séries de Part 3 enregistrées et évaluées : avis, raison, exemple, nuance, 45 à 60 s par réponse.", false],
+  [6, "Task 1 : plans et processus", "Deux plans (maps) dans Cambridge : « was replaced by », « was relocated to », « to the north of ». Un processus de plus, au passif.", false],
+  [5, "Vitesse", "Un test Reading complet en 55 min pour te garder une marge. Deux Parts 1–2 de Listening sans pause, orthographe vérifiée.", false],
+  [4, "Examen blanc n°3 (complet)", "Dernier test complet en conditions réelles, à l'heure de ton examen si possible.", true],
+  [3, "Correction ciblée", "Uniquement les erreurs de l'examen blanc n°3. Une Task 2 de plus, notée, sur ton type de question le plus faible.", false],
+  [2, "Speaking à froid", "Deux simulations complètes sur des cartes jamais vues. Relis ta liste personnelle d'erreurs.", false],
+  [1, "Léger", "30 min de Listening pour garder l'oreille, rien de nouveau. Vérifie l'heure, le lieu et ta pièce d'identité. Dors.", false],
+  [0, "Examen", "Listening, Reading et Writing d'affilée. Speaking le même jour ou dans les sept jours.", true]
 ];
-$("#plan-list").innerHTML = PLAN.map(p => `<li class="${p[3] ? "mock" : ""}"><span class="d">${p[0]}</span><div><div class="what">${esc(p[1])}</div><div class="how">${esc(p[2])}</div></div></li>`).join("");
+function isoDay(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+function parseDay(s) { const [y, m, d] = String(s).split("-").map(Number); return new Date(y, (m || 1) - 1, d || 1); }
+function defaultExam() { const d = new Date(); d.setDate(d.getDate() + 14); return isoDay(d); }
+function renderPlan() {
+  const input = $("#exam-date");
+  let examStr = store.get("examDate", null);
+  if (!examStr) { examStr = defaultExam(); store.set("examDate", examStr); }
+  input.value = examStr;
+  input.onchange = () => { if (input.value) { store.set("examDate", input.value); renderPlan(); } };
+  const exam = parseDay(examStr), today = parseDay(isoDay(new Date()));
+  const left = Math.round((exam - today) / 86400000);
+  $("#countdown").textContent = left > 1 ? `J-${left} · ${left} jours avant l'examen` : left === 1 ? "Examen demain" : left === 0 ? "C'est aujourd'hui" : "Date passée";
+  const fmt = d => d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
+  $("#plan-list").innerHTML = PLAN.map(([off, what, how, mock]) => {
+    const d = new Date(exam); d.setDate(d.getDate() - off);
+    const cls = [mock ? "mock" : "", +d === +today ? "today" : "", d < today ? "past" : ""].join(" ").trim();
+    return `<li class="${cls}"><span class="d">${off ? "J-" + off : "Jour J"}<span class="date">${fmt(d)}</span></span><div><div class="what">${esc(what)}${+d === +today ? " · aujourd'hui" : ""}</div><div class="how">${esc(how)}</div></div></li>`;
+  }).join("");
+  if (left > 14) $("#plan-list").insertAdjacentHTML("afterbegin", `<li><span class="d">Avant</span><div><div class="what">Tu as plus de deux semaines</div><div class="how">D'ici J-14, fais un examen blanc Cambridge par semaine et une Task 2 tous les deux jours. Le plan ci-dessous démarre à J-14.</div></div></li>`);
+  if (left < 14 && left >= 0) $("#plan-list").insertAdjacentHTML("afterbegin", `<li><span class="d">Note</span><div><div class="what">Moins de deux semaines</div><div class="how">Les jours passés sont grisés. Ne les rattrape pas tous : garde au moins deux examens blancs complets et leur correction.</div></div></li>`);
+}
+
+/* ---- suivi des bandes ---- */
+const SK = { L: "Listening", R: "Reading", W: "Writing", S: "Speaking" };
+const TARGET = 8.5;
+function bandFromRaw(skill, raw) { return +(skill === "L" ? lisBand(raw) : readBand(raw)) || 5.5; }
+function trInput() {
+  const k = $("#tr-skill").value;
+  $("#tr-input").innerHTML = (k === "L" || k === "R")
+    ? `<label class="row"><input type="number" id="tr-val" min="0" max="40" step="1" placeholder="0–40" style="width:5.5em" aria-label="Score sur 40"><span class="note">/40</span></label>`
+    : `<select id="tr-val" aria-label="Bande">${[9, 8.5, 8, 7.5, 7, 6.5, 6, 5.5, 5].map(b => `<option ${b === 7.5 ? "selected" : ""}>${b.toFixed(1)}</option>`).join("")}</select>`;
+}
+function renderTracker() {
+  const list = store.get("scores", []);
+  trInput();
+  $("#tr-skill").onchange = trInput;
+  $("#tr-add").onclick = () => {
+    const k = $("#tr-skill").value, v = $("#tr-val").value;
+    if (v === "") return;
+    let band, raw = null;
+    if (k === "L" || k === "R") { raw = Math.max(0, Math.min(40, Math.round(+v))); band = bandFromRaw(k, raw); } else band = +v;
+    const all = store.get("scores", []);
+    all.push({ k, band, raw, src: $("#tr-src").value.trim(), d: isoDay(new Date()) });
+    store.set("scores", all); $("#tr-src").value = ""; renderTracker();
+  };
+  const latest = {};
+  list.forEach(e => latest[e.k] = e);
+  $("#tr-grid").innerHTML = Object.keys(SK).map(k => {
+    const e = latest[k];
+    if (!e) return `<div class="tcell"><small>${SK[k]}</small><b>–</b><div class="gap">pas encore de note</div></div>`;
+    const gap = e.band - TARGET;
+    return `<div class="tcell"><small>${SK[k]}</small><b>${e.band.toFixed(1)}</b><div class="gap ${gap >= 0 ? "ok" : "bad"}">${gap >= 0 ? "objectif atteint" : gap.toFixed(1) + " vs 8.5"}</div></div>`;
+  }).join("");
+  const have = Object.keys(SK).filter(k => latest[k]);
+  if (have.length === 4) {
+    const avg = have.reduce((a, k) => a + latest[k].band, 0) / 4, overall = Math.floor(avg * 2 + 0.5) / 2;
+    const weakest = have.slice().sort((a, b) => latest[a].band - latest[b].band)[0];
+    const need = Math.max(0, 33 - have.reduce((a, k) => a + latest[k].band, 0));
+    $("#tr-overall").innerHTML = `Dernières notes : moyenne ${avg.toFixed(3)} → global <b>${overall.toFixed(1)}</b>${overall >= TARGET ? " · niveau C2" : overall >= 7 ? " · niveau C1" : ""}<br><span class="note">${need > 0 ? `Il manque ${need.toFixed(1)} point${need > 1 ? "s" : ""} de bande au total pour atteindre 8.5. Priorité : <b>${SK[weakest]}</b>.` : "Tu es au niveau de 8.5 global. Il reste à le reproduire le jour J."}</span>`;
+  } else $("#tr-overall").innerHTML = `<span class="note">Il faut une note dans chacune des quatre épreuves pour estimer la note globale. Il en manque ${4 - have.length}.</span>`;
+  $("#tr-hist").innerHTML = list.length ? list.map((e, i) => ({ e, i })).reverse().map(({ e, i }) => `<tr><td class="mono">${esc(e.d)}</td><td>${SK[e.k]}</td><td class="mono"><b>${e.band.toFixed(1)}</b>${e.raw != null ? ` (${e.raw}/40)` : ""}</td><td>${esc(e.src || "")}</td><td style="text-align:right"><button class="btn small" data-del="${i}" aria-label="Supprimer">Supprimer</button></td></tr>`).join("") : "";
+  $$("#tr-hist [data-del]").forEach(b => b.onclick = () => { const all = store.get("scores", []); all.splice(+b.dataset.del, 1); store.set("scores", all); renderTracker(); });
+}
 
 /* ---------------- boot ---------------- */
-renderLisTabs(); renderLis(); renderPassage(); renderDrill(); renderWriting(); renderSpeaking();
+renderLisTabs(); renderLis(); renderReadTabs(); renderWriting(); renderSpeaking(); renderPlan(); renderTracker();
 showTab(store.get("tab", "format"));
 getSample();
 </script>
