@@ -207,6 +207,50 @@ table.mini{border-collapse:collapse;margin:12px auto 0;font-size:.92rem}
 table.mini th,table.mini td{border:1px solid var(--line);padding:6px 10px;text-align:right}
 table.mini th:first-child,table.mini td:first-child{text-align:left}
 table.mini th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+/* ---- ergonomie ---- */
+:root{--stick-top:50px}
+.quick{display:none}
+.bar-sticky{position:sticky;top:var(--stick-top);z-index:4;background:var(--card);padding:8px 0;margin:-8px 0 0;border-bottom:1px solid var(--line)}
+.rswitch{display:none}
+nav.tabs .ic{display:none}
+nav.tabs .lb-s{display:none}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);font:600 .85rem var(--f-body);padding:10px 16px;border-radius:6px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50;max-width:calc(100vw - 32px);text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.next-task{font-family:var(--f-body);display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:10px}
+.next-task .btn{flex:none}
+@media (max-width:760px){
+  :root{--stick-top:0px}
+  body{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  header.top{padding-block:14px 8px;align-items:center}
+  header.top h1{font-size:1.45rem}
+  header.top .sub,header.top .target{display:none}
+  .back{margin-bottom:4px}
+  .quick{display:flex;gap:6px;flex-wrap:wrap;width:100%}
+  .quick button{font:600 .78rem var(--f-body);border:1px solid var(--line);background:var(--card);color:var(--ink);padding:6px 10px;border-radius:999px;cursor:pointer}
+  .quick button[aria-current="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .quick .cd{font:600 .78rem var(--f-mono);color:var(--accent);padding:6px 4px}
+  nav.tabs{position:fixed;top:auto;bottom:0;left:0;right:0;margin:0;border-top:1px solid var(--line);border-bottom:0;padding:4px 4px calc(4px + env(safe-area-inset-bottom,0px));justify-content:space-around;overflow:visible;z-index:20;box-shadow:0 -4px 16px rgba(0,0,0,.06)}
+  nav.tabs button{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-bottom:0;border-radius:6px;font-size:.68rem}
+  nav.tabs button[data-tab="format"],nav.tabs button[data-tab="plan"]{display:none}
+  nav.tabs button[aria-selected="true"]{background:var(--accent-soft);color:var(--accent)}
+  nav.tabs .ic{display:block;width:22px;height:22px}
+  nav.tabs .lb-l{display:none}
+  nav.tabs .lb-s{display:block}
+  .radios label{padding:8px 11px;font-size:.8rem}
+  .q select{min-height:38px}
+  .q input[type=text]{min-height:38px}
+  .mcq-opts label{padding:6px 0}
+  .rswitch{display:flex;position:sticky;top:0;z-index:6;gap:6px;align-items:center;background:var(--paper);padding:8px 0;margin-bottom:10px;border-bottom:1px solid var(--line)}
+  .rswitch button{flex:1;font:600 .88rem var(--f-body);border:1px solid var(--line);background:var(--card);color:var(--muted);padding:9px 8px;border-radius:6px;cursor:pointer}
+  .rswitch button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .rswitch .timer{font-size:1rem;padding:6px 8px;min-width:auto}
+  .rsplit.v-text .qpanel{display:none}
+  .rsplit.v-qs .ppanel{display:none}
+  .passage{max-height:none}
+  .qpanel > .row:first-child .timer{display:none}
+  .rswitch .timer{cursor:pointer}
+  textarea#w-text{min-height:50vh}
+}
 .today-title{font-family:var(--f-display);font-weight:600;font-size:1.55rem;margin:0}
 .back{display:inline-block;font:600 .8rem var(--f-mono);text-decoration:none;margin-bottom:10px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -222,17 +266,19 @@ table.mini th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;col
     <p class="sub">Les quatre épreuves au format réel, chronométrées. Écoute jouée une seule fois, lecture en 20 minutes par passage, écriture notée sur les quatre critères officiels, oral minuté partie par partie.</p>
   </div>
   <div class="target">Objectif <b>C2 ≈ band 8.5–9</b> · Academic</div>
+  <div class="quick"><span class="cd" id="q-cd"></span><button data-q="plan">Plan &amp; suivi</button><button data-q="format">Format</button></div>
 </header>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <nav class="tabs" role="tablist" aria-label="Épreuves">
-  <button role="tab" data-tab="today" aria-selected="true">Aujourd'hui</button>
-  <button role="tab" data-tab="format" aria-selected="false">Format</button>
-  <button role="tab" data-tab="listening" aria-selected="false">Listening</button>
-  <button role="tab" data-tab="reading" aria-selected="false">Reading</button>
-  <button role="tab" data-tab="writing" aria-selected="false">Writing</button>
-  <button role="tab" data-tab="atelier" aria-selected="false">Atelier</button>
-  <button role="tab" data-tab="speaking" aria-selected="false">Speaking</button>
-  <button role="tab" data-tab="plan" aria-selected="false">Plan &amp; suivi</button>
+  <button role="tab" data-tab="today" aria-selected="true"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v14H4z M4 10h16 M9 3v5 M15 3v5 M8 15l2.5 2.5L16 13"/></svg><span class="lb-l">Aujourd'hui</span><span class="lb-s">Jour</span></button>
+  <button role="tab" data-tab="format" aria-selected="false"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14v16H5z M8 8h8 M8 12h8 M8 16h5"/></svg><span class="lb-l">Format</span><span class="lb-s">Format</span></button>
+  <button role="tab" data-tab="listening" aria-selected="false"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2 M4 14h3v6H4z M17 14h3v6h-3z"/></svg><span class="lb-l">Listening</span><span class="lb-s">Écoute</span></button>
+  <button role="tab" data-tab="reading" aria-selected="false"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z M12 6v14"/></svg><span class="lb-l">Reading</span><span class="lb-s">Lecture</span></button>
+  <button role="tab" data-tab="writing" aria-selected="false"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z M14 7l3 3"/></svg><span class="lb-l">Writing</span><span class="lb-s">Écrit</span></button>
+  <button role="tab" data-tab="atelier" aria-selected="false"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v3 M12 18v3 M3 12h3 M18 12h3 M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg><span class="lb-l">Atelier</span><span class="lb-s">Atelier</span></button>
+  <button role="tab" data-tab="speaking" aria-selected="false"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6v10H9z M5 11a7 7 0 0 0 14 0 M12 18v3 M8 21h8"/></svg><span class="lb-l">Speaking</span><span class="lb-s">Oral</span></button>
+  <button role="tab" data-tab="plan" aria-selected="false"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10 M10 20V4 M16 20v-7 M3 20h18"/></svg><span class="lb-l">Plan &amp; suivi</span><span class="lb-s">Suivi</span></button>
 </nav>
 
 <!-- ============ AUJOURD'HUI ============ -->
@@ -359,7 +405,7 @@ table.mini th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;col
       <select id="w-sel" style="flex:1 1 320px;min-width:0"></select>
     </div>
     <div id="w-prompt"></div>
-    <div class="row" style="justify-content:space-between">
+    <div class="row bar-sticky" style="justify-content:space-between">
       <div class="row"><span class="timer" id="w-timer">20:00</span><button class="btn primary" id="w-start">Lancer le chrono</button><button class="btn" id="w-reset">Réinitialiser</button></div>
       <span class="wc" id="w-wc">0 mot</span>
     </div>
@@ -682,10 +728,24 @@ function showTab(name) {
   $$("nav.tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === name ? "true" : "false"));
   $$("section[id^=tab-]").forEach(s => s.hidden = s.id !== "tab-" + name);
   store.set("tab2", name);
+  $$(".quick [data-q]").forEach(b => b.setAttribute("aria-current", b.dataset.q === name ? "true" : "false"));
   if (name === "today") renderToday();
   if (name !== "listening" && "speechSynthesis" in window) speechSynthesis.cancel();
 }
-$$("nav.tabs button").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
+$$("nav.tabs button").forEach(b => b.addEventListener("click", () => { showTab(b.dataset.tab); window.scrollTo(0, 0); }));
+$$(".quick [data-q]").forEach(b => b.addEventListener("click", () => { showTab(b.dataset.q); window.scrollTo(0, 0); }));
+let toastT = null;
+function toast(msg) { const t = $("#toast"); if (!t) return; t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2600); }
+/* coche automatiquement la tâche du jour liée à un exercice terminé */
+function autoDone(link) {
+  try {
+    const exam = parseDay(store.get("examDate", defaultExam())), today = parseDay(isoDay(new Date()));
+    const entry = PLAN.find(p => p[0] === Math.round((exam - today) / 86400000)); if (!entry) return;
+    const key = isoDay(today), checks = store.get("planChecks", {}); let hit = false;
+    entry[4].forEach((t, ti) => { if (t[2] === link && !checks[key + ":" + ti]) { checks[key + ":" + ti] = 1; hit = true; } });
+    if (hit) { store.set("planChecks", checks); renderPlan(); renderToday(); toast("Tâche du jour cochée"); }
+  } catch (e) {}
+}
 
 /* ---------------- FORMAT: band calculator ---------------- */
 (function () {
@@ -929,10 +989,12 @@ function renderLis() {
   $("#lis-body").innerHTML = `<div class="panel stack">
     <div><h3>${esc(s.title)}</h3><p class="note">${esc(s.intro)}</p></div>
     <div class="row">
-      <button class="btn primary" id="lis-play">▶ Lancer l'écoute</button>
-      <button class="btn" id="lis-stop">■ Arrêter</button>
       <button class="btn" id="lis-test">Tester le son</button>
       <label class="note"><input type="checkbox" id="lis-train"> Mode entraînement (réécoute autorisée)</label>
+    </div>
+    <div class="row bar-sticky">
+      <button class="btn primary" id="lis-play">▶ Lancer l'écoute</button>
+      <button class="btn" id="lis-stop">■ Arrêter</button>
       <span class="status" id="lis-status"></span>
     </div>
     <div class="instr">${s.instr}</div>
@@ -986,7 +1048,7 @@ function renderLis() {
       if (good) ok++; else row.insertAdjacentHTML(q.opts ? "afterbegin" : "beforeend", `<span class="fix"${q.opts ? ' style="order:3;margin-left:auto"' : ""}>→ ${esc(q.ans[0])}${why}</span>`);
     });
     const n = s.qs.length, proj = Math.round(ok / n * 40);
-    renderCarnet();
+    renderCarnet(); if (!skipBlank) autoDone("listening:" + s.id);
     $("#lis-score").innerHTML = `<div class="score">Score <b>${ok}/${n}</b> · rapporté sur 40 : ≈ ${proj}/40 → band ≈ ${lisBand(proj)}<br><span class="note">${ok === n ? "Sans faute. Passe aux audios Cambridge, plus rapides et moins articulés." : "Pour chaque erreur, retrouve dans la transcription le piège exact : correction de l'intervenant, distracteur, orthographe ou limite de mots."}</span></div>`;
   };
 }
@@ -1165,18 +1227,30 @@ function renderPassageX(P, host) {
   }).join("");
   const nQ = P.blocks.reduce((a, b) => a + (b.items ? b.items.length : Object.keys(b.ans).length), 0);
   const first = P.blocks[0].items ? P.blocks[0].items[0][0] : +Object.keys(P.blocks[0].ans)[0];
-  host.innerHTML = `<div class="two">
-    <div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h4 style="margin:0">Reading Passage · Questions ${first}–${first + nQ - 1}</h4><span class="note">≈ ${P.paras.reduce((a, p) => a + p[1].split(/\s+/).length, 0)} mots</span></div>
+  host.innerHTML = `<div class="rswitch" role="group" aria-label="Affichage"><button data-v="text" aria-pressed="true">Texte</button><button data-v="qs" aria-pressed="false">Questions <span class="mono" id="${pid}-cnt">0/${nQ}</span></button><span class="timer" id="${pid}-tmini">20:00</span></div>
+    <div class="two rsplit v-text">
+    <div class="panel ppanel"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h4 style="margin:0">Reading Passage · Questions ${first}–${first + nQ - 1}</h4><span class="note">≈ ${P.paras.reduce((a, p) => a + p[1].split(/\s+/).length, 0)} mots</span></div>
       <h3 style="font-size:1.45rem">${esc(P.title)}</h3>
       <div class="passage">${P.paras.map(p => `<p><span class="pl">${p[0]}</span>${esc(p[1])}</p>`).join("")}</div></div>
-    <div class="panel sticky stack" style="gap:6px">
+    <div class="panel sticky stack qpanel" style="gap:6px">
       <div class="row" style="justify-content:space-between"><span class="timer" id="${pid}-timer">20:00</span><div class="row"><button class="btn primary" id="${pid}-start">Lancer 20 min</button><button class="btn" id="${pid}-check">Corriger</button></div></div>
       ${blocksHtml}
       <div id="${pid}-score"></div>
       <details><summary>Explications (après correction)</summary><div id="${pid}-expl" class="note"></div></details>
     </div></div>`;
   const tmr = makeTimer($(`#${pid}-timer`), 1200, () => { beep(); $(`#${pid}-check`).click(); });
+  const split = host.querySelector(".rsplit"), scrollPos = { text: 0, qs: 0 };
+  const countAns = () => { const n = $$(`[id^="${pid}-a"]`, host).filter(el => el.value).length + $$(`input[name^="${pid}-r"]:checked`, host).length; $(`#${pid}-cnt`).textContent = `${n}/${nQ}`; };
+  host.addEventListener("change", countAns); host.addEventListener("input", countAns);
+  $$(".rswitch button", host).forEach(b => b.onclick = () => {
+    const cur = split.classList.contains("v-text") ? "text" : "qs"; scrollPos[cur] = window.scrollY;
+    split.classList.toggle("v-text", b.dataset.v === "text"); split.classList.toggle("v-qs", b.dataset.v === "qs");
+    $$(".rswitch button", host).forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+    window.scrollTo(0, scrollPos[b.dataset.v] || host.offsetTop);
+  });
+  setInterval(() => { const m = $(`#${pid}-tmini`), t = $(`#${pid}-timer`); if (m && t) { m.textContent = (tmr.running || tmr.left < 1200 ? "" : "▶ ") + t.textContent; m.classList.toggle("low", t.classList.contains("low")); } }, 500);
   $(`#${pid}-start`).onclick = () => { tmr.start(); $(`#${pid}-start`).disabled = true; };
+  $(`#${pid}-tmini`).onclick = () => { if (!tmr.running) { tmr.start(); $(`#${pid}-start`).disabled = true; toast("Chrono lancé : 20 minutes."); } };
   const mark = (n, good, right) => { const r = $(`#${pid}-q${n}`); if (!r) return; const mcq = r.classList.contains("mcq"); r.className = "q" + (mcq ? " mcq " : " ") + (good ? "ok" : "bad"); r.querySelector(".fix")?.remove(); if (!good) r.insertAdjacentHTML("beforeend", `<span class="fix">→ ${esc(right)}</span>`); };
   $(`#${pid}-check`).onclick = () => {
     tmr.stop(); let ok = 0; const expl = [];
@@ -1191,7 +1265,7 @@ function renderPassageX(P, host) {
       if (b.kind === "gap") Object.entries(b.ans).forEach(([n, a]) => { const el = $(`#${pid}-a${n}`); const good = a.map(norm).includes(norm(el.value)) && wordCountAns(el.value) <= b.max; el.style.borderColor = good ? "var(--ok)" : "var(--bad)"; el.style.background = good ? "var(--ok-soft)" : "var(--bad-soft)"; if (good) ok++; else { lg(+n, guessGap(el.value, a, b.max), el.value, a[0]); } if (!good) expl.push(`<p><b>${n}.</b> Réponse : <i>${esc(a[0])}</i>${wordCountAns(el.value) > b.max ? " (ta réponse dépasse la limite de mots)" : ""}</p>`); });
       if (b.kind === "boxgap") { Object.entries(b.ans).forEach(([n, a]) => { const el = $(`#${pid}-a${n}`), v = el.value, good = v === a; el.style.borderColor = good ? "var(--ok)" : "var(--bad)"; el.style.background = good ? "var(--ok-soft)" : "var(--bad-soft)"; if (good) ok++; else lg(+n, v ? "Résumé à cases" : "Temps / non répondu", v, a); }); if (b.expl) expl.push(`<p>${esc(b.expl)}</p>`); }
     });
-    renderCarnet();
+    renderCarnet(); if (!skipBlank) autoDone("reading:" + pid);
     $(`#${pid}-expl`).innerHTML = expl.join("");
     const used = 1200 - tmr.left, proj = Math.round(ok / nQ * 40);
     $(`#${pid}-score`).innerHTML = `<div class="score">Score <b>${ok}/${nQ}</b> en ${fmtTime(used)} · rapporté sur 40 : ≈ ${proj}/40 → band ≈ ${readBand(proj)}<br><span class="note">Pour chaque erreur, retrouve la phrase du texte qui donne la réponse. Si tu ne la trouves pas, c'était probablement Not Given.</span></div>`;
@@ -1213,6 +1287,7 @@ function renderDrill(host) {
     const good = b.dataset.v === d[2]; drillDone++; if (good) drillScore++;
     $$("#drill-btns button").forEach(x => x.disabled = true);
     $("#drill-fb").innerHTML = `<div class="fb ${good ? "ok" : "bad"}"><b>${good ? "Juste" : "Non"} — ${d[2]}.</b> ${esc(d[3])}</div><div class="row" style="margin-top:10px"><button class="btn primary" id="drill-next">${drillIdx + 1 < DRILL.length ? "Item suivant" : `Terminé : ${drillScore}/${drillDone}. Recommencer`}</button></div>`;
+    if (drillIdx + 1 >= DRILL.length) autoDone("reading:drill");
     $("#drill-next").onclick = () => { if (drillIdx + 1 < DRILL.length) drillIdx++; else { drillIdx = 0; drillScore = 0; drillDone = 0; } renderDrill(host); };
   });
 }
@@ -1363,6 +1438,7 @@ $("#w-text").addEventListener("input", () => { store.set("draft:" + wCur().id, $
 $("#w-start").onclick = () => { wTimer.start(); $("#w-start").disabled = true; $("#w-text").focus(); };
 $("#w-reset").onclick = () => { wTimer.reset(wCur().time * 60); $("#w-start").disabled = false; };
 $("#w-copy").onclick = () => copyText(writingPrompt(), $("#w-status"));
+$("#w-grade").addEventListener("click", () => { if (wordsOf($("#w-text").value) >= 40) autoDone("writing:" + wCur().id); });
 $("#w-grade").onclick = async () => {
   const t = wCur();
   if (wordsOf($("#w-text").value) < 40) { $("#w-status").textContent = "Écris au moins quelques paragraphes avant de demander une note."; return; }
@@ -1556,6 +1632,7 @@ Reply with ONLY a JSON object in exactly this shape:
 Bands are whole or half numbers. Judge length and development as the descriptors do (very short answers cap Fluency & Coherence).`;
 }
 async function gradeSpeaking() {
+  if (wordsOf(($("#sp-tr") || {}).value || "") >= 20) autoDone("speaking:" + sp.part);
   if (wordsOf($("#sp-tr").value) < 20) { $("#sp-status").textContent = "Colle d'abord une transcription d'au moins quelques phrases."; return; }
   const r = await askClaude(speakingPrompt(), $("#sp-status"), $("#sp-grade"));
   if (!r) return;
@@ -1854,7 +1931,7 @@ function renderAt() {
     ${atState.i === 0 ? `<p class="note">${esc(set.desc)}</p>` : ""}`;
   const next = () => {
     atState.i++;
-    if (atState.i >= set.items.length) { atRecord(set.id, atState.ok, set.items.length); renderAtTabs(); }
+    if (atState.i >= set.items.length) { atRecord(set.id, atState.ok, set.items.length); renderAtTabs(); autoDone("atelier:" + set.id); }
     renderAt();
   };
   if (set.kind === "mcq") {
@@ -1952,7 +2029,7 @@ function renderPlan5(body, set) {
     if (!end) out.push(["bad", "Pas de conclusion prévue. Écris-la dès le plan : c'est ce qui garantit qu'elle ne contredira pas ta thèse."]);
     else { const a = contentWords(val("thesis")), b = contentWords(end); const common = [...a].filter(w => b.has(w)).length; out.push([common >= 2 ? "ok" : "bad", common >= 2 ? "Ta conclusion reprend ta thèse." : "Ta conclusion ne partage presque aucun mot-clé avec ta thèse : vérifie qu'elle défend la même position."]); }
     $("#p5-fb").innerHTML = out.map(([c, m]) => `<div class="fb ${c}" style="margin-top:8px">${esc(m)}</div>`).join("") + `<p class="note" style="margin-top:8px">Ces vérifications sont automatiques et approximatives : elles repèrent les oublis, pas la qualité des idées. Pour un avis sur le fond, fais vérifier par Claude.</p>`;
-    const r = store.get("at:plan", { best: 0, last: "", runs: 0 }); r.runs = (r.runs || 0) + 1; r.last = out.filter(x => x[0] === "ok").length + "/" + out.length; r.date = isoDay(new Date()); store.set("at:plan", r); renderAtTabs();
+    const r = store.get("at:plan", { best: 0, last: "", runs: 0 }); r.runs = (r.runs || 0) + 1; r.last = out.filter(x => x[0] === "ok").length + "/" + out.length; r.date = isoDay(new Date()); store.set("at:plan", r); renderAtTabs(); autoDone("atelier:plan");
   };
   $("#p5-claude").onclick = async () => {
     save();
@@ -1996,6 +2073,7 @@ function renderToday() {
   const left = Math.round((exam - today) / 86400000);
   const entry = PLAN.find(p => p[0] === left);
   const longDate = today.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
+  if ($("#q-cd")) $("#q-cd").textContent = left > 0 ? `J-${left}` : left === 0 ? "Jour J" : "";
   $("#td-title").textContent = longDate.charAt(0).toUpperCase() + longDate.slice(1) + (left > 0 ? ` · J-${left}` : left === 0 ? " · Jour J" : "");
   const checks = store.get("planChecks", {}), key = isoDay(today);
   if (!entry) {
@@ -2006,7 +2084,11 @@ function renderToday() {
     $("#td-goal").innerHTML = `<b>${esc(what)}.</b> ${esc(goal)}`;
     $("#td-tasks").innerHTML = tasks.map((t, ti) => `<li><input type="checkbox" id="td-${ti}" data-k="${key}:${ti}" ${checks[key + ":" + ti] ? "checked" : ""}><label for="td-${ti}" style="flex:1"><span class="mono">${t[0]} min</span> · ${esc(t[1])}</label>${t[2] ? `<button class="btn small" data-go="${esc(t[2])}">Ouvrir</button>` : ""}</li>`).join("");
     const done = tasks.filter((t, ti) => checks[key + ":" + ti]).length, rest = tasks.filter((t, ti) => !checks[key + ":" + ti]).reduce((a, t) => a + t[0], 0);
-    $("#td-prog").innerHTML = done === tasks.length ? "<b>Journée terminée.</b> Envoie ton bilan à Claude ci-dessous." : `<b>${done}/${tasks.length}</b> tâches faites · reste environ ${rest >= 60 ? Math.floor(rest / 60) + " h " + String(rest % 60).padStart(2, "0") : rest + " min"}`;
+    const nextI = tasks.findIndex((t, ti) => !checks[key + ":" + ti]), nt = tasks[nextI];
+    $("#td-prog").innerHTML = done === tasks.length ? "<b>Journée terminée.</b> Envoie ton bilan à Claude ci-dessous." : `<b>${done}/${tasks.length}</b> tâches faites · reste environ ${rest >= 60 ? Math.floor(rest / 60) + " h " + String(rest % 60).padStart(2, "0") : rest + " min"}
+      <div class="next-task"><span>Ensuite : <b>${esc(nt[1])}</b></span>${nt[2] ? `<button class="btn primary" data-go="${esc(nt[2])}">Commencer</button>` : `<button class="btn" data-k="${key}:${nextI}">Marquer comme faite</button>`}</div>`;
+    $$("#td-prog [data-go]").forEach(b => b.onclick = () => goTo(b.dataset.go));
+    $$("#td-prog [data-k]").forEach(b => b.onclick = () => toggleCheck(b.dataset.k, true));
     $$("#td-tasks input[data-k]").forEach(c => c.onchange = () => toggleCheck(c.dataset.k, c.checked));
     $$("#td-tasks [data-go]").forEach(b => b.onclick = () => goTo(b.dataset.go));
   }
