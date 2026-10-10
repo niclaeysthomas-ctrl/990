@@ -345,7 +345,7 @@ audio{max-width:100%}
 <section id="tab-plan" class="stack" hidden>
   <div>
     <h2>Plan &amp; suivi</h2>
-    <p class="lede">Deux semaines ne suffisent pas pour gagner un niveau d'anglais. Elles suffisent pour arrêter de perdre des points sur le format, et c'est là que se trouve l'essentiel de l'écart entre un C1 solide et une note de 8.5.</p>
+    <p class="lede">Le programme jour par jour jusqu'au 24 octobre est plus bas : coche chaque tâche faite. Deux semaines ne suffisent pas pour gagner un niveau d'anglais. Elles suffisent pour arrêter de perdre des points sur le format, et c'est là que se trouve l'essentiel de l'écart entre un C1 solide et une note de 8.5.</p>
   </div>
 
   <div class="panel">
@@ -387,6 +387,56 @@ audio{max-width:100%}
     <ul class="plan" id="plan-list"></ul>
   </div>
 
+  <div class="panel" id="jourj">
+    <h4>Le jour J, épreuve par épreuve</h4>
+    <div class="grid4" style="margin-top:6px">
+      <div>
+        <h3>La veille et le matin</h3>
+        <ul class="tight">
+          <li>Relis ta convocation : heure d'arrivée, adresse, pièce d'identité exacte (celle de l'inscription), et si le Speaking a lieu le même jour.</li>
+          <li>Sur place, tes affaires vont au vestiaire. En général, seuls la pièce d'identité, crayons, gomme et une bouteille d'eau transparente entrent dans la salle. Vérifie ce que dit ton centre.</li>
+          <li>Le matin : 15 minutes d'anglais à voix haute ou un podcast en anglais, pour arriver déjà dans la langue. Rien de nouveau, aucun exercice noté.</li>
+          <li>Arrive avec 30 minutes d'avance. Le contrôle d'identité prend du temps.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Listening · 30 min</h3>
+        <ul class="tight">
+          <li>Pendant le temps de lecture avant chaque partie, souligne les mots-clés et devine le type de réponse : nombre, nom, date, adjectif.</li>
+          <li>Une réponse ratée : passe à la suivante tout de suite. Les questions suivent l'ordre de l'enregistrement, t'acharner te fait perdre les trois suivantes.</li>
+          <li>Sur papier, tu as 10 minutes de report : vérifie l'orthographe, les pluriels et la limite de mots. Sur ordinateur, tu tapes directement et tu n'as que 2 minutes.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Reading · 60 min</h3>
+        <ul class="tight">
+          <li>20 minutes maximum par passage. Note l'heure de fin de chaque passage avant de commencer.</li>
+          <li>Pas de temps de report : écris tes réponses directement sur la feuille de réponses.</li>
+          <li>Ne laisse rien en blanc : une réponse fausse ne coûte rien.</li>
+          <li>Not Given : si tu cherches la phrase qui prouve ta réponse sans la trouver, c'est probablement Not Given.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Writing · 60 min</h3>
+        <ul class="tight">
+          <li>La Task 2 compte double. Si tu manques souvent de temps, commence par elle.</li>
+          <li>Task 2 en 40 min : 5 min de plan, 30 min d'écriture, 5 min de relecture ciblée sur articles, accords et prépositions.</li>
+          <li>Task 1 en 20 min : l'overview en deuxième paragraphe avant tout le reste.</li>
+          <li>Compte tes lignes plutôt que tes mots : mesure à l'entraînement combien de mots tu écris par ligne.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Speaking · 11–14 min</h3>
+        <ul class="tight">
+          <li>Tu peux demander de répéter une question (« Sorry, could you say that again? ») sans être pénalisé.</li>
+          <li>Part 2 : parle jusqu'à ce que l'examinateur t'arrête. S'arrêter à 1 min 20 coûte des points en fluidité.</li>
+          <li>Part 3 : avis, raison, exemple, nuance. C'est là que se joue le 8.</li>
+          <li>Une erreur corrigée tout de suite, naturellement, ne coûte presque rien. Un silence long coûte plus.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
   <div class="grid4">
     <div class="panel">
       <h4>Dans 990, à garder</h4>
@@ -403,6 +453,7 @@ audio{max-width:100%}
         <li>Le Blanc et le test de niveau : format TOEIC.</li>
         <li>La grammaire Part 5 et le Scalpel : format TOEIC.</li>
         <li>Les verbes irréguliers, Jane Eyre et les nouvelles cartes de vocabulaire : utiles à long terme, pas en deux semaines.</li>
+        <li>L'espagnol : garde ta série avec le minimum quotidien, et mets le temps gagné sur l'anglais. Reprends normalement après le 24.</li>
       </ul>
     </div>
     <div class="panel">
@@ -1330,40 +1381,96 @@ $$("#sp-tabs button").forEach(b => b.onclick = () => {
    PLAN
    ========================================================= */
 const PLAN = [
-  [14, "Diagnostic", "Ici : les quatre parties Listening, les deux passages Reading, une Task 2 notée. Entre chaque résultat dans le suivi ci-dessus.", false],
-  [13, "Examen blanc n°1 (L + R + W)", "Cambridge IELTS, un test complet en conditions réelles, 2 h 40 d'affilée. Puis un Speaking complet ici, enregistré. Ces quatre bandes sont ton point de départ.", true],
-  [12, "Correction de l'examen blanc", "Classe chaque erreur : distracteur, orthographe, limite de mots, False contre Not Given, temps. Le type qui revient le plus devient la priorité de la semaine.", false],
-  [11, "Reading : les pièges", "Drill Not Given jusqu'à 100 %, puis deux passages Cambridge en 18 min chacun. Task 1 processus (ici), notée.", false],
-  [10, "Listening Parts 3 et 4", "Part 3 ici, puis deux Parts 3 et deux Parts 4 Cambridge. Réécoute avec la transcription et repère chaque reformulation. Task 2 « discuss both views ».", false],
-  [9, "Writing intensif", "Une Task 1 et une Task 2, notées. Réécris le paragraphe le plus faible à partir de la version band 9, puis ajoute tes erreurs à la Lime.", false],
-  [8, "Examen blanc n°2 (complet)", "Cambridge, L + R + W d'affilée, puis Speaking complet de 14 min enregistré. Compare les bandes avec J-13.", true],
-  [7, "Correction + Speaking Part 3", "Correction de l'examen blanc. Trois séries de Part 3 enregistrées et évaluées : avis, raison, exemple, nuance, 45 à 60 s par réponse.", false],
-  [6, "Task 1 : plans et processus", "Deux plans (maps) dans Cambridge : « was replaced by », « was relocated to », « to the north of ». Un processus de plus, au passif.", false],
-  [5, "Vitesse", "Un test Reading complet en 55 min pour te garder une marge. Deux Parts 1–2 de Listening sans pause, orthographe vérifiée.", false],
-  [4, "Examen blanc n°3 (complet)", "Dernier test complet en conditions réelles, à l'heure de ton examen si possible.", true],
-  [3, "Correction ciblée", "Uniquement les erreurs de l'examen blanc n°3. Une Task 2 de plus, notée, sur ton type de question le plus faible.", false],
-  [2, "Speaking à froid", "Deux simulations complètes sur des cartes jamais vues. Relis ta liste personnelle d'erreurs.", false],
-  [1, "Léger", "30 min de Listening pour garder l'oreille, rien de nouveau. Vérifie l'heure, le lieu et ta pièce d'identité. Dors.", false],
-  [0, "Examen", "Listening, Reading et Writing d'affilée. Speaking le même jour ou dans les sept jours.", true]
+  [14, "Diagnostic", "Savoir d'où tu pars, épreuve par épreuve.", false, [
+    [40, "Listening : les quatre parties ici, en conditions d'examen (une seule écoute)."],
+    [40, "Reading : passages 1 et 2 ici, 20 min chacun."],
+    [45, "Writing : Task 2 « universités et emploi », 40 min, puis notation."],
+    [5, "Entre tes résultats dans le suivi."]]],
+  [13, "Examen blanc n°1", "Ta ligne de départ officielle.", true, [
+    [160, "Cambridge IELTS Academic, un test complet : Listening, Reading, Writing d'affilée, sans pause."],
+    [15, "Speaking complet ici, enregistré : Part 1, Part 2, Part 3."],
+    [10, "Corrige L et R avec le corrigé Cambridge, fais noter W et S, entre les quatre bandes."]]],
+  [12, "Correction de l'examen blanc", "Trouver les deux types d'erreur qui te coûtent le plus.", false, [
+    [45, "Chaque erreur L et R classée : orthographe, limite de mots, distracteur, Not Given, temps."],
+    [30, "Writing : réécris le paragraphe le plus faible à partir de la version band 9."],
+    [15, "Drill Not Given : les 23 items."],
+    [15, "La Lime : ajoute tes 5 erreurs de grammaire les plus fréquentes."]]],
+  [11, "Reading : les pièges", "Zéro erreur sur True / False / Not Given.", false, [
+    [15, "Drill Not Given jusqu'à 100 %."],
+    [40, "Deux passages Cambridge, 18 min chacun, puis vérifie chaque erreur dans le texte."],
+    [30, "Writing : Task 1 « processus, recyclage du verre », 20 min, notée."],
+    [15, "Speaking Part 1 : deux thèmes, enregistrés et réécoutés."]]],
+  [10, "Listening : parties universitaires", "Les Parts 3 et 4 sont celles qui séparent 8 et 9.", false, [
+    [15, "Part 3 ici, une seule écoute."],
+    [40, "Deux Parts 3 et deux Parts 4 Cambridge, puis réécoute avec la transcription."],
+    [45, "Writing : Task 2 « embouteillages » (discuss both views), notée."]]],
+  [9, "Writing intensif", "Atteindre 7.5 minimum sur les quatre critères.", false, [
+    [25, "Task 1 « loisirs par âge » (barres), notée."],
+    [45, "Task 2 « logement des jeunes » (problème-solution), notée."],
+    [20, "Réécris les deux paragraphes les plus faibles."],
+    [15, "Speaking Part 2 : deux cartes, enregistrées."]]],
+  [8, "Examen blanc n°2", "Mesurer le progrès depuis J-13.", true, [
+    [160, "Cambridge, un autre test complet, L + R + W d'affilée."],
+    [15, "Speaking complet ici, enregistré."],
+    [10, "Entre les quatre bandes et compare avec J-13 dans le suivi."]]],
+  [7, "Correction + Speaking Part 3", "La Part 3 décide du 8 à l'oral.", false, [
+    [60, "Correction de l'examen blanc n°2, même méthode qu'à J-12."],
+    [40, "Speaking Part 3 : trois séries, enregistrées et évaluées."],
+    [15, "La Lime : nouvelles erreurs."]]],
+  [6, "Task 1 : plans", "Le type de Task 1 que l'app ne propose pas.", false, [
+    [45, "Deux Task 1 « map » dans Cambridge : « was replaced by », « was relocated to », « to the north of »."],
+    [45, "Task 2 « télétravail » (avantages / inconvénients), notée."],
+    [20, "Un passage Reading Cambridge en 18 min."]]],
+  [5, "Vitesse", "Garder une marge de temps le jour J.", false, [
+    [55, "Reading : un test Cambridge complet en 55 min au lieu de 60."],
+    [30, "Listening : deux Parts 1 et 2 Cambridge, orthographe vérifiée."],
+    [15, "Speaking Part 1 : deux thèmes."]]],
+  [4, "Examen blanc n°3", "La répétition générale, à l'heure de l'examen.", true, [
+    [160, "Dernier test Cambridge complet, à la même heure que ta convocation si possible."],
+    [15, "Speaking complet ici, sur une carte jamais vue."],
+    [10, "Entre les quatre bandes."]]],
+  [3, "Correction ciblée", "Seulement ce qui revient encore.", false, [
+    [60, "Correction de l'examen blanc n°3 : uniquement les types d'erreur encore présents."],
+    [45, "Task 2 sur ton type de question le plus faible, notée."],
+    [15, "Drill Not Given."]]],
+  [2, "Speaking à froid", "Parler 2 minutes sans hésiter sur n'importe quel sujet.", false, [
+    [40, "Deux simulations complètes du Speaking, sur des cartes jamais vues."],
+    [20, "Listening : une Part 4 Cambridge."],
+    [15, "Relis ta liste d'erreurs de la Lime."]]],
+  [1, "Léger", "Arriver reposé. Rien de nouveau.", false, [
+    [20, "Listening : une partie, pour garder l'oreille."],
+    [10, "Relis « Le jour J » ci-dessous et ta convocation."],
+    [10, "Prépare pièce d'identité, eau, crayons. Couche-toi tôt."]]],
+  [0, "Examen", "Listening, Reading, Writing d'affilée. Speaking le même jour ou dans les sept jours.", true, [
+    [15, "Le matin : 15 min d'anglais à voix haute ou un podcast, puis départ avec 30 min d'avance."]]]
 ];
 function isoDay(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
 function parseDay(s) { const [y, m, d] = String(s).split("-").map(Number); return new Date(y, (m || 1) - 1, d || 1); }
-function defaultExam() { const d = new Date(); d.setDate(d.getDate() + 14); return isoDay(d); }
+function defaultExam() { return "2026-10-24"; }
 function renderPlan() {
   const input = $("#exam-date");
   let examStr = store.get("examDate", null);
-  if (!examStr) { examStr = defaultExam(); store.set("examDate", examStr); }
+  if (!examStr || !store.get("examDateSet", false)) { examStr = defaultExam(); store.set("examDate", examStr); }
   input.value = examStr;
-  input.onchange = () => { if (input.value) { store.set("examDate", input.value); renderPlan(); } };
+  input.onchange = () => { if (input.value) { store.set("examDate", input.value); store.set("examDateSet", true); renderPlan(); } };
   const exam = parseDay(examStr), today = parseDay(isoDay(new Date()));
   const left = Math.round((exam - today) / 86400000);
   $("#countdown").textContent = left > 1 ? `J-${left} · ${left} jours avant l'examen` : left === 1 ? "Examen demain" : left === 0 ? "C'est aujourd'hui" : "Date passée";
   const fmt = d => d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
-  $("#plan-list").innerHTML = PLAN.map(([off, what, how, mock]) => {
+  const checks = store.get("planChecks", {});
+  $("#plan-list").innerHTML = PLAN.map(([off, what, goal, mock, tasks], pi) => {
     const d = new Date(exam); d.setDate(d.getDate() - off);
-    const cls = [mock ? "mock" : "", +d === +today ? "today" : "", d < today ? "past" : ""].join(" ").trim();
-    return `<li class="${cls}"><span class="d">${off ? "J-" + off : "Jour J"}<span class="date">${fmt(d)}</span></span><div><div class="what">${esc(what)}${+d === +today ? " · aujourd'hui" : ""}</div><div class="how">${esc(how)}</div></div></li>`;
+    const key = isoDay(d), isToday = +d === +today;
+    const done = tasks.filter((t, ti) => checks[key + ":" + ti]).length;
+    const mins = tasks.reduce((a, t) => a + t[0], 0);
+    const cls = [mock ? "mock" : "", isToday ? "today" : "", d < today && !isToday ? "past" : ""].join(" ").trim();
+    return `<li class="${cls}"><span class="d">${off ? "J-" + off : "Jour J"}<span class="date">${fmt(d)}</span></span><div>
+      <div class="what">${esc(what)}${isToday ? " · aujourd'hui" : ""}</div>
+      <div class="how">${esc(goal)} <span class="mono">· ${mins >= 60 ? Math.floor(mins / 60) + " h " + String(mins % 60).padStart(2, "0") : mins + " min"} · ${done}/${tasks.length}</span></div>
+      <details ${isToday ? "open" : ""}><summary class="note">Détail de la journée</summary><ul class="checklist">${tasks.map((t, ti) => `<li><input type="checkbox" id="pc-${key}-${ti}" data-k="${key}:${ti}" ${checks[key + ":" + ti] ? "checked" : ""}><label for="pc-${key}-${ti}"><span class="mono">${t[0]} min</span> · ${esc(t[1])}</label></li>`).join("")}</ul></details>
+    </div></li>`;
   }).join("");
+  $$("#plan-list input[data-k]").forEach(c => c.onchange = () => { const all = store.get("planChecks", {}); if (c.checked) all[c.dataset.k] = 1; else delete all[c.dataset.k]; store.set("planChecks", all); renderPlan(); });
   if (left > 14) $("#plan-list").insertAdjacentHTML("afterbegin", `<li><span class="d">Avant</span><div><div class="what">Tu as plus de deux semaines</div><div class="how">D'ici J-14, fais un examen blanc Cambridge par semaine et une Task 2 tous les deux jours. Le plan ci-dessous démarre à J-14.</div></div></li>`);
   if (left < 14 && left >= 0) $("#plan-list").insertAdjacentHTML("afterbegin", `<li><span class="d">Note</span><div><div class="what">Moins de deux semaines</div><div class="how">Les jours passés sont grisés. Ne les rattrape pas tous : garde au moins deux examens blancs complets et leur correction.</div></div></li>`);
 }
