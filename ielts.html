@@ -179,6 +179,17 @@ a{color:var(--accent)}
 .recdot{width:10px;height:10px;border-radius:50%;background:var(--bad);display:inline-block;margin-right:4px;animation:blink 1s steps(2) infinite}
 @keyframes blink{50%{opacity:.2}}
 audio{max-width:100%}
+.ctx{font-family:var(--f-display);font-size:1rem;line-height:1.5;border-left:3px solid var(--line);padding-left:12px;color:var(--muted);margin:8px 0 12px;max-width:72ch}
+.optbtns{display:flex;flex-direction:column;gap:8px}
+.optbtns .btn{text-align:left;font-weight:500;line-height:1.45;font-family:var(--f-display);font-size:1rem}
+.optbtns .btn:disabled{opacity:1;cursor:default}
+.optbtns .btn.right{border-color:var(--ok);background:var(--ok-soft)}
+.optbtns .btn.wrong{border-color:var(--bad);background:var(--bad-soft)}
+#td-tasks li{align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+#td-tasks li:last-child{border-bottom:0}
+.watch{margin:0;padding-left:20px}
+.watch li{margin:6px 0;font-size:.93rem}
+.today-title{font-family:var(--f-display);font-weight:600;font-size:1.55rem;margin:0}
 .back{display:inline-block;font:600 .8rem var(--f-mono);text-decoration:none;margin-bottom:10px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -196,16 +207,45 @@ audio{max-width:100%}
 </header>
 
 <nav class="tabs" role="tablist" aria-label="Épreuves">
-  <button role="tab" data-tab="format" aria-selected="true">Format</button>
+  <button role="tab" data-tab="today" aria-selected="true">Aujourd'hui</button>
+  <button role="tab" data-tab="format" aria-selected="false">Format</button>
   <button role="tab" data-tab="listening" aria-selected="false">Listening</button>
   <button role="tab" data-tab="reading" aria-selected="false">Reading</button>
   <button role="tab" data-tab="writing" aria-selected="false">Writing</button>
+  <button role="tab" data-tab="atelier" aria-selected="false">Atelier</button>
   <button role="tab" data-tab="speaking" aria-selected="false">Speaking</button>
   <button role="tab" data-tab="plan" aria-selected="false">Plan &amp; suivi</button>
 </nav>
 
+<!-- ============ AUJOURD'HUI ============ -->
+<section id="tab-today" class="stack" hidden>
+  <div>
+    <h2 class="today-title" id="td-title"></h2>
+    <p class="lede" id="td-goal" style="margin:6px 0 0"></p>
+  </div>
+  <div class="panel">
+    <h4>Au programme</h4>
+    <ul class="checklist" id="td-tasks"></ul>
+    <div class="score" id="td-prog"></div>
+  </div>
+  <div class="grid4">
+    <div class="panel"><h4>Tes bandes</h4><div id="td-bands"></div></div>
+    <div class="panel"><h4>Atelier · tes derniers scores</h4><div class="row" id="td-at"></div><p class="note" style="margin-top:8px">10 à 15 minutes par jour, sur ce qui a plafonné ta dernière Task 2.</p></div>
+  </div>
+  <div class="panel">
+    <h4>Tes points de vigilance (Task 2 du 20/09, notée 6/9)</h4>
+    <ol class="watch" id="td-watch"></ol>
+  </div>
+  <div class="panel">
+    <h4>Bilan du soir pour Claude</h4>
+    <p class="note">Note ce qui a été dur aujourd'hui, puis copie ton bilan et colle-le dans ta conversation avec Claude. Il ajuste le programme du lendemain et te donne un exercice ciblé.</p>
+    <textarea id="td-note" style="min-height:80px;font-family:var(--f-body);font-size:.95rem;margin-top:6px" placeholder="Ex. : Part 3 de Listening ratée sur les QCM, Task 2 finie en 32 min, j'hésite toujours entre False et Not Given…"></textarea>
+    <div class="row" style="margin-top:8px"><button class="btn primary" id="td-report">Copier mon bilan</button><span class="status" id="td-st"></span></div>
+  </div>
+</section>
+
 <!-- ============ FORMAT ============ -->
-<section id="tab-format" class="stack">
+<section id="tab-format" class="stack" hidden>
   <div>
     <h2>Le format, épreuve par épreuve</h2>
     <p class="lede">IELTS ne délivre pas de « C2 » : tu obtiens une note de 0 à 9 par épreuve, et une note globale. La correspondance officielle avec le CECRL place le C2 à 8.5 et au-delà, le C1 de 7 à 8. Listening, Reading et Writing se passent le même jour, d'affilée et sans pause (2 h 40). Le Speaking a lieu le même jour ou dans les sept jours.</p>
@@ -312,6 +352,10 @@ audio{max-width:100%}
     </div>
     <div id="w-result" class="result"></div>
     <details>
+      <summary>Tes points de vigilance (copie du 20/09)</summary>
+      <ol class="watch" id="w-watch"></ol>
+    </details>
+    <details>
       <summary>Checklist band 8+ avant de rendre</summary>
       <ul class="checklist" id="w-check"></ul>
     </details>
@@ -325,6 +369,16 @@ audio{max-width:100%}
       </div>
     </details>
   </div>
+</section>
+
+<!-- ============ ATELIER ============ -->
+<section id="tab-atelier" class="stack" hidden>
+  <div>
+    <h2>Atelier</h2>
+    <p class="lede">Des exercices courts tirés de ta Task 2 « salaires », notée 6/9. Ils ciblent ce qui la plafonne : une position qui change en cours de route, des paragraphes qui sortent du sujet, des connecteurs imprécis, un registre trop oral et quelques temps verbaux. Les scores remontent dans « Aujourd'hui » et dans ton bilan.</p>
+  </div>
+  <div class="subtabs" id="at-tabs"></div>
+  <div class="panel stack" id="at-body" style="gap:8px"></div>
 </section>
 
 <!-- ============ SPEAKING ============ -->
@@ -584,7 +638,8 @@ function renderFixes(list, cols) {
 function showTab(name) {
   $$("nav.tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === name ? "true" : "false"));
   $$("section[id^=tab-]").forEach(s => s.hidden = s.id !== "tab-" + name);
-  store.set("tab", name);
+  store.set("tab2", name);
+  if (name === "today") renderToday();
   if (name !== "listening" && "speechSynthesis" in window) speechSynthesis.cancel();
 }
 $$("nav.tabs button").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
@@ -1152,6 +1207,8 @@ function writingPrompt() {
 TASK PROMPT:
 ${t.prompt}
 ${t.data ? "\nVISUAL DATA (the chart the candidate saw):\n" + t.data + "\n" : ""}
+CANDIDATE'S KNOWN RECURRING WEAKNESSES (from a previous Task 2 graded TR 6, CC 6, LR 7, GRA 6): position that shifts between introduction and conclusion; body paragraphs drifting away from the question; parts of the question left unaddressed; new ideas in the conclusion; imprecise linkers (e.g. "Conversely" for a concession); spoken or absolute register ("See the problem?", "glaringly obvious"); tense errors with "since" / "until recently". In "ceilings_fr", say explicitly for each of these whether it recurs in this response.
+
 CANDIDATE RESPONSE (${n} words; minimum ${t.min}):
 """
 ${txt}
@@ -1381,68 +1438,73 @@ $$("#sp-tabs button").forEach(b => b.onclick = () => {
    PLAN
    ========================================================= */
 const PLAN = [
-  [14, "Diagnostic", "Savoir d'où tu pars, épreuve par épreuve.", false, [
-    [40, "Listening : les quatre parties ici, en conditions d'examen (une seule écoute)."],
-    [40, "Reading : passages 1 et 2 ici, 20 min chacun."],
-    [45, "Writing : Task 2 « universités et emploi », 40 min, puis notation."],
-    [5, "Entre tes résultats dans le suivi."]]],
-  [13, "Examen blanc n°1", "Ta ligne de départ officielle.", true, [
-    [160, "Cambridge IELTS Academic, un test complet : Listening, Reading, Writing d'affilée, sans pause."],
-    [15, "Speaking complet ici, enregistré : Part 1, Part 2, Part 3."],
-    [10, "Corrige L et R avec le corrigé Cambridge, fais noter W et S, entre les quatre bandes."]]],
+  [14, "Diagnostic", "Mesurer ton point de départ et attaquer tout de suite la Task Response.", false, [
+    [15, "Atelier · Thèse : 6 sujets", "atelier:these"],
+    [30, "Listening : Parts 1 et 3 ici, une seule écoute chacune", "listening:p1"],
+    [20, "Reading : passage 2 ici, 20 min", "reading:r2"],
+    [45, "Writing : Task 2 « universités et emploi », plan de 5 min puis 35 min d'écriture, puis notation", "writing:t2a"],
+    [5, "Entre tes résultats dans le suivi, puis copie ton bilan pour Claude", "today"]]],
+  [13, "Examen blanc n°1", "Ta ligne de départ officielle, dans les conditions du 24.", true, [
+    [160, "Cambridge IELTS Academic : un test complet, Listening, Reading et Writing d'affilée"],
+    [15, "Speaking complet ici, enregistré", "speaking:1"],
+    [10, "Corrige L et R, fais noter W et S, entre les quatre bandes", "plan"]]],
   [12, "Correction de l'examen blanc", "Trouver les deux types d'erreur qui te coûtent le plus.", false, [
-    [45, "Chaque erreur L et R classée : orthographe, limite de mots, distracteur, Not Given, temps."],
-    [30, "Writing : réécris le paragraphe le plus faible à partir de la version band 9."],
-    [15, "Drill Not Given : les 23 items."],
-    [15, "La Lime : ajoute tes 5 erreurs de grammaire les plus fréquentes."]]],
-  [11, "Reading : les pièges", "Zéro erreur sur True / False / Not Given.", false, [
-    [15, "Drill Not Given jusqu'à 100 %."],
-    [40, "Deux passages Cambridge, 18 min chacun, puis vérifie chaque erreur dans le texte."],
-    [30, "Writing : Task 1 « processus, recyclage du verre », 20 min, notée."],
-    [15, "Speaking Part 1 : deux thèmes, enregistrés et réécoutés."]]],
-  [10, "Listening : parties universitaires", "Les Parts 3 et 4 sont celles qui séparent 8 et 9.", false, [
-    [15, "Part 3 ici, une seule écoute."],
-    [40, "Deux Parts 3 et deux Parts 4 Cambridge, puis réécoute avec la transcription."],
-    [45, "Writing : Task 2 « embouteillages » (discuss both views), notée."]]],
-  [9, "Writing intensif", "Atteindre 7.5 minimum sur les quatre critères.", false, [
-    [25, "Task 1 « loisirs par âge » (barres), notée."],
-    [45, "Task 2 « logement des jeunes » (problème-solution), notée."],
-    [20, "Réécris les deux paragraphes les plus faibles."],
-    [15, "Speaking Part 2 : deux cartes, enregistrées."]]],
+    [45, "Classe chaque erreur L et R : orthographe, limite de mots, distracteur, Not Given, temps"],
+    [15, "Atelier · Position tenue", "atelier:position"],
+    [30, "Writing : réécris le paragraphe le plus faible de l'examen blanc à partir de la version band 9", "writing"],
+    [15, "Drill Not Given", "reading:drill"]]],
+  [11, "Reading et Task 1", "Zéro erreur sur Not Given, et une Task 1 avec un vrai overview.", false, [
+    [10, "Atelier · Plan en 5 min", "atelier:plan"],
+    [40, "Deux passages Cambridge, 18 min chacun"],
+    [20, "Reading : passage 1 ici", "reading:r1"],
+    [30, "Writing : Task 1 « processus », notée", "writing:t1c"],
+    [10, "Atelier · Connecteurs", "atelier:connect"]]],
+  [10, "Listening universitaire", "Les Parts 3 et 4 séparent 8 et 9.", false, [
+    [10, "Atelier · Registre", "atelier:registre"],
+    [15, "Listening : Part 4 ici", "listening:p4"],
+    [40, "Deux Parts 3 et deux Parts 4 Cambridge, puis réécoute avec la transcription"],
+    [45, "Writing : Task 2 « embouteillages » (discuss both views), notée", "writing:t2b"]]],
+  [9, "Writing intensif", "Atteindre 7 minimum en Task Response, sans contradiction.", false, [
+    [10, "Atelier · Grammaire", "atelier:gram"],
+    [10, "Atelier · Plan en 5 min", "atelier:plan"],
+    [25, "Task 1 « loisirs par âge », notée", "writing:t1b"],
+    [45, "Task 2 « logement des jeunes » (causes et solutions), notée", "writing:t2c"],
+    [15, "Speaking Part 2 : deux cartes", "speaking:2"]]],
   [8, "Examen blanc n°2", "Mesurer le progrès depuis J-13.", true, [
-    [160, "Cambridge, un autre test complet, L + R + W d'affilée."],
-    [15, "Speaking complet ici, enregistré."],
-    [10, "Entre les quatre bandes et compare avec J-13 dans le suivi."]]],
-  [7, "Correction + Speaking Part 3", "La Part 3 décide du 8 à l'oral.", false, [
-    [60, "Correction de l'examen blanc n°2, même méthode qu'à J-12."],
-    [40, "Speaking Part 3 : trois séries, enregistrées et évaluées."],
-    [15, "La Lime : nouvelles erreurs."]]],
-  [6, "Task 1 : plans", "Le type de Task 1 que l'app ne propose pas.", false, [
-    [45, "Deux Task 1 « map » dans Cambridge : « was replaced by », « was relocated to », « to the north of »."],
-    [45, "Task 2 « télétravail » (avantages / inconvénients), notée."],
-    [20, "Un passage Reading Cambridge en 18 min."]]],
+    [160, "Cambridge : un autre test complet, L + R + W d'affilée"],
+    [15, "Speaking complet ici, enregistré", "speaking:1"],
+    [10, "Entre les quatre bandes et compare avec J-13", "plan"]]],
+  [7, "Correction et Speaking Part 3", "La Part 3 décide du 8 à l'oral.", false, [
+    [60, "Correction de l'examen blanc n°2, même méthode qu'à J-12"],
+    [40, "Speaking Part 3 : trois séries, enregistrées et évaluées", "speaking:3"],
+    [10, "Atelier · Position tenue, deuxième passage", "atelier:position"]]],
+  [6, "Task 1 plans et Task 2", "Le type de Task 1 absent de l'app, et une Task 2 sans dérive.", false, [
+    [45, "Deux Task 1 « map » dans Cambridge : « was replaced by », « was relocated to »"],
+    [10, "Atelier · Plan en 5 min", "atelier:plan"],
+    [45, "Task 2 « télétravail » (advantages outweigh?), notée", "writing:t2d"]]],
   [5, "Vitesse", "Garder une marge de temps le jour J.", false, [
-    [55, "Reading : un test Cambridge complet en 55 min au lieu de 60."],
-    [30, "Listening : deux Parts 1 et 2 Cambridge, orthographe vérifiée."],
-    [15, "Speaking Part 1 : deux thèmes."]]],
-  [4, "Examen blanc n°3", "La répétition générale, à l'heure de l'examen.", true, [
-    [160, "Dernier test Cambridge complet, à la même heure que ta convocation si possible."],
-    [15, "Speaking complet ici, sur une carte jamais vue."],
-    [10, "Entre les quatre bandes."]]],
+    [55, "Reading : un test Cambridge complet en 55 min au lieu de 60"],
+    [30, "Listening : deux Parts 1 et 2 Cambridge, orthographe vérifiée"],
+    [10, "Atelier · Grammaire, deuxième passage", "atelier:gram"],
+    [15, "Speaking Part 1", "speaking:1"]]],
+  [4, "Examen blanc n°3", "La répétition générale, à l'heure de ta convocation.", true, [
+    [160, "Dernier test Cambridge complet, à la même heure que l'examen si possible"],
+    [15, "Speaking complet ici, sur une carte jamais vue", "speaking:2"],
+    [10, "Entre les quatre bandes", "plan"]]],
   [3, "Correction ciblée", "Seulement ce qui revient encore.", false, [
-    [60, "Correction de l'examen blanc n°3 : uniquement les types d'erreur encore présents."],
-    [45, "Task 2 sur ton type de question le plus faible, notée."],
-    [15, "Drill Not Given."]]],
-  [2, "Speaking à froid", "Parler 2 minutes sans hésiter sur n'importe quel sujet.", false, [
-    [40, "Deux simulations complètes du Speaking, sur des cartes jamais vues."],
-    [20, "Listening : une Part 4 Cambridge."],
-    [15, "Relis ta liste d'erreurs de la Lime."]]],
+    [60, "Correction de l'examen blanc n°3 : uniquement les erreurs encore présentes"],
+    [10, "Atelier · Plan en 5 min", "atelier:plan"],
+    [45, "Task 2 sur ton type de question le plus faible, notée", "writing:t2f"]]],
+  [2, "Speaking à froid", "Parler 2 minutes sans hésiter, sur n'importe quel sujet.", false, [
+    [40, "Deux simulations complètes du Speaking, cartes jamais vues", "speaking:2"],
+    [20, "Listening : une Part 4 Cambridge"],
+    [15, "Relis tes points de vigilance et la Lime", "today"]]],
   [1, "Léger", "Arriver reposé. Rien de nouveau.", false, [
-    [20, "Listening : une partie, pour garder l'oreille."],
-    [10, "Relis « Le jour J » ci-dessous et ta convocation."],
+    [20, "Listening : une partie, pour garder l'oreille", "listening:p2"],
+    [10, "Relis « Le jour J » et ta convocation", "plan"],
     [10, "Prépare pièce d'identité, eau, crayons. Couche-toi tôt."]]],
-  [0, "Examen", "Listening, Reading, Writing d'affilée. Speaking le même jour ou dans les sept jours.", true, [
-    [15, "Le matin : 15 min d'anglais à voix haute ou un podcast, puis départ avec 30 min d'avance."]]]
+  [0, "Examen", "Listening, Reading et Writing d'affilée. Speaking le même jour ou dans les sept jours.", true, [
+    [15, "Le matin : 15 min d'anglais à voix haute ou un podcast, puis départ avec 30 min d'avance"]]]
 ];
 function isoDay(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
 function parseDay(s) { const [y, m, d] = String(s).split("-").map(Number); return new Date(y, (m || 1) - 1, d || 1); }
@@ -1467,10 +1529,11 @@ function renderPlan() {
     return `<li class="${cls}"><span class="d">${off ? "J-" + off : "Jour J"}<span class="date">${fmt(d)}</span></span><div>
       <div class="what">${esc(what)}${isToday ? " · aujourd'hui" : ""}</div>
       <div class="how">${esc(goal)} <span class="mono">· ${mins >= 60 ? Math.floor(mins / 60) + " h " + String(mins % 60).padStart(2, "0") : mins + " min"} · ${done}/${tasks.length}</span></div>
-      <details ${isToday ? "open" : ""}><summary class="note">Détail de la journée</summary><ul class="checklist">${tasks.map((t, ti) => `<li><input type="checkbox" id="pc-${key}-${ti}" data-k="${key}:${ti}" ${checks[key + ":" + ti] ? "checked" : ""}><label for="pc-${key}-${ti}"><span class="mono">${t[0]} min</span> · ${esc(t[1])}</label></li>`).join("")}</ul></details>
+      <details ${isToday ? "open" : ""}><summary class="note">Détail de la journée</summary><ul class="checklist">${tasks.map((t, ti) => `<li><input type="checkbox" id="pc-${key}-${ti}" data-k="${key}:${ti}" ${checks[key + ":" + ti] ? "checked" : ""}><label for="pc-${key}-${ti}" style="flex:1"><span class="mono">${t[0]} min</span> · ${esc(t[1])}</label>${t[2] ? `<button class="btn small" data-go="${esc(t[2])}">Ouvrir</button>` : ""}</li>`).join("")}</ul></details>
     </div></li>`;
   }).join("");
-  $$("#plan-list input[data-k]").forEach(c => c.onchange = () => { const all = store.get("planChecks", {}); if (c.checked) all[c.dataset.k] = 1; else delete all[c.dataset.k]; store.set("planChecks", all); renderPlan(); });
+  $$("#plan-list input[data-k]").forEach(c => c.onchange = () => toggleCheck(c.dataset.k, c.checked));
+  $$("#plan-list [data-go]").forEach(b => b.onclick = () => goTo(b.dataset.go));
   if (left > 14) $("#plan-list").insertAdjacentHTML("afterbegin", `<li><span class="d">Avant</span><div><div class="what">Tu as plus de deux semaines</div><div class="how">D'ici J-14, fais un examen blanc Cambridge par semaine et une Task 2 tous les deux jours. Le plan ci-dessous démarre à J-14.</div></div></li>`);
   if (left < 14 && left >= 0) $("#plan-list").insertAdjacentHTML("afterbegin", `<li><span class="d">Note</span><div><div class="what">Moins de deux semaines</div><div class="how">Les jours passés sont grisés. Ne les rattrape pas tous : garde au moins deux examens blancs complets et leur correction.</div></div></li>`);
 }
@@ -1496,7 +1559,7 @@ function renderTracker() {
     if (k === "L" || k === "R") { raw = Math.max(0, Math.min(40, Math.round(+v))); band = bandFromRaw(k, raw); } else band = +v;
     const all = store.get("scores", []);
     all.push({ k, band, raw, src: $("#tr-src").value.trim(), d: isoDay(new Date()) });
-    store.set("scores", all); $("#tr-src").value = ""; renderTracker();
+    store.set("scores", all); $("#tr-src").value = ""; renderTracker(); renderToday();
   };
   const latest = {};
   list.forEach(e => latest[e.k] = e);
@@ -1517,9 +1580,340 @@ function renderTracker() {
   $$("#tr-hist [data-del]").forEach(b => b.onclick = () => { const all = store.get("scores", []); all.splice(+b.dataset.del, 1); store.set("scores", all); renderTracker(); });
 }
 
+/* =========================================================
+   GUIDE : points de vigilance, atelier, aujourd'hui, bilan
+   ========================================================= */
+const WATCH = [
+  ["Une seule position", "Annonce-la dans l'introduction, tiens-la dans chaque paragraphe, reprends-la en conclusion. Le 20/09, « I totally agree » est devenu « that doesn't mean a nurse should be paid more »."],
+  ["Toute la question", "Chaque élément du sujet est traité : les quatre métiers, les deux vues, les deux questions. Les banquiers et les enseignants avaient disparu."],
+  ["Chaque paragraphe répond au sujet", "Ton §3 parlait de rentes héritées, pas de salaires. Une idée latérale doit être reliée explicitement à la question."],
+  ["Conclusion sans idée neuve", "Elle reformule la thèse. Ta conclusion du 20/09 ouvrait une comparaison infirmière contre enseignant."],
+  ["Le bon connecteur", "« Conversely » = opposition symétrique. Pour concéder : « Admittedly », « Granted ». Pour opposer : « However », « By contrast »."],
+  ["Registre écrit", "Ni oral (« See the problem? », « all day », un adversaire qui crie), ni absolu (« glaringly obvious »). Football, pas soccer."],
+  ["Temps verbaux", "« since » + present perfect ; « until recently » + prétérit ; pas de past perfect sans antériorité."],
+  ["Utilise les 40 minutes", "Tu as fini en 28 min. Les 10 dernières servent à relire articles, accords, prépositions et temps."]
+];
+
+const AT_SETS = [
+  { id: "these", name: "Thèse", kind: "mcq", desc: "Choisis l'introduction qui répond à toute la question avec une position nette. C'est la première chose que regarde l'examinateur pour la Task Response.", items: [
+    { ctx: "Some people believe that salaries should reflect the value of a job to society, so that nurses and teachers would earn more than bankers and footballers. To what extent do you agree or disagree?",
+      opts: ["While I accept that pay should broadly reflect social contribution, market forces cannot be ignored: nurses and teachers deserve substantially higher salaries, but capping what bankers and footballers earn would be neither fair nor workable.",
+             "It is glaringly obvious that salaries should reflect the value of a job to society.",
+             "Salaries are a complex issue with many advantages and disadvantages.",
+             "Footballers are paid far too much, since football is ultimately just a game."], ans: 0,
+      why: "La bonne thèse prend position et nomme les quatre métiers. La deuxième est ta phrase du 20/09 : absolue, et elle n'annonce rien de ce que tu vas défendre. La troisième n'a pas de position. La quatrième ne traite qu'un métier sur quatre." },
+    { ctx: "Some people think that the best way to reduce crime is to give longer prison sentences. Others believe there are better alternative ways of reducing crime. Discuss both views and give your opinion.",
+      opts: ["This essay will discuss both views before reaching a conclusion.",
+             "Although longer sentences may deter some offenders, I would argue that tackling the root causes of crime, such as poverty and poor education, is a more effective long-term strategy.",
+             "Prison is a cruel institution, and nobody should ever be sent there.",
+             "Crime has risen in many countries in recent years."], ans: 1,
+      why: "« Discuss both views and give your opinion » : la bonne thèse reconnaît la première vue et donne ton avis. La première annonce sans prendre position, la troisième ignore une vue, la quatrième n'est qu'un constat." },
+    { ctx: "In many cities, the number of people living alone is increasing. What are the causes of this trend, and what effects does it have on society?",
+      opts: ["Living alone has both advantages and disadvantages.",
+             "Governments should build more housing designed for single people.",
+             "This trend is largely driven by rising incomes and later marriage, and while it fosters independence, it also risks deepening social isolation.",
+             "I strongly agree that living alone is a negative development."], ans: 2,
+      why: "Causes ET effets. La deuxième propose une solution qu'on ne demande pas, la quatrième répond à un « agree or disagree » qui n'existe pas, la première ne nomme ni cause ni effet." },
+    { ctx: "Many people today follow the lives of celebrities closely on social media. Why is this the case? Is it a positive or negative development?",
+      opts: ["People follow celebrities mainly because they are bored.",
+             "Social media has changed our lives in many different ways.",
+             "It is a positive development, as celebrities raise awareness of important causes.",
+             "This fascination stems largely from the illusion of intimacy that social media creates, and although it can inspire, I consider it a broadly negative development because it distorts young people's sense of what is normal."], ans: 3,
+      why: "Question double : il faut répondre aux deux. La première et la troisième n'en traitent qu'une, la deuxième aucune. Ne traiter qu'une partie plafonne la Task Response autour de 5 ou 6." },
+    { ctx: "More and more companies are allowing employees to work entirely from home. Do the advantages of this development outweigh the disadvantages?",
+      opts: ["In my view, the gains in flexibility and productivity outweigh the risk of isolation, provided that companies preserve regular opportunities for face-to-face collaboration.",
+             "Working from home has many advantages and disadvantages, which this essay will examine.",
+             "Working from home is clearly the future of work.",
+             "Some disadvantages of working from home include loneliness and distraction."], ans: 0,
+      why: "« Outweigh » demande un verdict : lequel l'emporte. Seule la première tranche, et sa condition (« provided that ») montre une position nuancée sans être floue." },
+    { ctx: "Governments should not spend money on space exploration until poverty has been eliminated on Earth. To what extent do you agree or disagree?",
+      opts: ["Space exploration is fascinating and has led to many inventions.",
+             "I agree with both sides of this argument.",
+             "I agree only in part: poverty should be the priority, but halting space research altogether would be counterproductive, since much of it directly benefits life on Earth.",
+             "Poverty remains a serious problem in many countries."], ans: 2,
+      why: "Une position partielle est parfaitement acceptable si elle est nette et justifiée. « I agree with both sides » n'est pas une position, et les deux autres sont des constats." }
+  ] },
+  { id: "position", name: "Position tenue", kind: "mcq", desc: "Repère quand une copie change de position, sort du sujet ou ouvre une idée neuve en conclusion. C'est exactement ce qui a coûté ta Task Response le 20/09.", items: [
+    { ctx: "Sujet : salaires et valeur sociale (to what extent do you agree?)", q: "Introduction : « I totally agree that salaries should reflect social value. »\nConclusion : « That does not mean that a nurse should be paid more than a footballer. »",
+      opts: ["Cohérente", "Contradictoire", "Idée nouvelle en conclusion"], ans: 1, why: "C'est ta copie du 20/09. L'examinateur lit deux positions opposées. Si ta pensée est nuancée, la nuance doit figurer dès l'introduction." },
+    { ctx: "Sujet : prison ou alternatives (discuss both views and give your opinion)", q: "Thèse : « tackling the root causes of crime is more effective than longer sentences ».\nConclusion : « In conclusion, while longer sentences may deter some offenders, addressing poverty and poor education offers a more lasting solution. »",
+      opts: ["Cohérente", "Contradictoire", "Idée nouvelle en conclusion"], ans: 0, why: "La conclusion reprend la thèse avec d'autres mots, et rappelle l'autre vue. C'est le modèle." },
+    { ctx: "Sujet : télétravail (do the advantages outweigh the disadvantages?)", q: "Thèse : « the advantages outweigh the disadvantages ».\nConclusion : « Overall, the benefits clearly outweigh the drawbacks. Governments should also consider introducing a four-day working week. »",
+      opts: ["Cohérente", "Contradictoire", "Idée nouvelle en conclusion"], ans: 2, why: "La semaine de quatre jours n'a jamais été discutée. Une idée neuve en conclusion fait perdre en Task Response et en Coherence." },
+    { ctx: "Sujet : salaires et valeur sociale", q: "Phrase d'ouverture d'un paragraphe : « Inherited fortunes allow some families to live off interest for generations. »",
+      opts: ["Pertinente telle quelle", "Hors sujet", "Tangentielle : à relier explicitement à la question"], ans: 2, why: "C'est ton §3. L'idée est intéressante, mais elle parle de rentes, pas de salaires. Il fallait l'introduire comme un contre-exemple : « The real gap between reward and value lies not in salaries but in unearned income. »" },
+    { ctx: "Sujet : langues étrangères à l'école primaire (discuss both views)", q: "Phrase d'ouverture d'un paragraphe : « Young children acquire pronunciation more easily than adolescents, which strongly favours an early start. »",
+      opts: ["Pertinente telle quelle", "Hors sujet", "Tangentielle : à relier explicitement à la question"], ans: 0, why: "Elle avance un argument et le relie aussitôt à l'une des deux vues du sujet." },
+    { ctx: "Sujet : exploration spatiale et pauvreté (to what extent do you agree?)", q: "Phrase d'ouverture d'un paragraphe : « Many astronauts have become national celebrities. »",
+      opts: ["Pertinente telle quelle", "Hors sujet", "Tangentielle : à relier explicitement à la question"], ans: 1, why: "La célébrité des astronautes ne dit rien du choix entre dépenses spatiales et lutte contre la pauvreté." },
+    { ctx: "Sujet : célébrités (why? positive or negative?)", q: "Thèse : « this fascination stems from an illusion of intimacy, and it is a broadly negative development ».\nConclusion : « In conclusion, people follow celebrities for many different reasons. »",
+      opts: ["Cohérente", "Incomplète : une partie de la question disparaît", "Idée nouvelle en conclusion"], ans: 1, why: "Le jugement (positif ou négatif) a disparu de la conclusion, et « many different reasons » dilue la cause précise annoncée." }
+  ] },
+  { id: "connect", name: "Connecteurs", kind: "mcq", desc: "Choisis le connecteur juste. À 8 et plus, l'examinateur pénalise un connecteur imprécis plus qu'un connecteur absent.", items: [
+    { q: "Some argue that footballers are overpaid. ___, their earnings simply reflect the vast revenues they generate.", opts: ["However", "Admittedly", "Conversely", "Moreover"], ans: 0, why: "Tu opposes un contre-argument à ce qui précède : « However ». « Conversely » exigerait deux situations symétriques." },
+    { q: "My argument is that pay rarely tracks social value. ___, market forces do reward some socially useful jobs: surgeons, for instance, are very well paid.", opts: ["Consequently", "Admittedly", "Conversely", "In addition"], ans: 1, why: "Tu concèdes un point à l'autre camp : « Admittedly ». C'est ton erreur du 20/09, où tu avais mis « Conversely »." },
+    { q: "Higher salaries for nurses would be costly. ___, the cost of chronic staff shortages is arguably far greater.", opts: ["Therefore", "Similarly", "Nevertheless", "For instance"], ans: 2, why: "Malgré le coût, le contre-poids l'emporte : « Nevertheless »." },
+    { q: "In Norway, teachers earn close to the national average salary. ___, in many developing countries they earn far less.", opts: ["As a result", "By contrast", "Likewise", "Indeed"], ans: 1, why: "Deux situations comparées : « By contrast »." },
+    { q: "Public transport is heavily subsidised in Luxembourg. ___, it has been entirely free since 2020.", opts: ["However", "Otherwise", "Indeed", "Instead"], ans: 2, why: "La deuxième phrase renforce et précise la première : « Indeed »." },
+    { q: "Remote work eliminates the daily commute. ___, it reduces the carbon emissions generated by transport.", opts: ["Admittedly", "Consequently", "Conversely", "Nevertheless"], ans: 1, why: "Cause, puis conséquence : « Consequently »." },
+    { q: "Scarcity pushes up wages in rare professions. ___, abundance depresses them in common ones.", opts: ["Conversely", "Admittedly", "Furthermore", "Hence"], ans: 0, why: "Voici le vrai emploi de « Conversely » : la même logique, inversée (rareté → hausse ; abondance → baisse)." },
+    { q: "Many graduates cannot afford to buy a home. ___, home ownership among under-35s has fallen sharply.", opts: ["As a result", "In contrast", "Nonetheless", "Granted"], ans: 0, why: "Conséquence directe : « As a result »." }
+  ] },
+  { id: "registre", name: "Registre", kind: "mcq", desc: "Choisis la version au bon registre : ni oral, ni pompeux. Les mauvaises réponses viennent de tes copies ou sont les pièges les plus fréquents.", items: [
+    { q: "It is glaringly obvious that salaries should reflect social value.", opts: ["It is crystal clear that salaries should reflect social value.", "There is a strong case that salaries should reflect social value.", "It goes without saying, obviously, that salaries should reflect social value."], ans: 1, why: "Une thèse se défend, elle ne s'impose pas. « There is a strong case that » est affirmé sans être péremptoire." },
+    { q: "I would defend all day that scarcity and usefulness go together.", opts: ["I'd say for sure that scarcity and usefulness go together.", "I would vehemently posit that scarcity and usefulness are coterminous.", "I would argue that scarcity and usefulness tend to go hand in hand."], ans: 2, why: "« I would argue that » est la formule standard. La deuxième version est pompeuse et mal employée : « coterminous » ne veut pas dire ça." },
+    { q: "See the problem?", opts: ["Herein lies the problem.", "Can you see the problem here?", "The problem is, like, obvious."], ans: 0, why: "Pas de question rhétorique adressée au lecteur en Task 2 : on énonce." },
+    { q: "Descendants will live off this money for ever and ever.", opts: ["Descendants will live off this money till the end of time.", "Descendants will live off this money indefinitely.", "Descendants will live off this money for good and all."], ans: 1, why: "« Indefinitely » est neutre et précis. Les autres versions relèvent du conte ou de la conversation." },
+    { q: "People counter this position shouting \"No, scarcity sets salaries!\"", opts: ["Critics object that salaries are determined by scarcity.", "People say really loudly that scarcity sets salaries.", "Detractors vociferously exclaim that scarcity sets remuneration."], ans: 0, why: "On rapporte l'argument adverse au discours indirect, sobrement." },
+    { q: "A lot of people think that teachers are underpaid.", opts: ["Loads of people reckon that teachers are underpaid.", "Many people believe that teachers are underpaid.", "A plethora of individuals opine that educators are underremunerated."], ans: 1, why: "La troisième est le piège du 7 : des mots rares qui sonnent faux. Le band 9 demande des mots justes et naturels, pas des mots compliqués." },
+    { q: "Some people become ultra-rich thanks to their work.", opts: ["Some people become extremely wealthy through their work.", "Some guys get super rich from their jobs.", "Some individuals attain opulent affluence via their occupations."], ans: 0, why: "« Extremely wealthy through » : registre neutre et collocation juste." },
+    { q: "Kids nowadays spend too much time on their phones.", opts: ["Kids these days spend way too much time on their phones.", "Youngsters of the contemporary epoch devote excessive temporal resources to telephony.", "Children today spend an excessive amount of time on their phones."], ans: 2, why: "« Kids » et « nowadays » sont acceptables à l'oral, à éviter en Task 2." }
+  ] },
+  { id: "gram", name: "Grammaire", kind: "gap", desc: "Écris la forme juste à partir du français. Les structures viennent de tes copies et des erreurs qui plafonnent les francophones à 7 en grammaire.", items: [
+    { fr: "Depuis la Seconde Guerre mondiale, la finance a transformé le monde.", en: "Since the Second World War, finance ___ the world.", ans: ["has transformed", "has changed", "has reshaped"], why: "« since » + present perfect." },
+    { fr: "C'était largement le cas jusqu'à récemment.", en: "This ___ largely the case until recently.", ans: ["was"], why: "« until recently » situe une période finie : prétérit." },
+    { fr: "Tu es aussi rare que tu es utile.", en: "You are as scarce ___ useful.", ans: ["as you are"], why: "« as … as » reprend le sujet et le verbe quand on compare deux qualités." },
+    { fr: "Si solide que paraisse cet argument, il néglige l'utilité.", en: "___ this argument may appear, it overlooks usefulness.", ans: ["however sound", "however strong", "however convincing", "however compelling", "however persuasive"], why: "« However + adjectif + sujet + may » : la concession soutenue." },
+    { fr: "Il est si utile qu'il devient riche.", en: "He is ___ he becomes wealthy.", ans: ["so useful that"], why: "« so + adjectif + that ». « too … to » exprime l'excès qui empêche." },
+    { fr: "Ce n'est qu'en augmentant les salaires que l'on résoudra la pénurie.", en: "Only by raising salaries ___ the shortage.", ans: ["will we solve", "will we resolve", "will we address", "can we solve", "can we resolve", "will we tackle"], why: "« Only by + -ing » en tête de phrase entraîne l'inversion auxiliaire-sujet." },
+    { fr: "Si les gouvernements avaient investi plus tôt, la pénurie aurait été évitée.", en: "If governments had invested earlier, the shortage ___.", ans: ["would have been avoided", "could have been avoided", "would have been prevented"], why: "Conditionnel passé : « would have + participe passé »." },
+    { fr: "Il est grand temps que les gouvernements agissent.", en: "It is high time governments ___.", ans: ["acted", "took action"], why: "« It is high time » + prétérit, à sens présent." },
+    { fr: "La plupart des gens pensent que les salaires devraient refléter la valeur sociale.", en: "___ people believe salaries should reflect social value.", ans: ["most"], why: "« Most people », sans article. « The most » est le superlatif." },
+    { fr: "Les enseignants jouent un rôle clé dans la société.", en: "Teachers play a key role in ___.", ans: ["society"], why: "« Society » au sens général : pas d'article." },
+    { fr: "Le salaire d'un footballeur, contrairement à celui d'une infirmière, est fixé par le marché.", en: "A footballer's salary, unlike ___ of a nurse, is set by the market.", ans: ["that"], why: "« celui de » se traduit par « that of »." },
+    { fr: "Il n'est guère surprenant que les banquiers gagnent davantage.", en: "It is ___ surprising that bankers earn more.", ans: ["hardly", "scarcely", "little"], why: "« Guère » se dit « hardly » ou « scarcely »." },
+    { fr: "Plus d'un exemple illustre cet argument.", en: "Many an example ___ this argument.", ans: ["illustrates", "supports", "epitomises", "epitomizes", "bears out"], why: "« Many an » + nom singulier + verbe au singulier. C'était ta faute du 20/09 (« epitomize »)." },
+    { fr: "Quel que soit leur salaire, les enseignants restent indispensables.", en: "___ their salary, teachers remain indispensable.", ans: ["whatever", "regardless of", "irrespective of"], why: "« Whatever », « regardless of » ou « irrespective of » + nom." }
+  ] },
+  { id: "plan", name: "Plan en 5 min", kind: "plan", desc: "Le geste qui aurait sauvé ta Task Response : 5 minutes de plan avant d'écrire. Thèse, deux idées avec exemple, conclusion qui reprend la thèse." }
+];
+
+let atCur = store.get("atCur", "these");
+let atState = { i: 0, ok: 0, done: 0 };
+function atRecord(id, ok, total) {
+  const r = store.get("at:" + id, { best: 0, last: "", runs: 0 });
+  r.last = ok + "/" + total; r.best = Math.max(r.best || 0, ok / total); r.runs = (r.runs || 0) + 1; r.date = isoDay(new Date());
+  store.set("at:" + id, r);
+}
+function renderAtTabs() {
+  $("#at-tabs").innerHTML = AT_SETS.map(s => { const r = store.get("at:" + s.id, null); return `<button aria-pressed="${s.id === atCur}" data-a="${s.id}">${esc(s.name)}${r && r.last ? " · " + esc(r.last) : ""}</button>`; }).join("");
+  $$("#at-tabs button").forEach(b => b.onclick = () => { atCur = b.dataset.a; store.set("atCur", atCur); atState = { i: 0, ok: 0, done: 0 }; renderAtTabs(); renderAt(); });
+}
+function renderAt() {
+  const set = AT_SETS.find(s => s.id === atCur) || AT_SETS[0];
+  const body = $("#at-body");
+  if (set.kind === "plan") return renderPlan5(body, set);
+  if (atState.i >= set.items.length) {
+    const pct = Math.round(atState.ok / set.items.length * 100);
+    body.innerHTML = `<h3>${esc(set.name)} : ${atState.ok}/${set.items.length}</h3>
+      <p>${pct === 100 ? "Sans faute. Refais cette série dans deux ou trois jours pour vérifier que c'est acquis." : pct >= 75 ? "Presque. Relis les explications des items ratés, puis refais la série demain." : "Ce point te coûte encore des points. Refais la série demain, puis applique-la dans ta prochaine Task 2."}</p>
+      <div class="row"><button class="btn primary" id="at-again">Recommencer</button></div>`;
+    $("#at-again").onclick = () => { atState = { i: 0, ok: 0, done: 0 }; renderAt(); };
+    return;
+  }
+  const it = set.items[atState.i];
+  const head = `<div class="row" style="justify-content:space-between"><h4 style="margin:0">${esc(set.name)} · ${atState.i + 1}/${set.items.length}</h4><span class="status">Score ${atState.ok}/${atState.done}</span></div>
+    ${atState.i === 0 ? `<p class="note">${esc(set.desc)}</p>` : ""}`;
+  const next = () => {
+    atState.i++;
+    if (atState.i >= set.items.length) { atRecord(set.id, atState.ok, set.items.length); renderAtTabs(); }
+    renderAt();
+  };
+  if (set.kind === "mcq") {
+    const order = it.opts.map((_, i) => i).sort(() => Math.random() - 0.5);
+    body.innerHTML = `${head}
+      ${it.ctx ? `<div class="ctx">${esc(it.ctx)}</div>` : ""}
+      ${it.q ? `<div class="drill-ex" style="white-space:pre-line">${esc(it.q)}</div>` : ""}
+      <div class="optbtns">${order.map(i => `<button class="btn" data-i="${i}">${esc(it.opts[i])}</button>`).join("")}</div>
+      <div id="at-fb"></div>`;
+    $$("#at-body .optbtns button").forEach(b => b.onclick = () => {
+      const good = +b.dataset.i === it.ans; atState.done++; if (good) atState.ok++;
+      $$("#at-body .optbtns button").forEach(x => { x.disabled = true; if (+x.dataset.i === it.ans) x.classList.add("right"); });
+      if (!good) b.classList.add("wrong");
+      $("#at-fb").innerHTML = `<div class="fb ${good ? "ok" : "bad"}"><b>${good ? "Juste." : "Non."}</b> ${esc(it.why)}</div><div class="row" style="margin-top:10px"><button class="btn primary" id="at-next">${atState.i + 1 < set.items.length ? "Suivant" : "Voir mon score"}</button></div>`;
+      $("#at-next").onclick = next;
+    });
+  } else {
+    const parts = it.en.split("___");
+    body.innerHTML = `${head}
+      <div class="ctx">${esc(it.fr)}</div>
+      <p class="gaptext" style="font-size:1.1rem">${esc(parts[0])}<input type="text" id="at-in" autocomplete="off" autocapitalize="off" spellcheck="false" style="width:13em" aria-label="Ta réponse">${esc(parts[1] || "")}</p>
+      <div class="row"><button class="btn primary" id="at-check">Vérifier</button></div>
+      <div id="at-fb"></div>`;
+    const inp = $("#at-in"); inp.focus();
+    const check = () => {
+      if ($("#at-check").disabled) return;
+      const v = inp.value.trim().toLowerCase().replace(/[.,;!?]+$/, "").replace(/\s+/g, " ");
+      const good = it.ans.some(a => a.toLowerCase() === v);
+      atState.done++; if (good) atState.ok++;
+      inp.disabled = true; $("#at-check").disabled = true;
+      inp.style.borderColor = good ? "var(--ok)" : "var(--bad)"; inp.style.background = good ? "var(--ok-soft)" : "var(--bad-soft)";
+      $("#at-fb").innerHTML = `<div class="fb ${good ? "ok" : "bad"}"><b>${good ? "Juste." : "Réponse : " + esc(it.ans[0]) + "."}</b> ${esc(it.why)}${!good && it.ans.length > 1 ? ` <span class="note">Aussi accepté : ${esc(it.ans.slice(1).join(", "))}.</span>` : ""}</div><div class="row" style="margin-top:10px"><button class="btn primary" id="at-next">${atState.i + 1 < set.items.length ? "Suivant" : "Voir mon score"}</button></div>`;
+      $("#at-next").onclick = next; $("#at-next").focus();
+    };
+    $("#at-check").onclick = check;
+    inp.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); check(); } };
+  }
+}
+
+/* --- Plan en 5 min --- */
+const STOP = new Set("some people believe think that should would could their there these those which while other others more most many much with from into have this what extent agree disagree give reasons your answer include relevant examples knowledge experience write least words discuss both views opinion development advantages disadvantages outweigh about been being does such than them they will case today rather instead providing equipping making given".split(" "));
+function qType(p) {
+  if (/to what extent/i.test(p)) return "opinion";
+  if (/discuss both/i.test(p)) return "discuss";
+  if (/outweigh/i.test(p)) return "adv";
+  if (/causes|problems?|measures|solutions?|address it/i.test(p) && (p.match(/\?/g) || []).length >= 1) return "problem";
+  if ((p.match(/\?/g) || []).length >= 2) return "double";
+  return "opinion";
+}
+const QT = { opinion: "Opinion (to what extent…)", discuss: "Discuter deux vues + avis", problem: "Causes / problèmes + solutions", adv: "Avantages > inconvénients ?", double: "Question double" };
+function keyWords(prompt) {
+  const core = prompt.split(/\n\n/)[0];
+  return [...new Set((core.toLowerCase().match(/[a-z]{5,}/g) || []).filter(w => !STOP.has(w)))].slice(0, 8);
+}
+function contentWords(s) { return new Set((s.toLowerCase().match(/[a-z]{4,}/g) || []).filter(w => !STOP.has(w))); }
+function renderPlan5(body, set) {
+  const pool = WTASKS.filter(t => t.task === 2);
+  let pi = store.get("p5i", 0) % pool.length;
+  const t = pool[pi];
+  const saved = store.get("p5:" + t.id, {});
+  const f = (id, label, ph, rows = 2) => `<label for="p5-${id}"><h4 style="margin:10px 0 4px">${label}</h4></label><textarea id="p5-${id}" style="min-height:${rows * 1.8}em;font-family:var(--f-body);font-size:.95rem" placeholder="${esc(ph)}">${esc(saved[id] || "")}</textarea>`;
+  body.innerHTML = `<div class="row" style="justify-content:space-between"><h4 style="margin:0">Plan en 5 min</h4><div class="row"><span class="timer" id="p5-timer">05:00</span><button class="btn primary" id="p5-go">Lancer</button><button class="btn" id="p5-other">Autre sujet</button></div></div>
+    <p class="note">${esc(set.desc)}</p>
+    <div class="prompt" style="font-size:1rem">${esc(t.prompt.split("\n\nGive reasons")[0])}</div>
+    <label for="p5-type"><h4 style="margin:12px 0 4px">Type de question</h4></label>
+    <select id="p5-type"><option value="">–</option>${Object.entries(QT).map(([k, v]) => `<option value="${k}" ${saved.type === k ? "selected" : ""}>${esc(v)}</option>`).join("")}</select>
+    ${f("thesis", "Thèse (une phrase, qui répond à toute la question)", "While I accept that…, I believe…")}
+    ${f("i1", "Idée 1 + exemple précis", "Idée → pourquoi → exemple → conséquence")}
+    ${f("i2", "Idée 2 + exemple précis", "Une idée par paragraphe, développée jusqu'au bout")}
+    ${f("conc", "Concession (facultatif)", "Admittedly, … However, …", 1)}
+    ${f("end", "Conclusion : ta thèse, reformulée", "In conclusion, …", 1)}
+    <div class="row" style="margin-top:10px"><button class="btn primary" id="p5-check">Vérifier mon plan</button><button class="btn" id="p5-claude">Faire vérifier par Claude</button><span class="status" id="p5-st"></span></div>
+    <div id="p5-fb"></div>`;
+  const tm = makeTimer($("#p5-timer"), 300, () => { beep(); $("#p5-st").textContent = "5 minutes. À l'examen, tu commencerais à écrire maintenant."; });
+  $("#p5-go").onclick = () => { tm.start(); $("#p5-go").disabled = true; $("#p5-thesis").focus(); };
+  $("#p5-other").onclick = () => { store.set("p5i", pi + 1); renderPlan5(body, set); };
+  const val = id => ($("#p5-" + id).value || "").trim();
+  const save = () => store.set("p5:" + t.id, { type: $("#p5-type").value, thesis: val("thesis"), i1: val("i1"), i2: val("i2"), conc: val("conc"), end: val("end") });
+  $$("#at-body textarea, #p5-type").forEach(el => el.oninput = el.onchange = save);
+  $("#p5-check").onclick = () => {
+    tm.stop(); save();
+    const out = [], expected = qType(t.prompt), kw = keyWords(t.prompt), th = val("thesis").toLowerCase();
+    const chosen = $("#p5-type").value;
+    out.push(chosen === expected ? ["ok", `Type de question : juste (${QT[expected]}).`] : ["bad", `Type de question : ${chosen ? "tu as choisi « " + QT[chosen] + " », " : ""}c'est « ${QT[expected]} ». Relis la dernière phrase de la consigne avant d'écrire quoi que ce soit.`]);
+    if (!th) out.push(["bad", "Pas de thèse. Sans elle, la Task Response plafonne à 5."]);
+    else {
+      const hit = kw.filter(w => th.includes(w.slice(0, 5))), miss = kw.filter(w => !th.includes(w.slice(0, 5)));
+      out.push([miss.length <= kw.length / 2 ? "ok" : "bad", `Mots-clés du sujet repris dans ta thèse : ${hit.length ? hit.join(", ") : "aucun"}.${miss.length ? " Absents : " + miss.join(", ") + ". Vérifie que ta thèse ne laisse tomber aucun élément du sujet." : ""}`]);
+      if (/glaringly|obvious|totally agree|undoubtedly|everyone knows/i.test(th)) out.push(["bad", "Ta thèse est absolue (« obvious », « totally »). Une position nuancée mais nette se défend mieux et ne se contredit pas plus loin."]);
+      if (expected === "double" && !/(and|while|although|but)/i.test(th)) out.push(["bad", "Question double : ta thèse doit répondre aux deux questions, souvent reliées par « and » ou « although »."]);
+      if (expected === "discuss" && !/(although|while|whereas|though|despite)/i.test(th)) out.push(["bad", "« Discuss both views » : ta thèse devrait reconnaître l'autre vue (although, while…) avant de donner ton avis."]);
+    }
+    [["i1", "Idée 1"], ["i2", "Idée 2"]].forEach(([id, n]) => { const v = val(id); if (wordsOf(v) < 8) out.push(["bad", `${n} : trop courte. Il faut l'idée, la raison et un exemple précis.`]); else if (!/(for example|for instance|such as|in \d{4}|\d|e\.g\.|like )/i.test(v)) out.push(["bad", `${n} : pas d'exemple concret repérable (for instance, un pays, un chiffre, une date).`]); else out.push(["ok", `${n} : idée et exemple présents.`]); });
+    const end = val("end");
+    if (!end) out.push(["bad", "Pas de conclusion prévue. Écris-la dès le plan : c'est ce qui garantit qu'elle ne contredira pas ta thèse."]);
+    else { const a = contentWords(val("thesis")), b = contentWords(end); const common = [...a].filter(w => b.has(w)).length; out.push([common >= 2 ? "ok" : "bad", common >= 2 ? "Ta conclusion reprend ta thèse." : "Ta conclusion ne partage presque aucun mot-clé avec ta thèse : vérifie qu'elle défend la même position."]); }
+    $("#p5-fb").innerHTML = out.map(([c, m]) => `<div class="fb ${c}" style="margin-top:8px">${esc(m)}</div>`).join("") + `<p class="note" style="margin-top:8px">Ces vérifications sont automatiques et approximatives : elles repèrent les oublis, pas la qualité des idées. Pour un avis sur le fond, fais vérifier par Claude.</p>`;
+    const r = store.get("at:plan", { best: 0, last: "", runs: 0 }); r.runs = (r.runs || 0) + 1; r.last = out.filter(x => x[0] === "ok").length + "/" + out.length; r.date = isoDay(new Date()); store.set("at:plan", r); renderAtTabs();
+  };
+  $("#p5-claude").onclick = async () => {
+    save();
+    const prompt = `You are a senior IELTS Writing examiner. A French-speaking candidate aiming for band 8.5 has written a 5-minute PLAN (not an essay) for this Task 2 question. Their known weakness: their position drifts between introduction and conclusion, and some paragraphs drift off the question.
+
+QUESTION:
+${t.prompt.split("\n\nGive reasons")[0]}
+
+PLAN:
+Question type chosen: ${QT[$("#p5-type").value] || "none"}
+Thesis: ${val("thesis")}
+Idea 1: ${val("i1")}
+Idea 2: ${val("i2")}
+Concession: ${val("conc")}
+Conclusion: ${val("end")}
+
+Reply with ONLY a JSON object: {"bands":{"TR":7},"summary_fr":"2-3 phrases en français : la thèse répond-elle à TOUTE la question, la position tient-elle jusqu'à la conclusion, chaque idée est-elle dans le sujet ?","errors":[{"original":"phrase du plan","correction":"meilleure version","why_fr":"pourquoi"}],"model_paragraph":"a band-9 thesis statement for this question"}
+"TR" is the Task Response band this plan would support if well executed.`;
+    const r = await askClaude(prompt, $("#p5-st"), $("#p5-claude"));
+    if (!r) return;
+    $("#p5-fb").innerHTML = `${renderBands(r.bands || {}, [["TR", "Task Response visée"]])}<p>${esc(r.summary_fr || "")}</p>${Array.isArray(r.errors) && r.errors.length ? renderFixes(r.errors) : ""}${r.model_paragraph ? `<h4 style="margin-top:12px">Une thèse band 9</h4><div class="model">${esc(r.model_paragraph)}</div>` : ""}`;
+  };
+}
+
+/* --- navigation depuis le plan --- */
+function goTo(link) {
+  const [tab, sub] = String(link).split(":");
+  if (tab === "listening" && sub) { stopAudio(); lisState.cur = sub; store.set("lisCur", sub); renderLisTabs(); renderLis(); }
+  if (tab === "reading" && sub) { readCur = sub; store.set("readCur", sub); renderReadTabs(); }
+  if (tab === "writing" && sub) { $("#w-sel").value = sub; store.set("wSel", sub); renderWriting(); }
+  if (tab === "atelier" && sub) { atCur = sub; store.set("atCur", sub); atState = { i: 0, ok: 0, done: 0 }; renderAtTabs(); renderAt(); }
+  if (tab === "speaking" && sub) { const b = $$("#sp-tabs button").find(x => x.dataset.p === sub); if (b) b.click(); }
+  showTab(tab); window.scrollTo(0, 0);
+}
+
+/* --- Aujourd'hui --- */
+function latestBands() { const l = {}; store.get("scores", []).forEach(e => l[e.k] = e); return l; }
+function toggleCheck(k, on) { const all = store.get("planChecks", {}); if (on) all[k] = 1; else delete all[k]; store.set("planChecks", all); renderPlan(); renderToday(); }
+function renderToday() {
+  const exam = parseDay(store.get("examDate", defaultExam())), today = parseDay(isoDay(new Date()));
+  const left = Math.round((exam - today) / 86400000);
+  const entry = PLAN.find(p => p[0] === left);
+  const longDate = today.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
+  $("#td-title").textContent = longDate.charAt(0).toUpperCase() + longDate.slice(1) + (left > 0 ? ` · J-${left}` : left === 0 ? " · Jour J" : "");
+  const checks = store.get("planChecks", {}), key = isoDay(today);
+  if (!entry) {
+    $("#td-goal").textContent = left > 14 ? `Le programme commence à J-14. D'ici là : un examen blanc Cambridge par semaine, l'atelier chaque jour.` : left < 0 ? "L'examen est passé. Entre tes résultats officiels dans le suivi quand tu les reçois." : "";
+    $("#td-tasks").innerHTML = ""; $("#td-prog").innerHTML = "";
+  } else {
+    const [, what, goal, mock, tasks] = entry;
+    $("#td-goal").innerHTML = `<b>${esc(what)}.</b> ${esc(goal)}`;
+    $("#td-tasks").innerHTML = tasks.map((t, ti) => `<li><input type="checkbox" id="td-${ti}" data-k="${key}:${ti}" ${checks[key + ":" + ti] ? "checked" : ""}><label for="td-${ti}" style="flex:1"><span class="mono">${t[0]} min</span> · ${esc(t[1])}</label>${t[2] ? `<button class="btn small" data-go="${esc(t[2])}">Ouvrir</button>` : ""}</li>`).join("");
+    const done = tasks.filter((t, ti) => checks[key + ":" + ti]).length, rest = tasks.filter((t, ti) => !checks[key + ":" + ti]).reduce((a, t) => a + t[0], 0);
+    $("#td-prog").innerHTML = done === tasks.length ? "<b>Journée terminée.</b> Envoie ton bilan à Claude ci-dessous." : `<b>${done}/${tasks.length}</b> tâches faites · reste environ ${rest >= 60 ? Math.floor(rest / 60) + " h " + String(rest % 60).padStart(2, "0") : rest + " min"}`;
+    $$("#td-tasks input[data-k]").forEach(c => c.onchange = () => toggleCheck(c.dataset.k, c.checked));
+    $$("#td-tasks [data-go]").forEach(b => b.onclick = () => goTo(b.dataset.go));
+  }
+  const lb = latestBands();
+  $("#td-bands").innerHTML = `<div class="track-grid" style="margin:0">${Object.keys(SK).map(k => `<div class="tcell"><small>${SK[k]}</small><b>${lb[k] ? lb[k].band.toFixed(1) : "–"}</b><div class="gap ${lb[k] && lb[k].band >= 8.5 ? "ok" : "bad"}">${lb[k] ? esc(lb[k].d) : "à mesurer"}</div></div>`).join("")}</div>
+    <p class="note" style="margin-top:8px">Il faut une moyenne de 8.25 pour obtenir 8.5. <button class="btn small" data-go="plan">Ouvrir le suivi</button></p>`;
+  $$("#td-bands [data-go]").forEach(b => b.onclick = () => goTo(b.dataset.go));
+  $("#td-watch").innerHTML = WATCH.map(w => `<li><b>${esc(w[0])}.</b> ${esc(w[1])}</li>`).join("");
+  $("#td-at").innerHTML = AT_SETS.map(s => { const r = store.get("at:" + s.id, null); return `<button class="btn small" data-go="atelier:${s.id}">${esc(s.name)}${r && r.last ? " · " + esc(r.last) : ""}</button>`; }).join("");
+  $$("#td-at [data-go]").forEach(b => b.onclick = () => goTo(b.dataset.go));
+  $("#td-note").value = store.get("note:" + key, "");
+  $("#td-note").oninput = e => store.set("note:" + key, e.target.value);
+}
+function buildReport() {
+  const exam = parseDay(store.get("examDate", defaultExam())), today = parseDay(isoDay(new Date()));
+  const left = Math.round((exam - today) / 86400000), key = isoDay(today);
+  const entry = PLAN.find(p => p[0] === left), checks = store.get("planChecks", {});
+  const lines = [`# BILAN IELTS — ${key} (${left > 0 ? "J-" + left : left === 0 ? "Jour J" : "après l'examen"})`, `Objectif : 8.5 global le ${exam.toLocaleDateString("fr-FR")}.`, ""];
+  if (entry) {
+    const tasks = entry[4];
+    lines.push(`## Programme du jour : ${entry[1]} (${tasks.filter((t, ti) => checks[key + ":" + ti]).length}/${tasks.length})`);
+    tasks.forEach((t, ti) => lines.push(`- [${checks[key + ":" + ti] ? "x" : " "}] ${t[1]}`));
+    lines.push("");
+  }
+  const sc = store.get("scores", []);
+  lines.push("## Bandes enregistrées");
+  if (!sc.length) lines.push("(aucune)"); else sc.forEach(e => lines.push(`- ${e.d} · ${SK[e.k]} : ${e.band.toFixed(1)}${e.raw != null ? ` (${e.raw}/40)` : ""}${e.src ? " · " + e.src : ""}`));
+  lines.push("", "## Atelier");
+  AT_SETS.forEach(s => { const r = store.get("at:" + s.id, null); lines.push(`- ${s.name} : ${r && r.last ? `dernier ${r.last}${s.kind !== "plan" ? `, meilleur ${Math.round((r.best || 0) * 100)} %` : ""}, ${r.runs} série(s), le ${r.date}` : "pas encore fait"}`); });
+  lines.push("", "## Mon ressenti", ($("#td-note").value || "").trim() || "(rien noté)", "", "---",
+    "Claude, tu es mon guide IELTS jusqu'au 24 octobre. Mes points faibles connus : position qui change entre l'introduction et la conclusion, paragraphes qui sortent du sujet, connecteurs imprécis, registre trop oral, temps verbaux ; dernière Task 2 notée 6/9 (TR 6, CC 6, LR 7, GRA 6).",
+    "À partir de ce bilan, réponds en trois parties courtes : 1) ce qui progresse et ce qui bloque, en trois lignes ; 2) ce que tu changes au programme de demain et pourquoi ; 3) un exercice ciblé de 10 minutes pour demain, avec son corrigé à part.");
+  return lines.join("\n");
+}
+
 /* ---------------- boot ---------------- */
-renderLisTabs(); renderLis(); renderReadTabs(); renderWriting(); renderSpeaking(); renderPlan(); renderTracker();
-showTab(store.get("tab", "format"));
+if (!store.get("seeded:w0920", false)) {
+  const sc = store.get("scores", []);
+  if (!sc.some(e => e.k === "W")) { sc.unshift({ k: "W", band: 6, raw: null, src: "Task 2 « salaires » notée par Claude (TR 6, CC 6, LR 7, GRA 6)", d: "2026-09-20" }); store.set("scores", sc); }
+  store.set("seeded:w0920", true);
+}
+renderLisTabs(); renderLis(); renderReadTabs(); renderWriting(); renderSpeaking(); renderAtTabs(); renderAt(); renderPlan(); renderTracker(); renderToday();
+$("#w-watch").innerHTML = WATCH.map(w => `<li><b>${esc(w[0])}.</b> ${esc(w[1])}</li>`).join("");
+$("#td-report").onclick = () => copyText(buildReport(), $("#td-st"));
+showTab(store.get("tab2", "today"));
 getSample();
 </script>
 </body>
