@@ -253,6 +253,32 @@ nav.tabs .lb-s{display:none}
 }
 .today-title{font-family:var(--f-display);font-weight:600;font-size:1.55rem;margin:0}
 .back{display:inline-block;font:600 .8rem var(--f-mono);text-decoration:none;margin-bottom:10px}
+/* ---- Cartes (répétition espacée) ---- */
+.ck-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:4px 0 12px}
+.ck-stats .tcell b{font-size:1.5rem}
+.ck-card{border:1.5px solid var(--ink);border-radius:2px;background:var(--card);padding:22px 20px;min-height:220px;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:10px}
+.ck-deck{font:600 .72rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ck-front{font-family:var(--f-display);font-size:1.45rem;line-height:1.35;text-wrap:balance}
+.ck-back{border-top:1px dashed var(--line);padding-top:12px;margin-top:4px}
+.ck-en{font-family:var(--f-display);font-size:1.4rem;font-weight:600;color:var(--accent);line-height:1.35;text-wrap:balance}
+.ck-ex{font-family:var(--f-display);font-style:italic;font-size:1.05rem;margin-top:8px}
+.ck-note{font-size:.9rem;color:var(--muted);margin-top:8px;max-width:60ch;margin-inline:auto}
+.ck-rate{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:12px}
+.ck-rate .btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px}
+.ck-rate .btn small{font:400 .72rem var(--f-mono);color:var(--muted)}
+.ck-rate .again{border-color:var(--bad)} .ck-rate .again b{color:var(--bad)}
+.ck-rate .easy b{color:var(--ok)}
+.ck-reveal{width:100%;margin-top:12px;padding:13px}
+.ck-prog{height:4px;background:var(--accent-soft);border-radius:2px;overflow:hidden;margin-bottom:10px}
+.ck-prog i{display:block;height:100%;background:var(--accent)}
+.ck-list{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:8px}
+.ck-list td{border-top:1px solid var(--line);padding:6px 6px;vertical-align:top}
+.ck-list td:first-child{color:var(--muted);width:40%}
+.ck-list td.en{font-weight:600}
+.ck-list .st{font:600 .7rem var(--f-mono);white-space:nowrap;text-align:right}
+.ck-list .st.m{color:var(--ok)} .ck-list .st.l{color:var(--accent)} .ck-list .st.n{color:var(--muted)}
+.ck-kbd{font:.72rem var(--f-mono);color:var(--muted);text-align:center;margin-top:8px}
+@media (hover:none){.ck-kbd{display:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -278,6 +304,7 @@ nav.tabs .lb-s{display:none}
   <button role="tab" data-tab="writing" aria-selected="false"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z M14 7l3 3"/></svg><span class="lb-l">Writing</span><span class="lb-s">Écrit</span></button>
   <button role="tab" data-tab="atelier" aria-selected="false"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v3 M12 18v3 M3 12h3 M18 12h3 M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg><span class="lb-l">Atelier</span><span class="lb-s">Atelier</span></button>
   <button role="tab" data-tab="speaking" aria-selected="false"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6v10H9z M5 11a7 7 0 0 0 14 0 M12 18v3 M8 21h8"/></svg><span class="lb-l">Speaking</span><span class="lb-s">Oral</span></button>
+  <button role="tab" data-tab="cards" aria-selected="false"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h12v14H7z M4 7v13h12"/></svg><span class="lb-l">Cartes</span><span class="lb-s">Cartes</span></button>
   <button role="tab" data-tab="plan" aria-selected="false"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10 M10 20V4 M16 20v-7 M3 20h18"/></svg><span class="lb-l">Plan &amp; suivi</span><span class="lb-s">Suivi</span></button>
 </nav>
 
@@ -296,6 +323,10 @@ nav.tabs .lb-s{display:none}
     <div class="panel"><h4>Tes bandes</h4><div id="td-bands"></div></div>
     <div class="panel"><h4>Ce qui te coûte le plus (7 jours)</h4><div class="bars" id="td-cn"></div><button class="btn small" data-go="plan" id="td-cn-go">Ouvrir le carnet</button></div>
     <div class="panel"><h4>Atelier · tes derniers scores</h4><div class="row" id="td-at"></div><p class="note" style="margin-top:8px">10 à 15 minutes par jour, sur ce qui a plafonné ta dernière Task 2.</p></div>
+  </div>
+  <div class="panel">
+    <h4>Cartes du jour · tournures Writing &amp; Speaking</h4>
+    <div id="td-cards"></div>
   </div>
   <div class="panel">
     <h4>Tes points de vigilance (Task 2 du 20/09, notée 6/9)</h4>
@@ -462,6 +493,17 @@ nav.tabs .lb-s{display:none}
   <div class="panel stack" id="sp-body"></div>
 </section>
 
+<!-- ============ CARTES ============ -->
+<section id="tab-cards" class="stack" hidden>
+  <div>
+    <h2>Cartes</h2>
+    <p class="lede" id="ck-lede">Les tournures et le vocabulaire à avoir au bout des doigts pour le Writing et le Speaking, en répétition espacée comme Anki. Le recto est en français : tu dois <b>produire</b> l'anglais, à voix haute, avant de retourner la carte. Note-toi honnêtement : une carte ratée revient dans la séance, une carte facile s'espace. Aucune carte n'est programmée après le jour de l'examen.</p>
+  </div>
+  <div class="panel" id="ck-home"></div>
+  <div id="ck-session" hidden></div>
+  <div class="panel" id="ck-browse"></div>
+</section>
+
 <!-- ============ PLAN ============ -->
 <section id="tab-plan" class="stack" hidden>
   <div>
@@ -603,6 +645,7 @@ nav.tabs .lb-s{display:none}
 </section>
 </div>
 
+<script src="ielts-cards.js?v=1"></script>
 <script>
 "use strict";
 /* ---------------- helpers ---------------- */
@@ -730,6 +773,7 @@ function showTab(name) {
   store.set("tab2", name);
   $$(".quick [data-q]").forEach(b => b.setAttribute("aria-current", b.dataset.q === name ? "true" : "false"));
   if (name === "today") renderToday();
+  if (name === "cards" && !ck) { renderCardsHome(); renderCardsBrowse(); }
   if (name !== "listening" && "speechSynthesis" in window) speechSynthesis.cancel();
 }
 $$("nav.tabs button").forEach(b => b.addEventListener("click", () => { showTab(b.dataset.tab); window.scrollTo(0, 0); }));
@@ -2103,6 +2147,7 @@ function renderToday() {
   $("#td-cn-go").onclick = () => { goTo("plan"); setTimeout(() => $("#carnet").scrollIntoView(), 50); };
   $("#td-note").value = store.get("note:" + key, "");
   $("#td-note").oninput = e => store.set("note:" + key, e.target.value);
+  renderTodayCards();
 }
 function buildReport() {
   const exam = parseDay(store.get("examDate", defaultExam())), today = parseDay(isoDay(new Date()));
@@ -2123,6 +2168,8 @@ function buildReport() {
   const st = errStats(7);
   lines.push("", "## Carnet d'erreurs (7 jours)");
   if (!st.length) lines.push("(aucune erreur enregistrée)"); else st.forEach(([k, n]) => lines.push(`- ${k} : ${n}`));
+  const cc = ckCounts("all");
+  lines.push("", "## Cartes (tournures Writing / Speaking)", `- ${cc.learnt}/${cc.total} vues, ${cc.mature} acquises (≥ 7 j), ${cc.due} à réviser`);
   lines.push("", "## Mon ressenti", ($("#td-note").value || "").trim() || "(rien noté)", "", "---",
     "Claude, tu es mon guide IELTS jusqu'au 24 octobre. Mes points faibles connus : position qui change entre l'introduction et la conclusion, paragraphes qui sortent du sujet, connecteurs imprécis, registre trop oral, temps verbaux ; dernière Task 2 notée 6/9 (TR 6, CC 6, LR 7, GRA 6).",
     "À partir de ce bilan, réponds en trois parties courtes : 1) ce qui progresse et ce qui bloque, en trois lignes ; 2) ce que tu changes au programme de demain et pourquoi ; 3) un exercice ciblé de 10 minutes pour demain, avec son corrigé à part.");
@@ -2307,13 +2354,171 @@ function soundTest(statusEl) {
   });
 }
 
+/* =========================================================
+   CARTES — répétition espacée (SM-2 simplifié, au jour près)
+   état : store "cards" = { id: { iv, ef, due, reps, lapses } }
+   ========================================================= */
+const CK_DECKS = window.IELTS_DECKS || [], CK_ALL = (window.IELTS_CARDS || []).map(c => ({ id: c[0] + ":" + c[2], d: c[0], fr: c[1], en: c[2], ex: c[3] || "", n: c[4] || "" }));
+const CK_NAME = Object.fromEntries(CK_DECKS.map(d => [d[0], d[1]]));
+let ck = null; // séance en cours
+function ckToday() { return isoDay(new Date()); }
+function ckAddDays(iso, n) { const d = parseDay(iso); d.setDate(d.getDate() + n); return isoDay(d); }
+function ckDaysLeft() { const exam = parseDay(store.get("examDate", defaultExam())), t = parseDay(ckToday()); return Math.round((exam - t) / 86400000); }
+function ckState() { return store.get("cards", {}); }
+function ckPrefs() { return Object.assign({ deck: "all", perDay: 30, dir: "fr" }, store.get("cardsPrefs", {})); }
+function ckSetPrefs(p) { store.set("cardsPrefs", Object.assign(ckPrefs(), p)); }
+function ckNewToday() { return store.get("cardsNew:" + ckToday(), 0); }
+function ckPool(deck) { return deck === "all" ? CK_ALL : CK_ALL.filter(c => c.d === deck); }
+function ckCounts(deck) {
+  const st = ckState(), t = ckToday(), pool = ckPool(deck || ckPrefs().deck);
+  let due = 0, fresh = 0, learnt = 0, mature = 0;
+  pool.forEach(c => { const s = st[c.id]; if (!s) fresh++; else { learnt++; if (s.due <= t) due++; if (s.iv >= 7) mature++; } });
+  const room = Math.max(0, ckPrefs().perDay - ckNewToday());
+  return { due, fresh, learnt, mature, total: pool.length, newNow: Math.min(fresh, room) };
+}
+/* intervalle proposé pour chaque bouton (jours) */
+function ckNext(s, r) {
+  s = s || { iv: 0, ef: 2.5, reps: 0, lapses: 0 };
+  let iv = s.iv, ef = s.ef, reps = s.reps;
+  if (r === 1) { iv = 0; reps = 0; ef = Math.max(1.3, ef - 0.2); }
+  else if (r === 2) { iv = Math.max(1, Math.round((iv || 1) * 1.2)); ef = Math.max(1.3, ef - 0.15); reps++; }
+  else if (r === 3) { iv = reps === 0 ? 1 : reps === 1 ? 3 : Math.max(iv + 1, Math.round(iv * ef)); reps++; }
+  else { iv = reps === 0 ? 3 : Math.max(iv + 2, Math.round(iv * ef * 1.3)); ef += 0.15; reps++; }
+  // rien après l'examen : la dernière révision tombe au plus tard la veille
+  const left = ckDaysLeft();
+  if (r > 1 && left > 1) iv = Math.min(iv, left - 1);
+  return { iv, ef, reps, lapses: s.lapses + (r === 1 ? 1 : 0) };
+}
+function ckLabel(iv) { return iv <= 0 ? "< 10 min" : iv === 1 ? "1 j" : iv + " j"; }
+function ckBuildQueue() {
+  const p = ckPrefs(), st = ckState(), t = ckToday(), pool = ckPool(p.deck);
+  const due = pool.filter(c => st[c.id] && st[c.id].due <= t).sort((a, b) => st[a.id].due < st[b.id].due ? -1 : 1);
+  const room = Math.max(0, p.perDay - ckNewToday());
+  // nouvelles cartes : un paquet après l'autre en alternance (Task 1, Task 2, oral…)
+  const byDeck = {}; pool.filter(c => !st[c.id]).forEach(c => (byDeck[c.d] = byDeck[c.d] || []).push(c));
+  const lanes = Object.values(byDeck), mixed = [];
+  for (let k = 0; lanes.some(l => k < l.length); k++) lanes.forEach(l => { if (k < l.length) mixed.push(l[k]); });
+  const fresh = mixed.slice(0, room);
+  // les nouvelles s'intercalent dans les révisions (une nouvelle toutes les 3 cartes)
+  const q = []; let i = 0, j = 0;
+  while (i < due.length || j < fresh.length) {
+    for (let k = 0; k < 2 && i < due.length; k++) q.push(due[i++]);
+    if (j < fresh.length) q.push(fresh[j++]);
+  }
+  return q;
+}
+function renderCardsHome() {
+  const p = ckPrefs(), c = ckCounts(p.deck), left = ckDaysLeft();
+  const chips = [["all", "Tous les paquets", CK_ALL.length]].concat(CK_DECKS.map(d => [d[0], d[1], CK_ALL.filter(x => x.d === d[0]).length]))
+    .map(([id, name, n]) => `<button aria-pressed="${p.deck === id}" data-deck="${id}">${esc(name)} <span class="mono" style="opacity:.6">${n}</span></button>`).join("");
+  const deckDesc = p.deck === "all" ? "Toutes les cartes, paquets mélangés." : (CK_DECKS.find(d => d[0] === p.deck) || [])[2] || "";
+  const allC = ckCounts("all"), needed = left > 1 ? Math.ceil(allC.fresh / (left - 1)) : allC.fresh;
+  const todo = c.due + c.newNow;
+  $("#ck-home").innerHTML = `
+    <div class="ck-stats">
+      <div class="tcell"><small>À réviser</small><b>${c.due}</b></div>
+      <div class="tcell"><small>Nouvelles aujourd'hui</small><b>${c.newNow}</b></div>
+      <div class="tcell"><small>Acquises (≥ 7 j)</small><b>${c.mature}<span class="note"> / ${c.total}</span></b></div>
+    </div>
+    <h4>Paquet</h4>
+    <div class="subtabs" id="ck-decks">${chips}</div>
+    <p class="note" style="margin-top:-6px">${esc(deckDesc)}</p>
+    <div class="row" style="margin:6px 0 4px">
+      <label class="note">Nouvelles cartes par jour <select id="ck-per">${[15, 20, 30, 40, 60].map(n => `<option ${n === p.perDay ? "selected" : ""}>${n}</option>`).join("")}</select></label>
+      <label class="note">Sens <select id="ck-dir"><option value="fr" ${p.dir === "fr" ? "selected" : ""}>Français → anglais (produire)</option><option value="en" ${p.dir === "en" ? "selected" : ""}>Anglais → français (reconnaître)</option></select></label>
+    </div>
+    ${left > 1 && allC.fresh ? `<p class="note">Il reste <b>${allC.fresh}</b> cartes jamais vues et <b>${left - 1}</b> jours avant la veille de l'examen : au moins <b>${needed}</b> nouvelles par jour pour tout voir.${needed > p.perDay ? " Monte le réglage." : ""}</p>` : ""}
+    <button class="btn primary ck-reveal" id="ck-start" ${todo ? "" : "disabled"}>${todo ? `Commencer · ${todo} carte${todo > 1 ? "s" : ""}` : "Rien à faire ici aujourd'hui"}</button>`;
+  $$("#ck-decks [data-deck]").forEach(b => b.onclick = () => { ckSetPrefs({ deck: b.dataset.deck }); renderCardsHome(); renderCardsBrowse(); });
+  $("#ck-per").onchange = e => { ckSetPrefs({ perDay: +e.target.value }); renderCardsHome(); };
+  $("#ck-dir").onchange = e => { ckSetPrefs({ dir: e.target.value }); };
+  $("#ck-start").onclick = ckStart;
+}
+function renderCardsBrowse() {
+  const p = ckPrefs(), st = ckState(), t = ckToday(), pool = ckPool(p.deck);
+  const row = c => { const s = st[c.id]; const cls = !s ? "n" : s.iv >= 7 ? "m" : "l"; const lab = !s ? "nouvelle" : s.iv >= 7 ? "acquise" : s.due <= t ? "à revoir" : "dans " + Math.round((parseDay(s.due) - parseDay(t)) / 86400000) + " j";
+    return `<tr><td>${esc(c.fr)}</td><td class="en">${esc(c.en)}${c.n ? `<div class="note" style="font-weight:400">${esc(c.n)}</div>` : ""}</td><td class="st ${cls}">${lab}</td></tr>`; };
+  $("#ck-browse").innerHTML = `<details><summary>Parcourir le paquet (${pool.length} cartes)</summary>
+    <p class="note" style="margin-top:8px">Pour relire en bloc la veille de l'examen. Les cartes ne se notent que dans la séance.</p>
+    <table class="ck-list"><tbody>${pool.map(row).join("")}</tbody></table></details>`;
+}
+function ckStart() {
+  const queue = ckBuildQueue();
+  if (!queue.length) { toast("Rien à réviser pour l'instant"); return; }
+  ck = { queue, pos: 0, shown: false, done: 0, again: 0, total: queue.length, seen: {} };
+  $("#ck-home").hidden = true; $("#ck-browse").hidden = true; $("#ck-lede").hidden = true; $("#ck-session").hidden = false;
+  ckRender(); window.scrollTo(0, 0);
+}
+function ckEnd() {
+  ck = null; $("#ck-session").hidden = true; $("#ck-home").hidden = false; $("#ck-browse").hidden = false; $("#ck-lede").hidden = false;
+  renderCardsHome(); renderCardsBrowse();
+}
+function ckRender() {
+  const host = $("#ck-session");
+  if (ck.pos >= ck.queue.length) {
+    host.innerHTML = `<div class="panel stack" style="gap:10px;text-align:center"><h3>Séance terminée</h3>
+      <p>${ck.done} carte${ck.done > 1 ? "s" : ""} révisée${ck.done > 1 ? "s" : ""}${ck.again ? `, dont ${ck.again} ratée${ck.again > 1 ? "s" : ""} puis revue${ck.again > 1 ? "s" : ""}` : ""}.</p>
+      <p class="note">Les cartes difficiles reviennent demain. Relis à voix haute les tournures ratées avant ton prochain essai.</p>
+      <button class="btn primary" id="ck-back">Retour aux paquets</button></div>`;
+    $("#ck-back").onclick = ckEnd; autoDone("cards"); return;
+  }
+  const c = ck.queue[ck.pos], s = ckState()[c.id], en = ckPrefs().dir === "en";
+  const front = en ? c.en : c.fr, back = en ? c.fr : c.en;
+  const pct = Math.round(ck.pos / ck.queue.length * 100);
+  host.innerHTML = `
+    <div class="row" style="justify-content:space-between;margin-bottom:6px"><span class="status">${ck.pos + 1} / ${ck.queue.length}${!s ? " · nouvelle" : ""}</span><button class="btn small" id="ck-quit">Arrêter</button></div>
+    <div class="ck-prog"><i style="width:${pct}%"></i></div>
+    <div class="ck-card">
+      <div class="ck-deck">${esc(CK_NAME[c.d] || "")}</div>
+      <div class="ck-front">${esc(front)}</div>
+      ${ck.shown ? `<div class="ck-back">
+        <div class="ck-en">${esc(back)}</div>
+        ${c.ex ? `<div class="ck-ex">${esc(c.ex)}</div>` : ""}
+        ${c.n ? `<div class="ck-note">${esc(c.n)}</div>` : ""}
+        <div style="margin-top:10px"><button class="btn small" id="ck-say">🔊 Écouter</button></div>
+      </div>` : ""}
+    </div>
+    ${ck.shown ? `<div class="ck-rate">${[[1, "again", "Raté"], [2, "", "Difficile"], [3, "", "Bien"], [4, "easy", "Facile"]].map(([r, cls, lab]) =>
+        `<button class="btn ${cls}" data-r="${r}"><b>${lab}</b><small>${ckLabel(ckNext(s, r).iv)}</small></button>`).join("")}</div>
+      <div class="ck-kbd">Clavier : 1 · 2 · 3 · 4</div>`
+    : `<button class="btn primary ck-reveal" id="ck-show">${en ? "Voir la traduction" : "Dis-le à voix haute, puis retourne"}</button><div class="ck-kbd">Clavier : Espace</div>`}`;
+  $("#ck-quit").onclick = ckEnd;
+  if (ck.shown) {
+    $$(".ck-rate [data-r]").forEach(b => b.onclick = () => ckRate(+b.dataset.r));
+    $("#ck-say").onclick = () => { unlockAudio(); try { speechSynthesis.cancel(); } catch (e) {} speakOne(c.en + (c.ex && c.ex !== c.en ? ". " + c.ex : ""), { lang: "en-GB", g: "f", rate: 0.95 }); };
+  } else $("#ck-show").onclick = () => { ck.shown = true; ckRender(); };
+}
+function ckRate(r) {
+  const c = ck.queue[ck.pos], all = ckState(), prev = all[c.id];
+  if (!prev && !ck.seen[c.id]) store.set("cardsNew:" + ckToday(), ckNewToday() + 1);
+  ck.seen[c.id] = 1;
+  const nx = ckNext(prev, r);
+  all[c.id] = { iv: nx.iv, ef: Math.round(nx.ef * 100) / 100, reps: nx.reps, lapses: nx.lapses, due: ckAddDays(ckToday(), nx.iv) };
+  store.set("cards", all);
+  if (r === 1) { ck.again++; ck.queue.splice(Math.min(ck.queue.length, ck.pos + 4), 0, c); }
+  else ck.done++;
+  ck.pos++; ck.shown = false; ckRender();
+}
+document.addEventListener("keydown", e => {
+  if (!ck || $("#tab-cards").hidden || /input|textarea|select/i.test((e.target.tagName || ""))) return;
+  if (!ck.shown && (e.key === " " || e.key === "Enter")) { e.preventDefault(); ck.shown = true; ckRender(); }
+  else if (ck.shown && /^[1-4]$/.test(e.key)) { e.preventDefault(); ckRate(+e.key); }
+});
+function renderTodayCards() {
+  const host = $("#td-cards"); if (!host) return;
+  const c = ckCounts("all"), todo = c.due + c.newNow;
+  host.innerHTML = `<p style="margin:0 0 8px"><b>${c.due}</b> à réviser · <b>${c.newNow}</b> nouvelles · <b>${c.mature}</b>/${c.total} acquises</p>
+    <button class="btn ${todo ? "primary" : ""} small" data-go="cards">${todo ? "Faire mes cartes" : "Ouvrir les cartes"}</button>`;
+  $$("#td-cards [data-go]").forEach(b => b.onclick = () => goTo(b.dataset.go));
+}
+
 /* ---------------- boot ---------------- */
 if (!store.get("seeded:w0920", false)) {
   const sc = store.get("scores", []);
   if (!sc.some(e => e.k === "W")) { sc.unshift({ k: "W", band: 6, raw: null, src: "Task 2 « salaires » notée par Claude (TR 6, CC 6, LR 7, GRA 6)", d: "2026-09-20" }); store.set("scores", sc); }
   store.set("seeded:w0920", true);
 }
-renderLisTabs(); renderLis(); renderReadTabs(); renderWriting(); renderSpeaking(); renderAtTabs(); renderAt(); renderPlan(); renderTracker(); renderToday();
+renderLisTabs(); renderLis(); renderReadTabs(); renderWriting(); renderSpeaking(); renderAtTabs(); renderAt(); renderPlan(); renderTracker(); renderCardsHome(); renderCardsBrowse(); renderToday();
 $("#w-watch").innerHTML = WATCH.map(w => `<li><b>${esc(w[0])}.</b> ${esc(w[1])}</li>`).join("");
 initCarnet();
 $("#w-review").onclick = () => { const t = wCur(); const used = wTimer ? t.time * 60 - wTimer.left : 0; $("#w-rv").innerHTML = renderReview(reviewEssay(t, $("#w-text").value, used)); };
