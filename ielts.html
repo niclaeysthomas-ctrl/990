@@ -1843,14 +1843,14 @@ function renderTracker() {
    GUIDE : points de vigilance, atelier, aujourd'hui, bilan
    ========================================================= */
 const WATCH = [
-  ["Une seule position", "Annonce-la dans l'introduction, tiens-la dans chaque paragraphe, reprends-la en conclusion. Le 20/09, « I totally agree » est devenu « that doesn't mean a nurse should be paid more »."],
-  ["Toute la question", "Chaque élément du sujet est traité : les quatre métiers, les deux vues, les deux questions. Les banquiers et les enseignants avaient disparu."],
-  ["Chaque paragraphe répond au sujet", "Ton §3 parlait de rentes héritées, pas de salaires. Une idée latérale doit être reliée explicitement à la question."],
-  ["Conclusion sans idée neuve", "Elle reformule la thèse. Ta conclusion du 20/09 ouvrait une comparaison infirmière contre enseignant."],
-  ["Le bon connecteur", "« Conversely » = opposition symétrique. Pour concéder : « Admittedly », « Granted ». Pour opposer : « However », « By contrast »."],
-  ["Registre écrit", "Ni oral (« See the problem? », « all day », un adversaire qui crie), ni absolu (« glaringly obvious »). Football, pas soccer."],
-  ["Temps verbaux", "« since » + present perfect ; « until recently » + prétérit ; pas de past perfect sans antériorité."],
-  ["Utilise les 40 minutes", "Tu as fini en 28 min. Les 10 dernières servent à relire articles, accords, prépositions et temps."]
+  ["Une seule position", "Annonce-la dans l'introduction (« I am firmly of the view that… »), tiens-la dans chaque paragraphe, reprends-la mot pour mot en conclusion. Si ta pensée est nuancée, la nuance figure dès la thèse : « I broadly concur, with one important caveat »."],
+  ["Toute la question", "Chaque élément du sujet est traité et nommé : les quatre métiers, les deux vues, les deux questions. Avant d'écrire, souligne chaque élément de l'énoncé et coche-le dans ton plan."],
+  ["Chaque paragraphe répond au sujet", "La première phrase de chaque paragraphe reprend un mot-clé de la question. Une idée latérale se rattache explicitement : « Returning to the question of whether… »."],
+  ["Conclusion = la thèse reformulée", "« In conclusion, although…, I remain convinced that… ». Elle reprend ta position et tes deux arguments, rien de plus."],
+  ["Le bon connecteur", "Pour concéder : « Admittedly », « Granted ». Pour opposer deux faits : « However », « By contrast ». Pour une relation inverse (l'un monte, l'autre baisse) : « Conversely »."],
+  ["Registre écrit", "Affirme avec mesure : « There is a strong case that », « arguably », « I would argue that ». Lexique précis et neutre : « for long hours », « opponents of this view contend that ». Anglais britannique d'un bout à l'autre : football, footballer."],
+  ["Temps verbaux", "« since » + present perfect (« Wages have stagnated since 2010 ») ; « until recently » + prétérit (« Until recently, few people worked remotely ») ; past perfect seulement pour une antériorité dans le passé."],
+  ["Utilise les 40 minutes", "Écris en 30 minutes, puis consacre les 10 dernières à relire articles, accords, prépositions et temps verbaux."]
 ];
 
 const AT_SETS = [
@@ -1910,7 +1910,7 @@ const AT_SETS = [
   ] },
   { id: "connect", name: "Connecteurs", kind: "mcq", desc: "Choisis le connecteur juste. À 8 et plus, l'examinateur pénalise un connecteur imprécis plus qu'un connecteur absent.", items: [
     { q: "Some argue that footballers are overpaid. ___, their earnings simply reflect the vast revenues they generate.", opts: ["However", "Admittedly", "Conversely", "Moreover"], ans: 0, why: "Tu opposes un contre-argument à ce qui précède : « However ». « Conversely » exigerait deux situations symétriques." },
-    { q: "My argument is that pay rarely tracks social value. ___, market forces do reward some socially useful jobs: surgeons, for instance, are very well paid.", opts: ["Consequently", "Admittedly", "Conversely", "In addition"], ans: 1, why: "Tu concèdes un point à l'autre camp : « Admittedly ». C'est ton erreur du 20/09, où tu avais mis « Conversely »." },
+    { q: "My argument is that pay rarely tracks social value. ___, market forces do reward some socially useful jobs: surgeons, for instance, are very well paid.", opts: ["Consequently", "Admittedly", "Conversely", "In addition"], ans: 1, why: "Tu concèdes un point à l'autre camp : « Admittedly ». « Conversely » est réservé à une relation inverse ; « Admittedly » et « Granted » introduisent une concession." },
     { q: "Higher salaries for nurses would be costly. ___, the cost of chronic staff shortages is arguably far greater.", opts: ["Therefore", "Similarly", "Nevertheless", "For instance"], ans: 2, why: "Malgré le coût, le contre-poids l'emporte : « Nevertheless »." },
     { q: "In Norway, teachers earn close to the national average salary. ___, in many developing countries they earn far less.", opts: ["As a result", "By contrast", "Likewise", "Indeed"], ans: 1, why: "Deux situations comparées : « By contrast »." },
     { q: "Public transport is heavily subsidised in Luxembourg. ___, it has been entirely free since 2020.", opts: ["However", "Otherwise", "Indeed", "Instead"], ans: 2, why: "La deuxième phrase renforce et précise la première : « Indeed »." },
@@ -1941,7 +1941,7 @@ const AT_SETS = [
     { fr: "Les enseignants jouent un rôle clé dans la société.", en: "Teachers play a key role in ___.", ans: ["society"], why: "« Society » au sens général : pas d'article." },
     { fr: "Le salaire d'un footballeur, contrairement à celui d'une infirmière, est fixé par le marché.", en: "A footballer's salary, unlike ___ of a nurse, is set by the market.", ans: ["that"], why: "« celui de » se traduit par « that of »." },
     { fr: "Il n'est guère surprenant que les banquiers gagnent davantage.", en: "It is ___ surprising that bankers earn more.", ans: ["hardly", "scarcely", "little"], why: "« Guère » se dit « hardly » ou « scarcely »." },
-    { fr: "Plus d'un exemple illustre cet argument.", en: "Many an example ___ this argument.", ans: ["illustrates", "supports", "epitomises", "epitomizes", "bears out"], why: "« Many an » + nom singulier + verbe au singulier. C'était ta faute du 20/09 (« epitomize »)." },
+    { fr: "Plus d'un exemple illustre cet argument.", en: "Many an example ___ this argument.", ans: ["illustrates", "supports", "epitomises", "epitomizes", "bears out"], why: "« Many an » + nom singulier + verbe au singulier. Même accord pour « every » et « each » : every example illustrates." },
     { fr: "Quel que soit leur salaire, les enseignants restent indispensables.", en: "___ their salary, teachers remain indispensable.", ans: ["whatever", "regardless of", "irrespective of"], why: "« Whatever », « regardless of » ou « irrespective of » + nom." }
   ] },
   { id: "plan", name: "Plan en 5 min", kind: "plan", desc: "Le geste qui aurait sauvé ta Task Response : 5 minutes de plan avant d'écrire. Thèse, deux idées avec exemple, conclusion qui reprend la thèse." }
