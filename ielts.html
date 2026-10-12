@@ -856,6 +856,51 @@ const LIS = [
   ]
 },
 {
+  id: "p1b", tab: "Part 1 · Salle de sport", title: "Part 1 — Inscription dans un centre sportif",
+  intro: "You will hear a woman phoning a leisure centre to join the gym.",
+  instr: "Complete the form below. Write <b>NO MORE THAN TWO WORDS AND/OR A NUMBER</b> for each answer.",
+  sheet: "PARKSIDE LEISURE CENTRE — NEW MEMBER",
+  maxWords: 2,
+  cast: { M: { lang: "en-AU", g: "m" }, W: { lang: "en-GB", g: "f" } },
+  names: { M: "RECEPTIONIST", W: "JOANNA" },
+  lines: [
+    ["M", "Good afternoon, Parkside Leisure Centre. How can I help?"],
+    ["W", "Hi. I'd like to join the gym. Could you tell me about the different memberships?"],
+    ["M", "Of course. There are three options. Off-peak is twenty-two pounds a month, but you can only come before four in the afternoon on weekdays. Standard is thirty-four pounds a month, and that includes the pool. And premium is forty-five, which adds fitness classes and the sauna."],
+    ["W", "Well, I work during the day, so off-peak is no good. I'll probably use the pool, but I'm not bothered about the sauna."],
+    ["M", "Then standard would suit you best."],
+    ["W", "Yes, standard, please."],
+    ["M", "Right, I'll just take some details. Could I have your full name?"],
+    ["W", "It's Joanna Prentice. That's P, R, E, N, T, I, C, E.", "It's Joanna Prentice. That's P-R-E-N-T-I-C-E."],
+    ["M", "Thank you. And your address?"],
+    ["W", "Forty-two Kingsley Road. Kingsley is K, I, N, G, S, L, E, Y.", "42 Kingsley Road. Kingsley is K-I-N-G-S-L-E-Y."],
+    ["M", "Lovely. And what do you do for a living?"],
+    ["W", "I used to be a receptionist, actually, like you, but I've just retrained, so I'm a dental nurse now."],
+    ["M", "Good for you. Do you have any injuries or medical conditions we should know about?"],
+    ["W", "I hurt my knee skiing last year. It's fine now, but I avoid running."],
+    ["M", "I'll make a note of that for the trainers. And how did you hear about us?"],
+    ["W", "A colleague recommended you. She comes here three times a week."],
+    ["M", "Great. Now, there's normally a joining fee of fifteen pounds. This month we're waiving it if you sign up for twelve months."],
+    ["W", "I'd rather not commit to a whole year, so I'll just pay the fee."],
+    ["M", "No problem. Before you use the gym, you'll need an induction session with a trainer. They're on Tuesdays at six or Saturdays at ten."],
+    ["W", "Saturday would be better. Oh, wait, I'm away this Saturday. Could I do the Tuesday instead?"],
+    ["M", "Tuesday at six it is. And please bring a padlock for the lockers. We don't provide them any more."],
+    ["W", "Will do. Thanks very much."]
+  ],
+  qs: [
+    { n: 1, pre: "Membership type:", ans: ["standard"] },
+    { n: 2, pre: "Monthly cost: £", ans: ["34", "thirty four"] },
+    { n: 3, pre: "Surname:", ans: ["Prentice"] },
+    { n: 4, pre: "Address: 42 … Road", ans: ["Kingsley"] },
+    { n: 5, pre: "Occupation:", ans: ["dental nurse"] },
+    { n: 6, pre: "Previous injury to her", ans: ["knee"] },
+    { n: 7, pre: "Recommended by a", ans: ["colleague"] },
+    { n: 8, pre: "Joining fee: £", ans: ["15", "fifteen"] },
+    { n: 9, pre: "Induction session day:", ans: ["Tuesday", "Tuesdays"] },
+    { n: 10, pre: "Must bring a … for the lockers", ans: ["padlock"] }
+  ]
+},
+{
   id: "p2", tab: "Part 2 · Plan", title: "Part 2 — Visite d'une réserve naturelle (plan)",
   intro: "You will hear a guide welcoming visitors to a nature reserve.",
   instr: "Label the map below. Write the correct letter, <b>A–H</b>, next to Questions 11–15.",
@@ -961,6 +1006,52 @@ const LIS = [
   ]
 },
 {
+  id: "p3b", tab: "Part 3 · Mémoire", title: "Part 3 — Un étudiant et sa directrice de mémoire",
+  intro: "You will hear a geography student, Sam, talking to his tutor, Dr Lewis, about his dissertation on urban heat.",
+  instr: "Questions 21–30. Listen and answer the questions.",
+  maxWords: 1,
+  cast: { W: { lang: "en-GB", g: "f" }, M: { lang: "en-US", g: "m" } },
+  names: { W: "DR LEWIS", M: "SAM" },
+  lines: [
+    ["W", "Come in, Sam. So, how's the dissertation going?"],
+    ["M", "Slowly, to be honest. I've collected all the temperature data, but I'm struggling with how to present it."],
+    ["W", "Last time you mentioned a problem with the data loggers."],
+    ["M", "Yes. Two of the twelve stopped working in August. Nobody touched them, it was the batteries, so I've got gaps for those two sites."],
+    ["W", "That's not unusual. Did you think about estimating the missing values?"],
+    ["M", "I did, but I'd rather exclude those two sites altogether and explain why in the methods chapter."],
+    ["W", "That's the more honest approach. Now, your research question has shifted a little, hasn't it?"],
+    ["M", "It has. Originally I wanted to compare parks with ordinary streets, but I've realised the more interesting contrast is between streets with trees and streets without them."],
+    ["W", "Good. And what have you found so far?"],
+    ["M", "The tree-lined streets were about two degrees cooler on summer afternoons, which is roughly what other studies report. What surprised me was that at night the difference almost disappeared."],
+    ["W", "Why do you think that is?"],
+    ["M", "I'm not sure. Possibly the trees trap some of the heat under the canopy."],
+    ["W", "That's a reasonable hypothesis. Mention it, but don't overstate it. Now, presentation. You've been using bar charts?"],
+    ["M", "Yes, but there are so many of them. Twelve, one for each site."],
+    ["W", "I'd replace most of them with a single map showing the temperature differences. Readers can see the spatial pattern at a glance, and you can keep two or three charts for the key sites."],
+    ["M", "OK. And the literature review? I've read about forty papers."],
+    ["W", "That's plenty, so length isn't the issue. The problem is that it's purely descriptive at the moment. You summarise one study after another. Group them by method and compare them."],
+    ["M", "Right. So, for the next month, my plan is to finish cleaning the data first, then redo the analysis without the two faulty sites."],
+    ["W", "Sensible. And then?"],
+    ["M", "Then the methods and results chapters, then the introduction, and the discussion last."],
+    ["W", "I'd actually write the discussion before the introduction. It's much easier to introduce an argument once you know what it is."],
+    ["M", "That makes sense. And I'll send you a full draft by the end of November."],
+    ["W", "Could you make it the twentieth of November? I'm away at a conference after that."],
+    ["M", "The twentieth. No problem."]
+  ],
+  qs: [
+    { n: 21, instr: "Questions 21–26. Choose the correct letter, <b>A, B or C</b>.", pre: "Why does Sam have gaps in his data?", opts: ["Some equipment was stolen.", "Some equipment stopped working.", "He started recording too late."], ans: ["B"] },
+    { n: 22, pre: "What does Sam decide to do about the missing data?", opts: ["estimate the missing values", "leave out two of the sites", "collect new data next summer"], ans: ["B"] },
+    { n: 23, pre: "Sam's research now compares", opts: ["parks with ordinary streets.", "streets with and without trees.", "temperatures in different seasons."], ans: ["B"] },
+    { n: 24, pre: "What surprised Sam about his results?", opts: ["how large the daytime difference was", "how small the difference was at night", "how much other studies disagreed"], ans: ["B"] },
+    { n: 25, pre: "Dr Lewis suggests presenting the results mainly using", opts: ["more bar charts.", "a single map.", "a detailed table."], ans: ["B"] },
+    { n: 26, pre: "What is the main weakness of the literature review?", opts: ["It is too short.", "It only describes the studies.", "It includes too many old studies."], ans: ["B"] },
+    { n: 27, instr: "Questions 27–30. Complete the flow chart. Write <b>ONE WORD ONLY</b> for each answer.", head: "Sam's plan for the next month", pre: "Finish cleaning the", ans: ["data"] },
+    { n: 28, pre: "Redo the … without the two faulty sites", ans: ["analysis"] },
+    { n: 29, pre: "Write methods and results, then the … before the introduction", ans: ["discussion"] },
+    { n: 30, pre: "Send a full draft by the 20th of", ans: ["November"] }
+  ]
+},
+{
   id: "p4", tab: "Part 4 · Cours magistral", title: "Part 4 — Cours : le sommeil unihémisphérique",
   intro: "You will hear part of a lecture on sleep in animals.",
   sheet: "LECTURE NOTES — UNIHEMISPHERIC SLEEP",
@@ -986,6 +1077,35 @@ const LIS = [
     { n: 38, pre: "On land, they slept for more than … hours", ans: ["12", "twelve"] },
     { n: 39, head: "Implications", pre: "The need for sleep may be … rather than fixed", ans: ["flexible"] },
     { n: 40, pre: "Possible relevance to research on … in humans", ans: ["insomnia"] }
+  ]
+},
+{
+  id: "p4b", tab: "Part 4 · Chants d'oiseaux", title: "Part 4 — Cours : les oiseaux face au bruit urbain",
+  intro: "You will hear part of a lecture on how birds adapt their songs to city noise.",
+  instr: "Complete the notes below. Write <b>ONE WORD AND/OR A NUMBER</b> for each answer.",
+  sheet: "LECTURE NOTES — BIRDSONG IN THE CITY",
+  maxWords: 1,
+  cast: { N: { lang: "en-GB", g: "f" } },
+  lines: [
+    ["N", "In today's lecture, I'd like to look at how birds cope with one of the defining features of urban life: noise. Traffic noise is not spread evenly across the sound spectrum. It's concentrated at low frequencies, and that's exactly the range in which many birds traditionally sing."],
+    ["N", "So what do they do? The best-documented response comes from studies of great tits in the Netherlands. Birds in noisy parts of cities sing at a higher pitch than birds in quiet woodland, which lifts their song above the rumble of traffic. Their songs also tend to be shorter, with faster notes."],
+    ["N", "A second strategy is to change the timing. European robins in some British cities have been recorded singing at night. For a long time, researchers assumed that street lighting was responsible, since the birds seemed to think it was still day. But when noise and light were measured together, noise turned out to be the stronger predictor: the robins were simply moving their singing to the quietest hours."],
+    ["N", "The third response is the most obvious one. Many species simply sing more loudly when the background is noisy, much as we raise our voices in a crowded restaurant. But this has a cost. Singing loudly uses more energy, and a bird that spends more energy singing has less available for finding food or watching for predators."],
+    ["N", "There may also be a social cost. In some species, females appear to prefer lower-pitched songs, which are often associated with larger, healthier males. Yet those are precisely the songs that are hardest to hear in the city. So urban males may face a real trade-off between being heard and being attractive."],
+    ["N", "An unusual natural experiment came in 2020. During the lockdowns, traffic in many cities fell dramatically. Researchers in San Francisco who had recorded white-crowned sparrows before the pandemic went back and found that the birds were now singing more softly, and their songs had become more complex. In other words, the birds responded within weeks once the noise was gone."],
+    ["N", "What does this mean for urban planning? If noise is the problem, then reducing it should help. Measures such as low-noise road surfaces and lower speed limits near parks could make cities more habitable not only for people, but for the birds that live alongside us."]
+  ],
+  qs: [
+    { n: 31, head: "The problem", pre: "Traffic noise is mostly at low", ans: ["frequencies", "frequency"] },
+    { n: 32, head: "Strategy 1: change the song", pre: "Great tits in noisy areas sing at a higher", ans: ["pitch"] },
+    { n: 33, pre: "Their songs are also … , with faster notes", ans: ["shorter"] },
+    { n: 34, head: "Strategy 2: change the timing", pre: "Robins in some cities sing at", ans: ["night"] },
+    { n: 35, pre: "Researchers first blamed street … , but noise was the stronger factor", ans: ["lighting", "light", "lights"] },
+    { n: 36, head: "Strategy 3: sing louder", pre: "Many species sing more", ans: ["loudly"] },
+    { n: 37, pre: "Cost: uses more", ans: ["energy"] },
+    { n: 38, pre: "Females may prefer … -pitched songs", ans: ["lower"] },
+    { n: 39, head: "The 2020 lockdowns", pre: "Sparrows in San Francisco sang more", ans: ["softly", "quietly"] },
+    { n: 40, head: "Implications", pre: "Use low-noise … surfaces near parks", ans: ["road"] }
   ]
 }
 ];
@@ -1354,6 +1474,29 @@ function renderReadTabs() {
 /* =========================================================
    WRITING
    ========================================================= */
+function villageMaps() {
+  const one = (x0, title, today) => {
+    let g = `<g transform="translate(${x0} 0)"><text x="130" y="16" text-anchor="middle" font-weight="600">${title}</text>
+      <rect x="2" y="24" width="256" height="226" fill="none" stroke="var(--ink)" stroke-width="1.2"/>
+      <path d="M128 24 C 120 90 138 160 126 250" stroke="var(--water)" stroke-width="16" fill="none"/>
+      <text x="116" y="126" text-anchor="end" font-style="italic" font-size="10">river</text>`;
+    g += today ? `<line x1="2" y1="200" x2="258" y2="200" stroke="var(--path)" stroke-width="7"/>` : `<line x1="2" y1="200" x2="116" y2="200" stroke="var(--path)" stroke-width="7"/><line x1="140" y1="200" x2="258" y2="200" stroke="var(--path)" stroke-width="7"/>`;
+    g += `<text x="${today ? 200 : 196}" y="216" font-size="10">main road</text>`;
+    if (today) g += `<rect x="114" y="192" width="28" height="16" fill="none" stroke="var(--ink)" stroke-width="1.4"/><text x="146" y="232" font-size="10">bridge</text>
+      <line x1="70" y1="200" x2="70" y2="110" stroke="var(--path)" stroke-width="5"/><circle cx="70" cy="200" r="9" fill="var(--card)" stroke="var(--ink)"/><text x="20" y="190" font-size="9">roundabout</text>`;
+    g += today ? `<rect x="10" y="34" width="100" height="70" fill="var(--accent-soft)" stroke="var(--ink)"/><text x="60" y="66" text-anchor="middle" font-size="10">housing</text><text x="60" y="79" text-anchor="middle" font-size="10">estate</text>`
+               : `<rect x="10" y="34" width="100" height="70" fill="var(--wood)" stroke="var(--muted)" stroke-dasharray="3 3"/><text x="60" y="72" text-anchor="middle" font-size="10">farmland</text>`;
+    g += `<rect x="18" y="140" width="${today ? 70 : 42}" height="34" fill="var(--card)" stroke="var(--ink)"/><text x="${today ? 53 : 39}" y="161" text-anchor="middle" font-size="10">school</text>`;
+    g += `<g fill="var(--card)" stroke="var(--ink)">${[0, 1, 2].map(i => `<rect x="${18 + i * 30}" y="210" width="18" height="14"/>`).join("")}</g><text x="18" y="240" font-size="9">houses</text>`;
+    g += today ? `<rect x="150" y="34" width="104" height="74" fill="var(--wood)" stroke="var(--muted)"/><text x="202" y="74" text-anchor="middle" font-size="10">forest</text>
+      <rect x="150" y="114" width="76" height="52" fill="var(--card)" stroke="var(--ink)"/><text x="188" y="137" text-anchor="middle" font-size="10">sports</text><text x="188" y="150" text-anchor="middle" font-size="10">centre</text>
+      <rect x="176" y="172" width="70" height="20" fill="var(--card)" stroke="var(--ink)"/><text x="211" y="186" text-anchor="middle" font-size="10">car park</text>`
+               : `<rect x="150" y="34" width="104" height="132" fill="var(--wood)" stroke="var(--muted)"/><text x="202" y="104" text-anchor="middle" font-size="10">forest</text>
+      <rect x="210" y="172" width="36" height="20" fill="var(--card)" stroke="var(--ink)"/><text x="228" y="186" text-anchor="middle" font-size="9">car park</text>`;
+    return g + `</g>`;
+  };
+  return `<svg class="chart" viewBox="0 0 560 256" role="img" aria-label="Plans du village d'Ashford en 2000 et aujourd'hui">${one(10, "Ashford, 2000", false)}${one(292, "Ashford, today", true)}<g transform="translate(540 230)"><path d="M0 -14 L5 2 L0 -2 L-5 2 Z" fill="var(--ink)"/><text x="0" y="14" text-anchor="middle" font-size="10" font-weight="600">N</text></g></svg>`;
+}
 function processChart() {
   const st = [["1", "Collected from", "bottle banks"], ["2", "Taken by truck", "to recycling plant"], ["3", "Sorted by colour", "clear · green · brown"], ["4", "Washed", "labels & dirt removed"],
               ["5", "Crushed into", "small pieces (cullet)"], ["6", "Melted with sand", "at 1,500°C"], ["7", "Moulded into", "new bottles"], ["8", "Filled & delivered", "to shops"]];
@@ -1422,6 +1565,10 @@ const WTASKS = [
     prompt: "The table below shows the number of visitors (in thousands) to four museums in one city in 2005, 2015 and 2025.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.\n\nWrite at least 150 words.",
     chart: () => `<div class="tbl-wrap"><table class="mini mono"><tr><th>Museum</th><th>2005</th><th>2015</th><th>2025</th></tr><tr><td>Science</td><td>420</td><td>610</td><td>890</td></tr><tr><td>Art</td><td>530</td><td>560</td><td>540</td></tr><tr><td>History</td><td>300</td><td>250</td><td>190</td></tr><tr><td>Maritime</td><td>150</td><td>290</td><td>350</td></tr></table></div>`,
     data: "Table, visitors in thousands. Science museum: 2005 420, 2015 610, 2025 890. Art: 530, 560, 540. History: 300, 250, 190. Maritime: 150, 290, 350." },
+  { id: "t1e", task: 1, label: "Task 1 · Plans — un village, 2000 et aujourd'hui", min: 150, time: 20,
+    prompt: "The maps below show the village of Ashford in 2000 and today.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.\n\nWrite at least 150 words.",
+    chart: () => villageMaps(),
+    data: "Two maps of the village of Ashford. 2000: a river runs north to south through the middle; a main road runs east-west south of the centre and stops at the river (no bridge); west of the river, a school and houses along the main road; north-west, farmland; east of the river, a large forest occupying the whole north-east and a small car park by the road. Today: a bridge now carries the main road across the river; a roundabout where the main road meets a new road to the north; the farmland in the north-west has been replaced by a housing estate; the school has been extended; in the east, part of the forest has been cleared for a sports centre; the car park has been enlarged; the rest of the forest remains." },
   { id: "t2a", task: 2, label: "Task 2 · Opinion — universités et emploi", min: 250, time: 40, prompt: "Some people believe that universities should focus on equipping graduates with skills for the workplace rather than providing knowledge for its own sake.\n\nTo what extent do you agree or disagree?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
   { id: "t2b", task: 2, label: "Task 2 · Deux points de vue — embouteillages", min: 250, time: 40, prompt: "Some argue that the best way to reduce traffic congestion is to make public transport free, while others believe that drivers should be charged to enter city centres.\n\nDiscuss both these views and give your own opinion.\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
   { id: "t2c", task: 2, label: "Task 2 · Problème-solution — logement des jeunes", min: 250, time: 40, prompt: "In many countries, young people are finding it increasingly difficult to afford a home of their own.\n\nWhat are the causes of this problem, and what measures could be taken to address it?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
@@ -1717,10 +1864,10 @@ const PLAN = [
     [40, "Deux passages Cambridge, 18 min chacun"],
     [20, "Reading : passage 3 ici (le plus dur : appariement de personnes, résumé à cases)", "reading:r3"],
     [30, "Writing : Task 1 « processus », notée", "writing:t1c"],
-    [10, "Atelier · Connecteurs", "atelier:connect"]]],
+    [10, "Atelier · Paraphrases", "atelier:para"]]],
   [10, "Listening universitaire", "Les Parts 3 et 4 séparent 8 et 9.", false, [
     [10, "Atelier · Registre", "atelier:registre"],
-    [15, "Listening : Part 4 ici", "listening:p4"],
+    [15, "Listening : Part 3 « mémoire » ici", "listening:p3b"],
     [40, "Deux Parts 3 et deux Parts 4 Cambridge, puis réécoute avec la transcription"],
     [45, "Writing : Task 2 « embouteillages » (discuss both views), notée", "writing:t2b"]]],
   [9, "Writing intensif", "Atteindre 7 minimum en Task Response, sans contradiction.", false, [
@@ -1738,12 +1885,14 @@ const PLAN = [
     [40, "Speaking Part 3 : trois séries, enregistrées et évaluées", "speaking:3"],
     [10, "Atelier · Position tenue, deuxième passage", "atelier:position"]]],
   [6, "Task 1 plans et Task 2", "Le type de Task 1 absent de l'app, et une Task 2 sans dérive.", false, [
-    [45, "Deux Task 1 « map » dans Cambridge : « was replaced by », « was relocated to »"],
+    [10, "Atelier · Task 1 : chiffres", "atelier:chiffres"],
+    [25, "Task 1 « plans » ici (village d'Ashford), notée", "writing:t1e"],
     [10, "Atelier · Plan en 5 min", "atelier:plan"],
     [45, "Task 2 « télétravail » (advantages outweigh?), notée", "writing:t2d"]]],
   [5, "Vitesse", "Garder une marge de temps le jour J.", false, [
     [55, "Reading : un test Cambridge complet en 55 min au lieu de 60"],
-    [30, "Listening : deux Parts 1 et 2 Cambridge, orthographe vérifiée"],
+    [15, "Listening : Part 1 « salle de sport » ici", "listening:p1b"],
+    [20, "Listening : Part 4 « chants d'oiseaux » ici", "listening:p4b"],
     [10, "Atelier · Grammaire, deuxième passage", "atelier:gram"],
     [15, "Speaking Part 1", "speaking:1"]]],
   [4, "Examen blanc n°3", "La répétition générale, à l'heure de ta convocation.", true, [
@@ -1757,6 +1906,7 @@ const PLAN = [
   [2, "Speaking à froid", "Parler 2 minutes sans hésiter, sur n'importe quel sujet.", false, [
     [40, "Deux simulations complètes du Speaking, cartes jamais vues", "speaking:2"],
     [20, "Listening : une Part 4 Cambridge"],
+    [10, "Atelier · Connecteurs, deuxième passage", "atelier:connect"],
     [15, "Relis tes points de vigilance et la Lime", "today"]]],
   [1, "Léger", "Arriver reposé. Rien de nouveau.", false, [
     [20, "Listening : Part 2 QCM ici, pour garder l'oreille", "listening:p2b"],
@@ -1943,6 +2093,36 @@ const AT_SETS = [
     { fr: "Il n'est guère surprenant que les banquiers gagnent davantage.", en: "It is ___ surprising that bankers earn more.", ans: ["hardly", "scarcely", "little"], why: "« Guère » se dit « hardly » ou « scarcely »." },
     { fr: "Plus d'un exemple illustre cet argument.", en: "Many an example ___ this argument.", ans: ["illustrates", "supports", "epitomises", "epitomizes", "bears out"], why: "« Many an » + nom singulier + verbe au singulier. Même accord pour « every » et « each » : every example illustrates." },
     { fr: "Quel que soit leur salaire, les enseignants restent indispensables.", en: "___ their salary, teachers remain indispensable.", ans: ["whatever", "regardless of", "irrespective of"], why: "« Whatever », « regardless of » ou « irrespective of » + nom." }
+  ] },
+  { id: "para", name: "Paraphrases", kind: "mcq", desc: "Les questions de Listening et de Reading ne reprennent presque jamais les mots du texte. Choisis la formulation du texte qui dit exactement la même chose que la question, ni plus, ni moins.", items: [
+    { ctx: "Dans la question :", q: "the number of visitors fell", opts: ["attendance declined", "there were fewer visitors than expected", "visits became shorter", "attendance remained stable"], ans: 0, why: "« Fewer than expected » compare à une prévision, pas à une période antérieure : c'est le piège classique du Not Given." },
+    { ctx: "Dans la question :", q: "a widely held belief", opts: ["a well-established theory", "a common assumption", "an outdated idea", "a minority view"], ans: 1, why: "« Widely held » porte sur le nombre de gens qui y croient, pas sur la solidité scientifique (« well-established theory »)." },
+    { ctx: "Dans la question :", q: "it has not yet been proven", opts: ["it has been disproved", "it is universally accepted", "the evidence remains inconclusive", "it was proven long ago"], ans: 2, why: "Pas encore prouvé ≠ réfuté. Confondre les deux transforme un NOT GIVEN en FALSE." },
+    { ctx: "Dans la question :", q: "costs rose sharply", opts: ["expenses soared", "costs rose gradually", "prices were cut", "spending stabilised"], ans: 0, why: "« Soar » = monter fortement et vite. « Gradually » contredit « sharply »." },
+    { ctx: "Dans la question :", q: "the majority of respondents", opts: ["all the participants", "most of those surveyed", "a few interviewees", "half of the sample"], ans: 1, why: "Majorité = plus de la moitié. « Half » n'est pas une majorité." },
+    { ctx: "Dans la question :", q: "the project was abandoned", opts: ["the project was postponed", "the project was revised", "the project was discontinued", "the project was completed"], ans: 2, why: "« Postponed » (reporté) est le piège : le projet existe encore." },
+    { ctx: "Dans la question :", q: "an unexpected consequence", opts: ["a predictable result", "an unforeseen outcome", "an intended effect", "a minor side issue"], ans: 1, why: "« Unforeseen » = que personne n'avait prévu." },
+    { ctx: "Dans la question :", q: "rarely", opts: ["never", "frequently", "seldom", "gradually"], ans: 2, why: "« Seldom » = rarement. « Never » est plus fort : une question qui dit « never » face à un texte qui dit « rarely » est FALSE." },
+    { ctx: "Dans la question :", q: "it is cheaper to produce", opts: ["it sells for less", "production costs are lower", "it is produced faster", "it is of lower quality"], ans: 1, why: "Le coût de production n'est pas le prix de vente : « sells for less » dit autre chose." },
+    { ctx: "Dans la question :", q: "doubts have been raised about the findings", opts: ["the findings have been confirmed", "the reliability of the findings has been questioned", "the findings have been ignored", "the findings have been widely praised"], ans: 1, why: "« Raise doubts » = « call into question », « question the reliability of »." },
+    { ctx: "Dans la question :", q: "in the long term", opts: ["temporarily", "in the long run", "in the near future", "for a while"], ans: 1, why: "« In the long run » = à long terme. « In the near future » = bientôt." },
+    { ctx: "Dans la question :", q: "a decline in birth rates", opts: ["a rise in birth rates", "a drop in the number of births", "stable birth rates", "a shift in family structure"], ans: 1, why: "Decline = drop = fall = decrease. À l'écoute, le mot de la question arrive souvent sous l'un de ses synonymes." }
+  ] },
+  { id: "chiffres", name: "Task 1 : chiffres", kind: "gap", desc: "Les prépositions et les verbes des chiffres coûtent des points en Task 1 : increase by, rise to, stand at, account for. Écris la forme juste à partir du français.", items: [
+    { fr: "Les ventes ont augmenté de 5 %.", en: "Sales increased ___ 5%.", ans: ["by"], why: "« by » = l'écart (de 5 points)." },
+    { fr: "Les ventes ont augmenté de 5 % pour atteindre 30 %.", en: "Sales increased by 5% ___ 30%.", ans: ["to"], why: "« to » = le point d'arrivée." },
+    { fr: "Le chiffre s'élevait à 40 % en 2010.", en: "The figure stood ___ 40% in 2010.", ans: ["at"], why: "« stand at » = s'établir à." },
+    { fr: "Il y a eu une hausse de 12 %.", en: "There was a rise ___ 12%.", ans: ["of"], why: "Après un nom (a rise, an increase, a fall), l'écart prend « of »." },
+    { fr: "Le chômage a culminé à 9 % en 2013.", en: "Unemployment ___ at 9% in 2013.", ans: ["peaked"], why: "« peak at » = culminer à." },
+    { fr: "Les chiffres ont plus que doublé.", en: "The figures more than ___.", ans: ["doubled"], why: "« double », « triple » (ou « treble ») sont des verbes." },
+    { fr: "La consommation a légèrement baissé.", en: "Consumption fell ___.", ans: ["slightly", "marginally"], why: "« slightly » ou « marginally ». Varie les adverbes : sharply, steadily, gradually." },
+    { fr: "une baisse spectaculaire", en: "a ___ fall", ans: ["dramatic", "sharp", "steep", "significant", "marked"], why: "Avec le nom, l'adverbe devient adjectif : fell sharply → a sharp fall." },
+    { fr: "Le logement représentait un quart des dépenses.", en: "Housing ___ a quarter of spending.", ans: ["accounted for", "made up", "represented", "constituted", "comprised"], why: "« account for » est la collocation reine de la Task 1." },
+    { fr: "contre 20 % pour la France", en: "___ 20% for France", ans: ["compared with", "compared to", "as opposed to", "against"], why: "« compared with », « as opposed to »." },
+    { fr: "Les chiffres sont restés stables.", en: "The figures remained ___.", ans: ["stable", "steady", "constant", "unchanged"], why: "remain stable / steady / unchanged." },
+    { fr: "Le chiffre a atteint un plancher de 3 % en 2020.", en: "The figure hit a ___ of 3% in 2020.", ans: ["low"], why: "« hit a low of » / « reach a peak of »." },
+    { fr: "environ deux fois plus que la France", en: "roughly ___ as much as France", ans: ["twice"], why: "« twice as much as », « three times as much as » : la structure des multiples." },
+    { fr: "Les dépenses de loisirs ont triplé.", en: "Spending on leisure ___.", ans: ["tripled", "trebled"], why: "« triple » (ou « treble » en anglais britannique)." }
   ] },
   { id: "plan", name: "Plan en 5 min", kind: "plan", desc: "Le geste qui aurait sauvé ta Task Response : 5 minutes de plan avant d'écrire. Thèse, deux idées avec exemple, conclusion qui reprend la thèse." }
 ];
@@ -2293,7 +2473,7 @@ function reviewEssay(task, txt, usedSec) {
     const fresh = [...b].filter(w => w.length >= 6 && !rest.has(w) && !STOP.has(w));
     if (fresh.length >= 3) out.push(["w", "Mots nouveaux en conclusion", `${fresh.slice(0, 6).join(", ")}. S'ils lancent une idée neuve, retire-la : la conclusion reformule, elle n'ajoute rien.`]);
     const q = (t.match(/\?/g) || []).length;
-    if (q) out.push(["b", `${q} question(s) rhétorique(s)`, "En Task 2, on énonce. « See the problem? » → « Herein lies the problem. »"]);
+    if (q) out.push(["b", `${q} question(s) rhétorique(s)`, "En Task 2, on énonce : « Herein lies the problem. », « This raises the question of whether… »."]);
     if (/!/.test(t)) out.push(["b", "Point d'exclamation", "Aucun en Writing : registre oral."]);
   } else {
     if (!/\b(overall|in general|it is clear|the most (?:striking|noticeable)|broadly|in summary)\b/i.test(t)) out.push(["b", "Pas d'overview repérable", "Sans vue d'ensemble (« Overall, … »), la Task Achievement plafonne à 5. Place-la en deuxième paragraphe."]);
