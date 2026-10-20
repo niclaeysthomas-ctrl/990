@@ -114,6 +114,12 @@ function load() {
    interrompait la fonction appelante (séance figée sur la carte en cours,
    sans un mot). Vérifié au navigateur en forçant l'échec d'écriture. */
 let SAVE_KO = 0;
+function toggleCardMute() {
+  S.cardMute = !S.cardMute; save();
+  if (S.cardMute) { try { speechSynthesis.cancel(); } catch (e) {} }
+  const b = document.querySelector('.cardmute'); if (b) b.textContent = S.cardMute ? '🔇 Son des cartes coupé · le réactiver' : '🔊 Son auto · le couper';
+  toast(S.cardMute ? 'Cartes en silence : le 🔊 reste là si tu veux écouter' : 'Son des cartes réactivé');
+}
 function save() {
   try { localStorage.setItem('t990', JSON.stringify(S)); SAVE_KO = 0; return true; }
   catch (e) {
@@ -1001,6 +1007,7 @@ function renderCard() {
       <div id="taphint" class="tap">${R.dir === 'en2fr' ? 'Traduis en français' : 'Traduis en anglais'} · touche pour révéler ▽</div>
     </div>
     <button id="spk" class="spk ${R.dir === 'fr2en' ? 'hidden' : ''}" onclick="speak('${enEsc}');event.stopPropagation()" title="Écouter l'anglais">🔊</button>
+    <button class="cardmute" onclick="toggleCardMute();event.stopPropagation()">${S.cardMute ? '🔇 Son des cartes coupé · le réactiver' : '🔊 Son auto · le couper'}</button>
     <div id="ratebar"></div>
   `;
 }
@@ -1012,7 +1019,7 @@ function flip() {
   const i = R.queue[R.pos];
   if (R.dir === 'fr2en') {                 // l'anglais était caché : on le révèle et on le prononce
     const s = document.getElementById('spk'); if (s) s.classList.remove('hidden');
-    speak(VOCAB[i][0]);
+    if (!S.cardMute) speak(VOCAB[i][0]);
   }
   document.getElementById('ratebar').innerHTML = `
     <div class="srsrow">
