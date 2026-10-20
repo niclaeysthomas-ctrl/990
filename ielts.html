@@ -1546,6 +1546,28 @@ function barChart(cfg) {
   cfg.series.forEach((se, k) => s += `<rect x="${L + pw - 190 + k * 100}" y="${T - 24}" width="12" height="12" fill="${fills[k]}" stroke="var(--ink)"/><text x="${L + pw - 172 + k * 100}" y="${T - 14}">${esc(se.name)}</text>`);
   return s + `</svg>`;
 }
+function pieChart(cfg) {
+  // cfg.pies = [{label, v:[...]}], cfg.cats = noms, une couleur par catégorie (teintes de l'encre)
+  const W = 560, H = 300, r = 82, op = [0.9, 0.6, 0.38, 0.2, 0.06];
+  let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(cfg.title)}">`;
+  cfg.pies.forEach((pie, k) => {
+    const cx = cfg.pies.length === 1 ? 190 : 120 + k * 230, cy = 128; let a0 = -Math.PI / 2;
+    const tot = pie.v.reduce((a, b) => a + b, 0);
+    pie.v.forEach((v, i) => {
+      const a1 = a0 + v / tot * 2 * Math.PI, big = a1 - a0 > Math.PI ? 1 : 0;
+      const x0 = cx + r * Math.cos(a0), y0 = cy + r * Math.sin(a0), x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
+      s += `<path d="M${cx},${cy} L${x0.toFixed(1)},${y0.toFixed(1)} A${r},${r} 0 ${big} 1 ${x1.toFixed(1)},${y1.toFixed(1)} Z" fill="var(--ink)" fill-opacity="${op[i % op.length]}" stroke="var(--card)" stroke-width="2"/>`;
+      const am = (a0 + a1) / 2, lr = v / tot < 0.08 ? r + 16 : r * 0.62;
+      s += `<text x="${(cx + lr * Math.cos(am)).toFixed(1)}" y="${(cy + lr * Math.sin(am) + 4).toFixed(1)}" text-anchor="middle" font-weight="700" ${v / tot >= 0.08 && op[i % op.length] > 0.5 ? 'style="fill:var(--card)"' : ""}>${v}%</text>`;
+      a0 = a1;
+    });
+    s += `<text x="${cx}" y="${cy + r + 30}" text-anchor="middle" font-weight="700">${esc(pie.label)}</text>`;
+  });
+  cfg.cats.forEach((c, i) => { const lx = cfg.pies.length === 1 ? 330 : 470, ly = 40 + i * 24;
+    if (cfg.pies.length > 1) { const col = Math.floor(i / 3), row = i % 3; s += `<rect x="${60 + i * 92}" y="${H - 22}" width="12" height="12" fill="var(--ink)" fill-opacity="${op[i]}" stroke="var(--ink)"/><text x="${76 + i * 92}" y="${H - 12}">${esc(c)}</text>`; }
+    else s += `<rect x="${lx}" y="${ly}" width="12" height="12" fill="var(--ink)" fill-opacity="${op[i]}" stroke="var(--ink)"/><text x="${lx + 18}" y="${ly + 10}">${esc(c)}</text>`; });
+  return s + `</svg>`;
+}
 const WTASKS = [
   { id: "t1a", task: 1, label: "Task 1 · Graphique linéaire — recyclage dans trois villes", min: 150, time: 20,
     prompt: "The graph below shows the proportion of household waste that was recycled in three cities between 2000 and 2025.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.\n\nWrite at least 150 words.",
@@ -1569,6 +1591,15 @@ const WTASKS = [
     prompt: "The maps below show the village of Ashford in 2000 and today.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.\n\nWrite at least 150 words.",
     chart: () => villageMaps(),
     data: "Two maps of the village of Ashford. 2000: a river runs north to south through the middle; a main road runs east-west south of the centre and stops at the river (no bridge); west of the river, a school and houses along the main road; north-west, farmland; east of the river, a large forest occupying the whole north-east and a small car park by the road. Today: a bridge now carries the main road across the river; a roundabout where the main road meets a new road to the north; the farmland in the north-west has been replaced by a housing estate; the school has been extended; in the east, part of the forest has been cleared for a sports centre; the car park has been enlarged; the rest of the forest remains." },
+  { id: "t1f", task: 1, label: "Task 1 · Camemberts — sources d'électricité, 2005 et 2025", min: 150, time: 20,
+    prompt: "The pie charts below show the sources of electricity generated in one country in 2005 and 2025.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.\n\nWrite at least 150 words.",
+    chart: () => pieChart({ title: "Sources of electricity, 2005 and 2025", cats: ["Coal", "Gas", "Nuclear", "Renewables", "Other"],
+      pies: [{ label: "2005", v: [45, 25, 20, 7, 3] }, { label: "2025", v: [10, 30, 18, 40, 2] }] }),
+    data: "Two pie charts, % of electricity by source. 2005: coal 45, gas 25, nuclear 20, renewables 7, other 3. 2025: coal 10, gas 30, nuclear 18, renewables 40, other 2." },
+  { id: "t1g", task: 1, label: "Task 1 · Graphiques combinés — tableau et camembert, une université", min: 150, time: 20,
+    prompt: "The table below shows the number of students in three faculties of a university in 2015 and 2025. The pie chart shows how students travelled to the campus in 2025.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.\n\nWrite at least 150 words.",
+    chart: () => `<div class="tbl-wrap"><table class="mini mono"><tr><th>Faculty</th><th>2015</th><th>2025</th></tr><tr><td>Business</td><td>3,200</td><td>4,800</td></tr><tr><td>Engineering</td><td>2,600</td><td>2,700</td></tr><tr><td>Arts</td><td>2,100</td><td>1,500</td></tr></table></div>` + pieChart({ title: "Travel to campus, 2025", cats: ["Bus", "Walking", "Bicycle", "Car"], pies: [{ label: "Travel to campus, 2025", v: [38, 25, 22, 15] }] }),
+    data: "Mixed task. Table, number of students: Business 2015 3,200, 2025 4,800; Engineering 2,600 then 2,700; Arts 2,100 then 1,500 (total 7,900 then 9,000). Pie chart, how students travelled to campus in 2025: bus 38%, walking 25%, bicycle 22%, car 15%. The two visuals are not directly linked: the overview must cover both." },
   { id: "t2a", task: 2, label: "Task 2 · Opinion — universités et emploi", min: 250, time: 40, prompt: "Some people believe that universities should focus on equipping graduates with skills for the workplace rather than providing knowledge for its own sake.\n\nTo what extent do you agree or disagree?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
   { id: "t2b", task: 2, label: "Task 2 · Deux points de vue — embouteillages", min: 250, time: 40, prompt: "Some argue that the best way to reduce traffic congestion is to make public transport free, while others believe that drivers should be charged to enter city centres.\n\nDiscuss both these views and give your own opinion.\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
   { id: "t2c", task: 2, label: "Task 2 · Problème-solution — logement des jeunes", min: 250, time: 40, prompt: "In many countries, young people are finding it increasingly difficult to afford a home of their own.\n\nWhat are the causes of this problem, and what measures could be taken to address it?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\n\nWrite at least 250 words." },
@@ -1904,14 +1935,17 @@ const PLAN = [
     [60, "Correction de l'examen blanc n°3 : uniquement les erreurs encore présentes"],
     [10, "Atelier · Plan en 5 min", "atelier:plan"],
     [45, "Task 2 sur ton type de question le plus faible, notée", "writing:t2f"],
-    [10, "Cartes : ta séance du jour", "cards"]]],
+    [10, "Cartes : ta séance du jour", "cards"],
+    [10, "Atelier · Task 1 : l'overview (décrire une image)", "atelier:overview"],
+    [20, "Task 1 « camemberts » ici : seulement intro + overview + 1 paragraphe, notée", "writing:t1f"]]],
   [2, "Speaking à froid", "Parler 2 minutes sans hésiter, sur n'importe quel sujet.", false, [
     [40, "Deux simulations complètes du Speaking, cartes jamais vues", "speaking:2"],
     [20, "Listening : une Part 4 Cambridge"],
     [10, "Atelier · Connecteurs, deuxième passage", "atelier:connect"],
     [15, "Relis tes points de vigilance et la Lime", "today"],
     [40, "Writing : une dernière Task 2 jamais vue (« voiture contre transports »), 40 min chrono, notée", "writing:t2k"],
-    [10, "Cartes : ta séance du jour", "cards"]]],
+    [10, "Cartes : ta séance du jour", "cards"],
+    [20, "Task 1 « graphiques combinés » ici, 20 min chrono, notée", "writing:t1g"]]],
   [1, "Léger", "Arriver reposé. Rien de nouveau.", false, [
     [20, "Listening : Part 2 QCM ici, pour garder l'oreille", "listening:p2b"],
     [10, "Relis « Le jour J » et ta convocation", "plan"],
@@ -2128,6 +2162,24 @@ const AT_SETS = [
     { fr: "Le chiffre a atteint un plancher de 3 % en 2020.", en: "The figure hit a ___ of 3% in 2020.", ans: ["low"], why: "« hit a low of » / « reach a peak of »." },
     { fr: "environ deux fois plus que la France", en: "roughly ___ as much as France", ans: ["twice"], why: "« twice as much as », « three times as much as » : la structure des multiples." },
     { fr: "Les dépenses de loisirs ont triplé.", en: "Spending on leisure ___.", ans: ["tripled", "trebled"], why: "« triple » (ou « treble » en anglais britannique)." }
+  ] },
+  { id: "overview", name: "Task 1 : l'overview", kind: "mcq", desc: "En Task 1, on te demande de décrire une image : un graphique, un tableau, un plan ou un processus. Sans overview clair, la note de Task Achievement plafonne à 5, quelle que soit la qualité de ton anglais. Choisis le meilleur overview, ou la bonne règle.", items: [
+    { ctx: "Courbes, % de déchets recyclés 2000→2025. Halden : 12→52. Marrow : 30→34 (presque plat). Corvin : 5→61.", q: "Quel est le meilleur overview ?",
+      opts: ["In 2000, Halden recycled 12%, Marrow 30% and Corvin only 5%.", "Overall, recycling rose sharply in Halden and Corvin, with Corvin ending up the highest, whereas Marrow changed very little.", "Overall, recycling is becoming more important as cities produce more and more waste."], ans: 1, why: "Un overview donne les grandes tendances, sans chiffres : qui monte, qui stagne, qui finit en tête. A n'est qu'une liste de chiffres de départ. C invente une cause absente du graphique." },
+    { ctx: "Deux camemberts, électricité. 2005 : charbon 45 %, gaz 25 %, nucléaire 20 %, renouvelables 7 %. 2025 : charbon 10 %, gaz 30 %, nucléaire 18 %, renouvelables 40 %.", q: "Quel est le meilleur overview ?",
+      opts: ["Overall, renewables replaced coal as the main source of electricity, while the shares of gas and nuclear power changed relatively little.", "Overall, renewables increased from 7% to 40%.", "Overall, the country became greener thanks to government environmental policies."], ans: 0, why: "A donne le changement majeur (le charbon détrôné par les renouvelables) ET ce qui reste stable. B ne parle que d'une catégorie et donne des chiffres. C explique avec une cause que les camemberts ne montrent pas." },
+    { ctx: "Processus en 8 étapes : bouteilles collectées → transportées → triées → lavées → broyées → fondues → moulées → livrées puis réutilisées.", q: "Quel est le meilleur overview ?",
+      opts: ["Overall, glass is melted at a very high temperature of 1,500°C.", "Overall, recycling glass is an efficient way to protect the environment.", "Overall, the process consists of eight stages, from the collection of used bottles to the delivery of new ones, and it forms a continuous cycle."], ans: 2, why: "Pour un processus, l'overview dit combien d'étapes, où ça commence, où ça finit, et si c'est un cycle. A est un détail. B est une opinion." },
+    { ctx: "Tableau, visiteurs (milliers). Science : 420→610→890. Art : 530→560→540. Histoire : 300→250→190. Maritime : 150→290→350.", q: "Quel est le meilleur overview ?",
+      opts: ["Overall, the Science museum grew the most and became the most visited, whereas the History museum was the only one to lose visitors.", "Overall, the Art museum had 530,000 visitors in 2005, 560,000 in 2015 and 540,000 in 2025.", "Overall, people nowadays prefer science to history."], ans: 0, why: "A repère le plus fort changement et l'exception. B décrit une seule ligne avec tous ses chiffres. C généralise au-delà des données : le tableau ne parle que de quatre musées dans une ville." },
+    { ctx: "Deux plans d'un centre-ville, 1995 et aujourd'hui : le parc a laissé place à un centre commercial, la rue principale est devenue piétonne, un parking a été construit au nord, l'église n'a pas bougé.", q: "Quel est le meilleur overview ?",
+      opts: ["Overall, there is a church in the town centre on both maps.", "Overall, the town centre became far more commercial and pedestrian-friendly, with green space giving way to shopping and parking facilities.", "Overall, the town centre was improved, which is good for residents."], ans: 1, why: "Pour des plans, l'overview résume la transformation générale. A ne relève que ce qui ne change pas. C juge (« improved », « good ») : en Task 1, on décrit, on ne donne jamais son avis." },
+    { ctx: "Processus de fabrication du verre recyclé.", q: "Quelle phrase est juste ?",
+      opts: ["The bottles crush into small pieces.", "The bottles are then crushed into small pieces.", "The bottles were crushed into small pieces."], ans: 1, why: "Un processus se décrit au présent passif : « are collected », « are then crushed ». Le passé ne s'emploie que pour des données datées dans le passé." },
+    { ctx: "Tableau + camembert sur deux sujets différents (effectifs par faculté, et moyens de transport).", q: "Que doit contenir l'overview d'une tâche combinée ?",
+      opts: ["Seulement le graphique le plus intéressant", "Une tendance principale pour chacun des deux visuels", "Un lien de cause entre les deux, même s'il n'est pas montré"], ans: 1, why: "Si un visuel manque dans l'overview, la tâche est incomplète. Ne fabrique pas de lien entre les deux s'il n'existe pas : décris chacun, puis compare seulement si c'est pertinent." },
+    { ctx: "Ta copie de Task 1.", q: "Où placer l'overview ?",
+      opts: ["Juste après l'introduction, en 2e paragraphe", "Uniquement en conclusion", "Nulle part si les chiffres sont précis"], ans: 0, why: "En fin de copie, c'est accepté aussi. Mais le placer en 2e paragraphe garantit qu'il ne sautera pas si tu manques de temps. Sans overview, Task Achievement plafonne à 5." }
   ] },
   { id: "plan", name: "Plan en 5 min", kind: "plan", desc: "Le geste qui aurait sauvé ta Task Response : 5 minutes de plan avant d'écrire. Thèse, deux idées avec exemple, conclusion qui reprend la thèse." }
 ];
