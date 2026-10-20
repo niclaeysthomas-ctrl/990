@@ -1896,22 +1896,27 @@ const PLAN = [
     [10, "Atelier · Grammaire, deuxième passage", "atelier:gram"],
     [15, "Speaking Part 1", "speaking:1"]]],
   [4, "Examen blanc n°3", "La répétition générale, à l'heure de ta convocation.", true, [
-    [160, "Dernier test Cambridge complet, à la même heure que l'examen si possible"],
+    [160, "Examen blanc complet, à l'heure de l'examen si possible : un test Cambridge, ou sinon ici, d'affilée et chronométrés, Listening Parts 1 à 4, Reading 1 à 3, Task 1 puis Task 2", "listening:p1"],
     [15, "Speaking complet ici, sur une carte jamais vue", "speaking:2"],
-    [10, "Entre les quatre bandes", "plan"]]],
+    [10, "Entre les quatre bandes", "plan"],
+    [10, "Cartes : ta séance du jour (tournures Writing et Speaking)", "cards"]]],
   [3, "Correction ciblée", "Seulement ce qui revient encore.", false, [
     [60, "Correction de l'examen blanc n°3 : uniquement les erreurs encore présentes"],
     [10, "Atelier · Plan en 5 min", "atelier:plan"],
-    [45, "Task 2 sur ton type de question le plus faible, notée", "writing:t2f"]]],
+    [45, "Task 2 sur ton type de question le plus faible, notée", "writing:t2f"],
+    [10, "Cartes : ta séance du jour", "cards"]]],
   [2, "Speaking à froid", "Parler 2 minutes sans hésiter, sur n'importe quel sujet.", false, [
     [40, "Deux simulations complètes du Speaking, cartes jamais vues", "speaking:2"],
     [20, "Listening : une Part 4 Cambridge"],
     [10, "Atelier · Connecteurs, deuxième passage", "atelier:connect"],
-    [15, "Relis tes points de vigilance et la Lime", "today"]]],
+    [15, "Relis tes points de vigilance et la Lime", "today"],
+    [40, "Writing : une dernière Task 2 jamais vue (« voiture contre transports »), 40 min chrono, notée", "writing:t2k"],
+    [10, "Cartes : ta séance du jour", "cards"]]],
   [1, "Léger", "Arriver reposé. Rien de nouveau.", false, [
     [20, "Listening : Part 2 QCM ici, pour garder l'oreille", "listening:p2b"],
     [10, "Relis « Le jour J » et ta convocation", "plan"],
-    [10, "Prépare pièce d'identité, eau, crayons. Couche-toi tôt."]]],
+    [10, "Prépare pièce d'identité, eau, crayons. Couche-toi tôt."],
+    [10, "Cartes : dernière séance, rien de nouveau", "cards"]]],
   [0, "Examen", "Listening, Reading et Writing d'affilée. Speaking le même jour ou dans les sept jours.", true, [
     [15, "Le matin : 15 min d'anglais à voix haute ou un podcast, puis départ avec 30 min d'avance"]]]
 ];
@@ -2705,6 +2710,10 @@ $("#w-review").onclick = () => { const t = wCur(); const used = wTimer ? t.time 
 $("#td-report").onclick = () => copyText(buildReport(), $("#td-st"));
 showTab(store.get("tab2", "today"));
 getSample();
+function goHash() { const m = /^#go=([^&]+)/.exec(location.hash || ""); if (!m) return;
+  try { goTo(decodeURIComponent(m[1])); } catch (e) {}
+  try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} }
+window.addEventListener("hashchange", goHash); goHash();
 </script>
 </body>
 </html>
