@@ -329,7 +329,7 @@ nav.tabs .lb-s{display:none}
     <div id="td-cards"></div>
   </div>
   <div class="panel">
-    <h4>Tes points de vigilance (Task 2 du 20/09, notée 6/9)</h4>
+    <h4>Tes points de vigilance (Task 2 du 20/09, plan du 21/10)</h4>
     <ol class="watch" id="td-watch"></ol>
   </div>
   <div class="panel">
@@ -450,7 +450,7 @@ nav.tabs .lb-s{display:none}
     <div id="w-rv"></div>
     <div id="w-result" class="result"></div>
     <details>
-      <summary>Tes points de vigilance (copie du 20/09)</summary>
+      <summary>Tes points de vigilance (copie du 20/09, plan du 21/10)</summary>
       <ol class="watch" id="w-watch"></ol>
     </details>
     <details>
@@ -1615,7 +1615,7 @@ const WTASKS = [
 ];
 const CHECK = {
   1: ["Introduction : paraphrase du sujet, sans recopier la consigne", "Overview en 2e paragraphe : les 2 ou 3 tendances majeures, sans chiffres", "Chiffres sélectionnés et comparés, pas une liste exhaustive", "Aucune opinion, aucune cause inventée", "Temps cohérents : passé pour des dates passées, présent passif pour un processus (« the bottles are then crushed »)", "Variété : « account for », « peak at », « roughly twice as », « by contrast »", "170–190 mots"],
-  2: ["Toutes les parties de la question traitées (piège des questions doubles)", "Position claire dès l'introduction, identique en conclusion", "Une idée centrale par paragraphe, développée jusqu'à la conséquence", "Exemples précis plutôt que généraux (« for instance, in Paris… »)", "Connecteurs variés et non mécaniques (pas de « Firstly / Secondly / Lastly » partout)", "Collocations naturelles, aucun mot « sophistiqué » mal employé", "Structures complexes justes : relatives, conditionnelles, inversions mesurées", "270–320 mots, conclusion sans idée nouvelle"]
+  2: ["Toutes les parties de la question traitées (piège des questions doubles)", "Position claire dès l'introduction, identique en conclusion", "Une idée centrale par paragraphe, développée jusqu'à la conséquence", "Exemples précis plutôt que généraux (« for instance, in Paris… »)", "Connecteurs variés et non mécaniques (pas de « Firstly / Secondly / Lastly » partout)", "Collocations naturelles, aucun mot « sophistiqué » mal employé", "Structures complexes justes : relatives, conditionnelles, inversions mesurées", "Concession = une limite reconnue PUIS réfutée", "Avant la conclusion : même position ? argument nouveau ? hors sujet ? (20 s)", "Les mots du sujet repris, aucune expression familière", "270–320 mots, conclusion sans idée nouvelle"]
 };
 let wTimer = null;
 function wCur() { return WTASKS.find(t => t.id === $("#w-sel").value) || WTASKS[0]; }
@@ -1937,7 +1937,8 @@ const PLAN = [
     [45, "Task 2 sur ton type de question le plus faible, notée", "writing:t2f"],
     [10, "Cartes : ta séance du jour", "cards"],
     [10, "Atelier · Task 1 : l'overview (décrire une image)", "atelier:overview"],
-    [20, "Task 1 « camemberts » ici : seulement intro + overview + 1 paragraphe, notée", "writing:t1f"]]],
+    [20, "Task 1 « camemberts » ici : seulement intro + overview + 1 paragraphe, notée", "writing:t1f"],
+    [10, "Atelier · Ton plan du 21/10 : les 6 pièges à ne plus écrire", "atelier:plan21"]]],
   [2, "Speaking à froid", "Parler 2 minutes sans hésiter, sur n'importe quel sujet.", false, [
     [40, "Deux simulations complètes du Speaking, cartes jamais vues", "speaking:2"],
     [20, "Listening : une Part 4 Cambridge"],
@@ -2039,6 +2040,11 @@ const WATCH = [
   ["Le bon connecteur", "Pour concéder : « Admittedly », « Granted ». Pour opposer deux faits : « However », « By contrast ». Pour une relation inverse (l'un monte, l'autre baisse) : « Conversely »."],
   ["Registre écrit", "Affirme avec mesure : « There is a strong case that », « arguably », « I would argue that ». Lexique précis et neutre : « for long hours », « opponents of this view contend that ». Anglais britannique d'un bout à l'autre : football, footballer."],
   ["Temps verbaux", "« since » + present perfect (« Wages have stagnated since 2010 ») ; « until recently » + prétérit (« Until recently, few people worked remotely ») ; past perfect seulement pour une antériorité dans le passé."],
+  ["Le bon type de sujet", "« To what extent do you agree or disagree? » = TON avis (tu peux nuancer), chaque paragraphe défend ta position. « Discuss both views » = tu exposes d'abord honnêtement l'autre vue. Le 21/10, tu as pris l'un pour l'autre."],
+  ["Une concession qui te sert", "En deux temps : tu reconnais une vraie limite (« Admittedly, … »), puis tu montres qu'elle ne renverse pas ta position (« However, this is an argument for…, not against… »). Une concession sans réfutation fait douter le lecteur de ce que tu penses."],
+  ["Cause → conséquence → exemple", "Une idée floue ne rapporte rien. « Many graduates lack practical skills (cause), so they end up underemployed (conséquence); schools with long internships, for instance, report far better outcomes (exemple). »"],
+  ["Conclusion : rien de neuf, rien d'ailleurs", "Ni lycées quand le sujet parle d'universités, ni opinion politique jamais argumentée, ni affirmation absolue (« can't possibly ») qui contredit ta nuance. Avant d'écrire la conclusion : même position ? argument nouveau ? hors sujet ? 20 secondes."],
+  ["Les mots du sujet, et le registre écrit", "Reprends « universities », « skills for the workplace », « knowledge for its own sake », pas « classes ». Pas d'expressions familières (« alive and kicking », « a lot of », « kids »)."],
   ["Utilise les 40 minutes", "Écris en 30 minutes, puis consacre les 10 dernières à relire articles, accords, prépositions et temps verbaux."]
 ];
 
@@ -2096,6 +2102,20 @@ const AT_SETS = [
       opts: ["Pertinente telle quelle", "Hors sujet", "Tangentielle : à relier explicitement à la question"], ans: 1, why: "La célébrité des astronautes ne dit rien du choix entre dépenses spatiales et lutte contre la pauvreté." },
     { ctx: "Sujet : célébrités (why? positive or negative?)", q: "Thèse : « this fascination stems from an illusion of intimacy, and it is a broadly negative development ».\nConclusion : « In conclusion, people follow celebrities for many different reasons. »",
       opts: ["Cohérente", "Incomplète : une partie de la question disparaît", "Idée nouvelle en conclusion"], ans: 1, why: "Le jugement (positif ou négatif) a disparu de la conclusion, et « many different reasons » dilue la cause précise annoncée." }
+  ] },
+  { id: "plan21", name: "Ton plan du 21/10", kind: "mcq", desc: "Six pièges tirés de ton plan « universités et emploi », noté 6 en Task Response. Repère-les pour ne plus les écrire.", items: [
+    { ctx: "Sujet : « Some people believe that universities should focus on equipping graduates with skills for the workplace rather than providing knowledge for its own sake. To what extent do you agree or disagree? »", q: "Quel type de sujet est-ce ?",
+      opts: ["Discuter deux vues + avis", "Opinion : ton avis, éventuellement nuancé", "Avantages / inconvénients"], ans: 1, why: "« To what extent do you agree or disagree » = opinion. Tu peux être d'accord en partie, mais chaque paragraphe défend TA position. Tu avais choisi « deux vues », ce qui pousse à écrire « some people think… » au lieu d'argumenter." },
+    { ctx: "Thèse : « I agree that universities should prioritise workplace skills, but fundamental research still needs knowledge-centred education. »", q: "Concession : « Admittedly I find it hard to distinguish between students not being useful in the current market and the market being deficient. »",
+      opts: ["Bonne concession", "Elle affaiblit ta propre idée 1 sans la réfuter", "Hors sujet"], ans: 1, why: "Si le marché est défaillant, ton argument « les diplômés manquent de compétences » tombe, et tu ne réponds pas. Version qui te sert : « Admittedly, an exclusive focus on employability risks training students for jobs that may disappear. However, this argues for adaptable skills, not against workplace preparation. »" },
+    { ctx: "Même thèse (accord partiel, exception pour la recherche).", q: "Conclusion : « …a stronger emphasis on market viability can't possibly hurt the students while rehabilitating high-schools at a time when hard-right conservatives lambast them. »",
+      opts: ["Cohérente", "Idées nouvelles et hors sujet, et une affirmation absolue", "Trop courte"], ans: 1, why: "Les lycées (le sujet parle d'universités), la droite conservatrice (jamais argumentée) : deux idées neuves en conclusion. Et « can't possibly » contredit ta nuance. Conclusion juste : « In conclusion, universities should do more to prepare students for employment, but fundamental research must keep a protected place within them. »" },
+    { ctx: "Sujet : universités, compétences pour l'emploi ou savoir pour lui-même.", q: "Idée 2 : « Scientists are seeking knowledge for the sake of it and this fundamental research needs to be upheld. »",
+      opts: ["Pertinente telle quelle", "Tangentielle : à relier explicitement aux universités", "Hors sujet"], ans: 1, why: "L'idée est la meilleure du plan, mais elle parle des scientifiques, pas des universités. Relie-la : « Universities remain the main home of fundamental research, whose value is rarely visible in the short term: the internet and mRNA vaccines both grew out of it. »" },
+    { ctx: "Idée 1, version du plan : « Some people fall short of what companies look for --> high diploma and yet can't justify a consequential pay »", q: "Quelle version vise un 8 ?",
+      opts: ["Some graduates are not good enough for companies.", "Many graduates hold advanced degrees yet lack the practical skills employers need, so they end up underemployed; schools that require long internships, for instance, report far better outcomes.", "Companies pay graduates too little, which is unfair."], ans: 1, why: "Cause (pas de compétences pratiques), conséquence (sous-emploi), exemple (les stages longs). A reste vague. C change de sujet : on passe des compétences au salaire." },
+    { ctx: "Registre d'un essai académique.", q: "Quelle fin de conclusion est au bon registre ?",
+      opts: ["…research for the sake of knowledge has to remain alive and kicking.", "…knowledge pursued for its own sake must retain a protected place within universities.", "…research is super important and we need lots of it."], ans: 1, why: "« alive and kicking » et « super / lots of » sont familiers. À l'écrit, on garde un registre neutre et précis, surtout en conclusion." }
   ] },
   { id: "connect", name: "Connecteurs", kind: "mcq", desc: "Choisis le connecteur juste. À 8 et plus, l'examinateur pénalise un connecteur imprécis plus qu'un connecteur absent.", items: [
     { q: "Some argue that footballers are overpaid. ___, their earnings simply reflect the vast revenues they generate.", opts: ["However", "Admittedly", "Conversely", "Moreover"], ans: 0, why: "Tu opposes un contre-argument à ce qui précède : « However ». « Conversely » exigerait deux situations symétriques." },
@@ -2284,6 +2304,7 @@ function renderPlan5(body, set) {
     ${f("i2", "Idée 2 + exemple précis", "Une idée par paragraphe, développée jusqu'au bout")}
     ${f("conc", "Concession (facultatif)", "Admittedly, … However, …", 1)}
     ${f("end", "Conclusion : ta thèse, reformulée", "In conclusion, …", 1)}
+    <p class="note" style="margin-top:6px">Avant d'écrire ta conclusion : <b>1.</b> même position que la thèse ? <b>2.</b> un argument nouveau ? on le supprime. <b>3.</b> un sujet absent de la question ? on le supprime.</p>
     <div class="row" style="margin-top:10px"><button class="btn primary" id="p5-check">Vérifier mon plan</button><button class="btn" id="p5-claude">Faire vérifier par Claude</button><span class="status" id="p5-st"></span></div>
     <div id="p5-fb"></div>`;
   const tm = makeTimer($("#p5-timer"), 300, () => { beep(); $("#p5-st").textContent = "5 minutes. À l'examen, tu commencerais à écrire maintenant."; });
@@ -2306,7 +2327,19 @@ function renderPlan5(body, set) {
       if (expected === "discuss" && !/(although|while|whereas|though|despite)/i.test(th)) out.push(["bad", "« Discuss both views » : ta thèse devrait reconnaître l'autre vue (although, while…) avant de donner ton avis."]);
     }
     [["i1", "Idée 1"], ["i2", "Idée 2"]].forEach(([id, n]) => { const v = val(id); if (wordsOf(v) < 8) out.push(["bad", `${n} : trop courte. Il faut l'idée, la raison et un exemple précis.`]); else if (!/(for example|for instance|such as|in \d{4}|\d|e\.g\.|like )/i.test(v)) out.push(["bad", `${n} : pas d'exemple concret repérable (for instance, un pays, un chiffre, une date).`]); else out.push(["ok", `${n} : idée et exemple présents.`]); });
+    const prK = keyWords(t.prompt);
+    [["i1", "Idée 1"], ["i2", "Idée 2"]].forEach(([id, n]) => { const v = val(id).toLowerCase(); if (v && !prK.some(w => v.includes(w.slice(0, 5)))) out.push(["bad", `${n} : aucun mot du sujet (${prK.slice(0, 4).join(", ")}…). Relie-la explicitement à la question, sinon elle paraît tangentielle.`]); });
+    const cc = val("conc");
+    if (cc && !/(however|but|yet|nevertheless|nonetheless|still|even so|this does not|does not mean)/i.test(cc)) out.push(["bad", "Concession sans réfutation : tu reconnais une limite, mais tu ne dis pas pourquoi elle ne renverse pas ta position (« However, … »). Le lecteur ne sait plus ce que tu penses."]);
+    const all4 = [val("thesis"), val("i1"), val("i2"), val("conc"), val("end")].join(" ");
+    const fam = all4.match(/\b(alive and kicking|a lot of|lots of|kids|stuff|gonna|wanna|super|pretty much|huge|okay|ok)\b/gi);
+    if (fam) out.push(["bad", `Registre familier : ${[...new Set(fam.map(x => "« " + x + " »"))].join(", ")}. Remplace par un équivalent neutre (a great deal of, children, must remain…).`]);
     const end = val("end");
+    if (end) {
+      const before = contentWords([val("thesis"), val("i1"), val("i2"), val("conc"), t.prompt].join(" ")), STOPC = /^(conclusion|conclude|overall|summary|therefore|possibly|clearly|stronger|greater|emphasis|believe|indeed|however|important|essential|remain|remains|should|would|while|whereas|although|students|society|people)$/, neu = [...contentWords(end)].filter(w => !before.has(w) && w.length > 5 && !STOPC.test(w));
+      if (neu.length >= 3) out.push(["bad", `Ta conclusion contient des mots qui n'apparaissent nulle part avant : ${neu.slice(0, 8).join(", ")}. Idée nouvelle ou hors sujet ? Une conclusion ne fait que reformuler ta thèse et résumer tes raisons.`]);
+      if (/(can't possibly|cannot possibly|never|always|undoubtedly|without (a|any) doubt|totally|completely|absolutely)/i.test(end)) out.push(["bad", "Conclusion absolue (« can't possibly », « never », « totally »…) : elle contredit une position nuancée. Garde la même nuance que ta thèse."]);
+    }
     if (!end) out.push(["bad", "Pas de conclusion prévue. Écris-la dès le plan : c'est ce qui garantit qu'elle ne contredira pas ta thèse."]);
     else { const a = contentWords(val("thesis")), b = contentWords(end); const common = [...a].filter(w => b.has(w)).length; out.push([common >= 2 ? "ok" : "bad", common >= 2 ? "Ta conclusion reprend ta thèse." : "Ta conclusion ne partage presque aucun mot-clé avec ta thèse : vérifie qu'elle défend la même position."]); }
     $("#p5-fb").innerHTML = out.map(([c, m]) => `<div class="fb ${c}" style="margin-top:8px">${esc(m)}</div>`).join("") + `<p class="note" style="margin-top:8px">Ces vérifications sont automatiques et approximatives : elles repèrent les oublis, pas la qualité des idées. Pour un avis sur le fond, fais vérifier par Claude.</p>`;
