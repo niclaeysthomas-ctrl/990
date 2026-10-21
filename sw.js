@@ -1,5 +1,5 @@
 /* 990 — service worker : cache offline (app shell) */
-const CACHE = '990-v45-plan21';
+const CACHE = '990-v46-espace';
 const ASSETS = [
   'index.html',
   'ielts.html',

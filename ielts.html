@@ -1938,7 +1938,8 @@ const PLAN = [
     [10, "Cartes : ta séance du jour", "cards"],
     [10, "Atelier · Task 1 : l'overview (décrire une image)", "atelier:overview"],
     [20, "Task 1 « camemberts » ici : seulement intro + overview + 1 paragraphe, notée", "writing:t1f"],
-    [10, "Atelier · Ton plan du 21/10 : les 6 pièges à ne plus écrire", "atelier:plan21"]]],
+    [10, "Atelier · Ton plan du 21/10 : les 6 pièges à ne plus écrire", "atelier:plan21"],
+    [10, "Atelier · Ta copie du 21/10 (espace) : les 6 pièges", "atelier:espace21"]]],
   [2, "Speaking à froid", "Parler 2 minutes sans hésiter, sur n'importe quel sujet.", false, [
     [40, "Deux simulations complètes du Speaking, cartes jamais vues", "speaking:2"],
     [20, "Listening : une Part 4 Cambridge"],
@@ -1946,7 +1947,10 @@ const PLAN = [
     [15, "Relis tes points de vigilance et la Lime", "today"],
     [40, "Writing : une dernière Task 2 jamais vue (« voiture contre transports »), 40 min chrono, notée", "writing:t2k"],
     [10, "Cartes : ta séance du jour", "cards"],
-    [20, "Task 1 « graphiques combinés » ici, 20 min chrono, notée", "writing:t1g"]]],
+    [20, "Task 1 « graphiques combinés » ici, 20 min chrono, notée", "writing:t1g"],
+    [10, "Atelier · Connecteurs dans ta copie", "atelier:liens"],
+    [10, "Atelier · Budget et dépenses publiques", "atelier:budget"],
+    [10, "Atelier · Tournures signature (Herein lies the problem…)", "atelier:signature"]]],
   [1, "Léger", "Arriver reposé. Rien de nouveau.", false, [
     [20, "Listening : Part 2 QCM ici, pour garder l'oreille", "listening:p2b"],
     [10, "Relis « Le jour J » et ta convocation", "plan"],
@@ -2200,6 +2204,60 @@ const AT_SETS = [
       opts: ["Seulement le graphique le plus intéressant", "Une tendance principale pour chacun des deux visuels", "Un lien de cause entre les deux, même s'il n'est pas montré"], ans: 1, why: "Si un visuel manque dans l'overview, la tâche est incomplète. Ne fabrique pas de lien entre les deux s'il n'existe pas : décris chacun, puis compare seulement si c'est pertinent." },
     { ctx: "Ta copie de Task 1.", q: "Où placer l'overview ?",
       opts: ["Juste après l'introduction, en 2e paragraphe", "Uniquement en conclusion", "Nulle part si les chiffres sont précis"], ans: 0, why: "En fin de copie, c'est accepté aussi. Mais le placer en 2e paragraphe garantit qu'il ne sautera pas si tu manques de temps. Sans overview, Task Achievement plafonne à 5." }
+  ] },
+  { id: "espace21", name: "Ta copie du 21/10 (espace)", kind: "mcq", desc: "Ta Task 2 « espace et pauvreté », notée 6,5. Six pièges tirés de tes phrases : ce qui t'a coûté le plus de points.", items: [
+    { ctx: "Sujet : « Governments should not spend money on space exploration until poverty has been eliminated on Earth. »", q: "Quelle introduction paraphrase fidèlement le sujet ?",
+      opts: ["Some people contend that the struggle against poverty has to be one of the state's highest priorities and that the government should therefore reduce its spending on space exploration.", "It is sometimes argued that public money should not be spent on space exploration until poverty has been eradicated.", "Space exploration is a fascinating field which has always divided public opinion."], ans: 1, why: "Le sujet contient une condition : « until poverty has been eliminated ». Ta version (A) parle de réduire les dépenses, ce qui est une autre question. C est hors sujet." },
+    { ctx: "Le cœur du sujet est la condition « until poverty has been eliminated ».", q: "Quel argument l'attaque directement ?",
+      opts: ["Space exploration is exciting for young people.", "Poverty is unlikely ever to be eliminated altogether, so the condition would mean postponing exploration indefinitely.", "Space research is expensive."], ans: 1, why: "C'est l'argument qui manquait à ta copie. Il répond à TOUTE la question, condition comprise, et il pèse lourd en Task Response." },
+    { ctx: "Ta thèse : continuer à financer l'espace. Ton 3e paragraphe :", q: "« One euro taken from the department of war allocated to space exploration is always better used to fight poverty at home and abroad. »",
+      opts: ["Cohérente avec ta thèse", "Ambiguë : on peut lire qu'il vaut mieux combattre la pauvreté que financer l'espace", "Idée nouvelle"], ans: 1, why: "Tu voulais dire : un euro réaffecté de la défense à l'espace aide plus la lutte contre la pauvreté. Écris-le sans ambiguïté : « Every euro diverted from defence to space research is likely to do more, in the long run, to reduce poverty than it would in the defence budget. »" },
+    { ctx: "Ta copie s'arrête à la fin du 3e paragraphe.", q: "Quelle conséquence a l'absence de conclusion ?",
+      opts: ["Aucune si le nombre de mots est atteint", "La copie paraît inachevée : Coherence et Task Response sont pénalisées", "Seulement une perte en vocabulaire"], ans: 1, why: "Sans conclusion, l'examinateur ne lit pas de position finale et la structure est incomplète. Garde toujours 3 minutes : une phrase suffit (« In conclusion, while…, I remain convinced that… »)." },
+    { ctx: "Registre d'un essai académique.", q: "Quelle phrase est au bon registre ?",
+      opts: ["Who in their right mind could have foreseen how these things would change the world?", "Few could have foreseen how profoundly these technologies would transform everyday life.", "I would contend all day that the government should choose the latter."], ans: 1, why: "Les questions rhétoriques orales et les formules absolues (« all day », « in their right mind ») font perdre des points en Lexical Resource. Ferme, mais mesuré." },
+    { ctx: "Faux amis de ta copie.", q: "Quelle version est juste ?",
+      opts: ["the arbitrage of short versus long-term gains, the ARN vaccine", "the trade-off between short-term and long-term gains, mRNA vaccines", "the arbitration of short and long gains, the RNA vaccin"], ans: 1, why: "« arbitrage » en anglais est un terme de finance : le mot juste est « trade-off ». ARN est le sigle français : en anglais, mRNA." }
+  ] },
+  { id: "liens", name: "Connecteurs dans ta copie", kind: "gap", desc: "Les liens qui manquaient à ta copie du 21/10. Complète avec le connecteur juste, à partir du français.", items: [
+    { fr: "La raison la plus convaincante est que…", en: "The most ___ reason is that the benefits of research are rarely immediate.", ans: ["compelling", "convincing", "persuasive"], why: "Ouverture de paragraphe qui porte du sens, à la place de « Firstly »." },
+    { fr: "Un autre élément à prendre en compte est que…", en: "A further ___ is that space budgets are remarkably small.", ans: ["consideration", "point"], why: "À la place de « Secondly » : la transition annonce un nouvel argument." },
+    { fr: "Pourtant, certaines des technologies les plus marquantes sont nées ainsi.", en: "___, some of the most transformative technologies emerged in precisely this way.", ans: ["yet", "however", "and yet"], why: "« Yet » oppose deux faits avec plus de force que « but » en début de phrase." },
+    { fr: "En fin de compte, la question est celle du court terme contre le long terme.", en: "___, the question is one of short-term versus long-term gains.", ans: ["ultimately", "in the end"], why: "« Ultimately » ramène au fond du débat ; « Overall » se garde pour la conclusion ou l'overview de Task 1." },
+    { fr: "D'autant plus que la pauvreté ne disparaîtra jamais totalement.", en: "This is all the more true ___ poverty is unlikely ever to disappear entirely.", ans: ["since", "as", "given that"], why: "« all the more … since/as » = « d'autant plus que »." },
+    { fr: "Il s'ensuit que reporter l'exploration reviendrait à l'abandonner.", en: "It ___ that postponing exploration would amount to abandoning it.", ans: ["follows"], why: "« It follows that » tire une conséquence logique, en registre soutenu." },
+    { fr: "De même, la recherche médicale a souvent profité de découvertes inattendues.", en: "___, medical research has often benefited from unexpected discoveries.", ans: ["similarly", "likewise", "by the same token"], why: "Pour un parallèle, pas une opposition. « Conversely » serait faux ici." },
+    { fr: "Plutôt que de couper dans la recherche, les gouvernements pourraient réaffecter le budget de la défense.", en: "___ cutting research, governments could divert funds from defence.", ans: ["rather than", "instead of"], why: "« Rather than » + -ing : propose une alternative." },
+    { fr: "Certes, la pauvreté doit rester une priorité. Cependant, …", en: "___, poverty must remain a priority. However, halting research would be short-sighted.", ans: ["admittedly", "granted"], why: "La concession en deux temps : Admittedly … However …" },
+    { fr: "En conclusion, même si la pauvreté doit rester une priorité, je reste convaincu que…", en: "In conclusion, ___ poverty must remain a priority, I remain convinced that space exploration deserves funding.", ans: ["while", "although", "though", "even though"], why: "La conclusion reprend la nuance de la thèse, sans idée nouvelle." }
+  ] },
+  { id: "budget", name: "Budget et dépenses publiques", kind: "gap", desc: "Le vocabulaire qui t'a manqué (pôles de dépenses, titanesque…), et qui revient dans tous les sujets sur l'argent public.", items: [
+    { fr: "La défense et la santé restent les principaux pôles de dépenses publiques.", en: "Defence and healthcare remain the main areas of public ___.", ans: ["expenditure", "spending"], why: "« expenditure » est indénombrable ici : jamais « a spending »." },
+    { fr: "Le budget de la défense américaine est titanesque.", en: "The US defence budget is ___.", ans: ["colossal", "staggering", "vast", "enormous", "huge"], why: "« colossal » et « staggering » sont les plus précis à l'écrit. Et « defence » s'écrit avec un c en anglais britannique." },
+    { fr: "La NASA reçoit une part infime du budget fédéral.", en: "NASA receives a tiny ___ of the federal budget.", ans: ["fraction", "share", "proportion"], why: "« a tiny fraction of » : moins d'un demi pour cent, un chiffre qui sert ton argument." },
+    { fr: "Les gouvernements allouent des fonds à la recherche.", en: "Governments ___ funds to research.", ans: ["allocate"], why: "allocate funds TO." },
+    { fr: "Réaffecter des fonds de la défense vers la recherche coûterait peu.", en: "___ funds from defence to research would cost very little.", ans: ["diverting", "reallocating", "redirecting"], why: "divert / reallocate funds FROM … TO …" },
+    { fr: "Les programmes spatiaux ont produit d'innombrables retombées.", en: "Space programmes have produced countless ___.", ans: ["spin-offs", "spinoffs", "spin offs", "spillover benefits"], why: "spin-off = technologie dérivée d'une recherche (GPS, filtres à eau, imagerie médicale)." },
+    { fr: "Une énergie bon marché sortirait des millions de personnes de la pauvreté.", en: "Cheap energy would ___ millions out of poverty.", ans: ["lift"], why: "La collocation exacte : lift people out of poverty." },
+    { fr: "La recherche fondamentale met souvent des décennies à porter ses fruits.", en: "Fundamental research often takes decades to ___.", ans: ["pay off", "bear fruit"], why: "pay off (neutre), bear fruit (soutenu)." },
+    { fr: "Il est peu probable que la pauvreté soit un jour totalement éradiquée.", en: "Poverty is unlikely ever to be ___ altogether.", ans: ["eradicated", "eliminated"], why: "eradicate = faire disparaître totalement ; alleviate = atténuer." },
+    { fr: "C'est un arbitrage entre gains à court terme et à long terme.", en: "It is a ___ between short-term and long-term gains.", ans: ["trade-off", "tradeoff", "trade off"], why: "Le faux ami « arbitrage » est un terme de finance en anglais." }
+  ] },
+  { id: "signature", name: "Tournures signature", kind: "mcq", desc: "Les tournures qui font un 8+ (« Herein lies the problem »…). Règle : deux ou trois par copie, une seule fois chacune, au bon endroit. Mal placées, elles sonnent comme du par cœur.", items: [
+    { ctx: "Paragraphe : « Most governments plan in four-year electoral cycles, whereas fundamental research tends to pay off over decades. ___ Politicians have little incentive to fund projects whose benefits will be reaped by their successors. »", q: "Quelle tournure va dans le blanc ?",
+      opts: ["Herein lies the problem.", "In conclusion,", "For instance,"], ans: 0, why: "« Herein lies the problem » se place juste après avoir posé une tension (cycles courts / bénéfices longs), avant de l'expliquer. Jamais en introduction ni en conclusion." },
+    { ctx: "Tu veux introduire ton exemple le plus fort.", q: "Quelle phrase est juste ?",
+      opts: ["Nowhere this is more evident than in satellite navigation.", "Nowhere is this more evident than in satellite navigation.", "Nowhere it is more evident that satellite navigation."], ans: 1, why: "Après « Nowhere » en tête de phrase, inversion : is this." },
+    { ctx: "Tu viens de concéder que la pauvreté est urgente.", q: "Comment protéger ta position ?",
+      opts: ["This is not to say that poverty should be ignored; rather, the two goals are not mutually exclusive.", "Poverty is glaringly less important than space.", "See the problem?"], ans: 0, why: "« This is not to say that… ; rather, … » nuance sans changer de camp. B est absolu, C est oral." },
+    { ctx: "Une conditionnelle soutenue.", q: "Laquelle est correcte ?",
+      opts: ["Were governments halt space programmes, the cost would be immense.", "Were governments to halt space programmes, the long-term cost could be immense.", "If governments would halt space programmes, the cost will be immense."], ans: 1, why: "Were + sujet + to + base verbale. C mélange les temps (would… will)." },
+    { ctx: "Combien de tournures signature dans une Task 2 ?", q: "Choisis la bonne règle.",
+      opts: ["Le plus possible : l'examinateur compte", "Deux ou trois, une seule fois chacune, là où elles servent l'argument", "Aucune, c'est risqué"], ans: 1, why: "Le descripteur band 8-9 parle d'usage « natural and sophisticated ». Accumulées, elles paraissent apprises par cœur, ce qui fait baisser Lexical Resource." },
+    { ctx: "Tu veux critiquer la position adverse avec mesure.", q: "Quelle phrase vise un 8+ ?",
+      opts: ["It would be naive to assume that cutting research alone would end poverty.", "Anyone who thinks this is clearly wrong.", "This idea is totally stupid."], ans: 0, why: "« It would be naive to assume that… » critique l'idée, pas les gens, sans ton absolu." },
+    { ctx: "Ta conclusion.", q: "Laquelle est la meilleure ?",
+      opts: ["In conclusion, space is amazing and we should go to Mars.", "In conclusion, while poverty must remain a priority, I remain convinced that halting space exploration would sacrifice long-term gains that may ultimately do more to reduce it.", "To conclude, there are many points of view on this issue."], ans: 1, why: "Concession + même position que la thèse + rappel de l'argument principal. A est familier et nouveau, C ne prend pas position." }
   ] },
   { id: "plan", name: "Plan en 5 min", kind: "plan", desc: "Le geste qui aurait sauvé ta Task Response : 5 minutes de plan avant d'écrire. Thèse, deux idées avec exemple, conclusion qui reprend la thèse." }
 ];

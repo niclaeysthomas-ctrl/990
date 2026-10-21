@@ -21,7 +21,8 @@ window.IELTS_DECKS = [
   ["s1", "Speaking · Fluidité", "Gagner du temps avec naturel, reformuler, rebondir."],
   ["s2", "Speaking · Part 1 & 2", "Développer, raconter, décrire avec un lexique précis."],
   ["s3", "Speaking · Part 3", "Abstraire, spéculer, comparer, nuancer comme un locuteur C2."],
-  ["sid", "Speaking · Idiomes naturels", "Des expressions idiomatiques qu'un natif emploie vraiment, au bon registre."]
+  ["sid", "Speaking · Idiomes naturels", "Des expressions idiomatiques qu'un natif emploie vraiment, au bon registre."],
+  ["t2sig", "Task 2 · Tes tournures signature & le budget", "Tirées de ta copie du 21/10 (espace) : les tournures qui font un 8+, une seule fois chacune par copie, et le lexique des dépenses publiques."]
 ];
 
 window.IELTS_CARDS = [
@@ -460,5 +461,29 @@ window.IELTS_CARDS = [
 ["sid","ça m'a ouvert les yeux","it was a wake-up call","The illness was a wake-up call.",""],
 ["sid","trouver le juste milieu","to strike a happy medium","It's about striking a happy medium.",""],
 ["sid","jouer la sécurité","to play it safe","I tend to play it safe with money.",""],
-["sid","prendre du recul","to take a step back","Sometimes you need to take a step back.",""]
+["sid","prendre du recul","to take a step back","Sometimes you need to take a step back.",""],
+/* ---------------- TASK 2 · TOURNURES SIGNATURE & BUDGET (copie du 21/10) ---------------- */
+["t2sig","c'est là que réside le problème","Herein lies the problem.","Most governments plan in four-year cycles, whereas research pays off over decades. Herein lies the problem.","Juste après avoir posé un paradoxe ou une tension, en tête de phrase. Une fois par copie, jamais en introduction."],
+["t2sig","le nœud du problème, c'est que","The crux of the matter is that…","The crux of the matter is that poverty will never be eliminated altogether.","Pour recentrer sur l'argument décisif, souvent en milieu ou fin de paragraphe."],
+["t2sig","cela ne veut pas dire que","This is not to say that…","This is not to say that poverty should be ignored.","La nuance qui protège ta position : idéale juste avant ou après une concession."],
+["t2sig","nulle part ce n'est plus visible que dans","Nowhere is this more evident than in…","Nowhere is this more evident than in satellite navigation, now indispensable to farmers.","Inversion après « Nowhere » : pour introduire ton meilleur exemple."],
+["t2sig","loin d'être un luxe, c'est","Far from being a luxury, X is…","Far from being a luxury, space research has repeatedly produced everyday technologies.","Renverse une idée reçue en une phrase : parfait en ouverture de paragraphe."],
+["t2sig","c'est précisément pour cette raison que","It is precisely for this reason that…","It is precisely for this reason that long-term research deserves protection.","Pour tirer la conséquence d'un argument, en fin de paragraphe."],
+["t2sig","si les gouvernements devaient…","Were governments to + base verbale, …","Were governments to halt space programmes, the long-term cost could be immense.","Conditionnelle inversée, très soutenue : une seule par copie."],
+["t2sig","ce qu'on oublie souvent, c'est que","What is often overlooked, however, is that…","What is often overlooked, however, is that space budgets are remarkably small.","Pour introduire l'argument que l'autre camp néglige."],
+["t2sig","il serait naïf de penser que","It would be naive to assume that…","It would be naive to assume that cutting research alone would end poverty.","Critiquer une position avec mesure, sans « glaringly obvious »."],
+["t2sig","un arbitrage entre court et long terme","a trade-off between short-term and long-term gains","The question ultimately comes down to a trade-off between short-term and long-term gains.","« arbitrage » en anglais est un terme de finance : le mot juste est trade-off."],
+["t2sig","les grands pôles de dépenses publiques","the main areas of public expenditure","Defence and healthcare remain the main areas of public expenditure.","Aussi : spending priorities, budget lines. Jamais « a spending »."],
+["t2sig","un budget titanesque","a colossal / staggering budget","The US defence budget, at well over 800 billion dollars a year, is colossal by comparison.","colossal (neutre, écrit), staggering (qui sidère). Évite « eye-watering » à l'écrit académique."],
+["t2sig","une part infime du budget","a tiny fraction of the budget","NASA receives less than half of one per cent of the federal budget.","fraction + of ; « less than half of one per cent » est la tournure exacte."],
+["t2sig","allouer des fonds à","to allocate funds to","Governments allocate funds to research according to political priorities.","allocate funds TO ; nom : allocation."],
+["t2sig","réaffecter des fonds de X vers Y","to divert / reallocate funds from X to Y","Diverting funds from defence to research would cost very little.","divert = détourner vers autre chose ; reallocate = redistribuer, plus neutre."],
+["t2sig","les retombées (technologiques)","spin-offs / spillover benefits","Space programmes have produced countless spin-offs, from GPS to water filters.","spin-off = produit dérivé d'une recherche ; spillover = effet d'entraînement."],
+["t2sig","éradiquer la pauvreté","to eradicate / eliminate poverty","Poverty is unlikely ever to be eradicated altogether.","eradicate = faire disparaître totalement ; alleviate / reduce = atténuer."],
+["t2sig","sortir des gens de la pauvreté","to lift people out of poverty","Cheap energy would lift millions out of poverty.","La collocation exacte : lift … out of poverty."],
+["t2sig","porter ses fruits","to pay off / to bear fruit","Fundamental research often takes decades to pay off.","pay off (neutre) ; bear fruit (plus soutenu)."],
+["t2sig","les vaccins à ARN messager","mRNA vaccines","mRNA vaccines grew out of decades of fundamental research.","ARN = sigle français ; en anglais : RNA, mRNA."],
+["t2sig","une énergie quasi illimitée et propre","an almost limitless supply of clean energy","Nuclear fusion could provide an almost limitless supply of clean energy.","supply of + nom : la collocation juste pour une ressource."],
+["t2sig","reporter indéfiniment","to postpone indefinitely","Waiting until poverty ends would mean postponing exploration indefinitely.","Argument clé contre la condition du sujet : la pauvreté ne disparaît jamais totalement."],
+["t2sig","en conclusion, même si…, je reste convaincu que…","In conclusion, while…, I remain convinced that…","In conclusion, while poverty must remain a priority, I remain convinced that halting space exploration would be short-sighted.","La conclusion en une phrase : concession + même position que la thèse."]
 ];
