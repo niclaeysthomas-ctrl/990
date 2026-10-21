@@ -280,6 +280,8 @@ nav.tabs .lb-s{display:none}
 .ck-kbd{font:.72rem var(--f-mono);color:var(--muted);text-align:center;margin-top:8px}
 @media (hover:none){.ck-kbd{display:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.ck-type{width:100%;font-size:1.2rem;padding:12px 14px;margin-top:14px;text-align:center;font-family:var(--f-mono, monospace)}
+.ck-verdict{margin-top:12px;font-weight:700}.ck-verdict.ok{color:var(--ok)}.ck-verdict.bad{color:var(--bad)}
 </style>
 </head>
 <body>
@@ -1939,7 +1941,8 @@ const PLAN = [
     [10, "Atelier · Task 1 : l'overview (décrire une image)", "atelier:overview"],
     [20, "Task 1 « camemberts » ici : seulement intro + overview + 1 paragraphe, notée", "writing:t1f"],
     [10, "Atelier · Ton plan du 21/10 : les 6 pièges à ne plus écrire", "atelier:plan21"],
-    [10, "Atelier · Ta copie du 21/10 (espace) : les 6 pièges", "atelier:espace21"]]],
+    [10, "Atelier · Ta copie du 21/10 (espace) : les 6 pièges", "atelier:espace21"],
+    [10, "Cartes perso : mes copies (tournures, mots) + orthographe à réécrire", "cardsP"]]],
   [2, "Speaking à froid", "Parler 2 minutes sans hésiter, sur n'importe quel sujet.", false, [
     [40, "Deux simulations complètes du Speaking, cartes jamais vues", "speaking:2"],
     [20, "Listening : une Part 4 Cambridge"],
@@ -2428,11 +2431,12 @@ Reply with ONLY a JSON object: {"bands":{"TR":7},"summary_fr":"2-3 phrases en fr
 
 /* --- navigation depuis le plan --- */
 function goTo(link) {
-  const [tab, sub] = String(link).split(":");
+  let [tab, sub] = String(link).split(":");
   if (tab === "listening" && sub) { stopAudio(); lisState.cur = sub; store.set("lisCur", sub); renderLisTabs(); renderLis(); }
   if (tab === "reading" && sub) { readCur = sub; store.set("readCur", sub); renderReadTabs(); }
   if (tab === "writing" && sub) { $("#w-sel").value = sub; store.set("wSel", sub); renderWriting(); }
   if (tab === "atelier" && sub) { atCur = sub; store.set("atCur", sub); atState = { i: 0, ok: 0, done: 0 }; renderAtTabs(); renderAt(); }
+  if (tab === "cardsP") { ckSetPrefs({ deck: "t2sig" }); renderCardsHome(); renderCardsBrowse(); tab = "cards"; }
   if (tab === "speaking" && sub) { const b = $$("#sp-tabs button").find(x => x.dataset.p === sub); if (b) b.click(); }
   showTab(tab); window.scrollTo(0, 0);
 }
@@ -2688,6 +2692,10 @@ function soundTest(statusEl) {
    ========================================================= */
 const CK_DECKS = window.IELTS_DECKS || [], CK_ALL = (window.IELTS_CARDS || []).map(c => ({ id: c[0] + ":" + c[2], d: c[0], fr: c[1], en: c[2], ex: c[3] || "", n: c[4] || "" }));
 const CK_NAME = Object.fromEntries(CK_DECKS.map(d => [d[0], d[1]]));
+/* decks perso : à part de la séance du jour (« Tous les paquets » ne les inclut pas) */
+const CK_PERSO = new Set(CK_DECKS.filter(d => d[3] === "perso").map(d => d[0]));
+const ckIsPerso = deck => CK_PERSO.has(deck);
+const ckTyped = c => c.d === "ortho";
 let ck = null; // séance en cours
 function ckToday() { return isoDay(new Date()); }
 function ckAddDays(iso, n) { const d = parseDay(iso); d.setDate(d.getDate() + n); return isoDay(d); }
@@ -2695,13 +2703,14 @@ function ckDaysLeft() { const exam = parseDay(store.get("examDate", defaultExam(
 function ckState() { return store.get("cards", {}); }
 function ckPrefs() { return Object.assign({ deck: "all", perDay: 30, dir: "fr" }, store.get("cardsPrefs", {})); }
 function ckSetPrefs(p) { store.set("cardsPrefs", Object.assign(ckPrefs(), p)); }
-function ckNewToday() { return store.get("cardsNew:" + ckToday(), 0); }
-function ckPool(deck) { return deck === "all" ? CK_ALL : CK_ALL.filter(c => c.d === deck); }
+function ckNewToday(deck) { return store.get((ckIsPerso(deck || ckPrefs().deck) ? "cardsNewP:" : "cardsNew:") + ckToday(), 0); }
+function ckPool(deck) { return deck === "all" ? CK_ALL.filter(c => !CK_PERSO.has(c.d)) : CK_ALL.filter(c => c.d === deck); }
+function ckRoom(deck, fresh) { return ckIsPerso(deck) ? fresh : Math.max(0, ckPrefs().perDay - ckNewToday(deck)); }
 function ckCounts(deck) {
   const st = ckState(), t = ckToday(), pool = ckPool(deck || ckPrefs().deck);
   let due = 0, fresh = 0, learnt = 0, mature = 0;
   pool.forEach(c => { const s = st[c.id]; if (!s) fresh++; else { learnt++; if (s.due <= t) due++; if (s.iv >= 7) mature++; } });
-  const room = Math.max(0, ckPrefs().perDay - ckNewToday());
+  const room = ckRoom(deck || ckPrefs().deck, fresh);
   return { due, fresh, learnt, mature, total: pool.length, newNow: Math.min(fresh, room) };
 }
 /* intervalle proposé pour chaque bouton (jours) */
@@ -2721,7 +2730,7 @@ function ckLabel(iv) { return iv <= 0 ? "< 10 min" : iv === 1 ? "1 j" : iv + " j
 function ckBuildQueue() {
   const p = ckPrefs(), st = ckState(), t = ckToday(), pool = ckPool(p.deck);
   const due = pool.filter(c => st[c.id] && st[c.id].due <= t).sort((a, b) => st[a.id].due < st[b.id].due ? -1 : 1);
-  const room = Math.max(0, p.perDay - ckNewToday());
+  const room = ckRoom(p.deck, pool.filter(c => !st[c.id]).length);
   // nouvelles cartes : un paquet après l'autre en alternance (Task 1, Task 2, oral…)
   const byDeck = {}; pool.filter(c => !st[c.id]).forEach(c => (byDeck[c.d] = byDeck[c.d] || []).push(c));
   const lanes = Object.values(byDeck), mixed = [];
@@ -2737,7 +2746,9 @@ function ckBuildQueue() {
 }
 function renderCardsHome() {
   const p = ckPrefs(), c = ckCounts(p.deck), left = ckDaysLeft();
-  const chips = [["all", "Tous les paquets", CK_ALL.length]].concat(CK_DECKS.map(d => [d[0], d[1], CK_ALL.filter(x => x.d === d[0]).length]))
+  const chip = ([id, name, n]) => `<button aria-pressed="${p.deck === id}" data-deck="${id}">${esc(name)} <span class="mono" style="opacity:.6">${n}</span></button>`;
+  const perso = CK_DECKS.filter(d => d[3] === "perso").map(d => { const k = ckCounts(d[0]); return [d[0], d[1], (k.due + k.newNow) ? (k.due + k.newNow) + " à faire" : CK_ALL.filter(x => x.d === d[0]).length]; }).map(chip).join("");
+  const chips = [["all", "Tous les paquets", ckPool("all").length]].concat(CK_DECKS.filter(d => d[3] !== "perso").map(d => [d[0], d[1], CK_ALL.filter(x => x.d === d[0]).length]))
     .map(([id, name, n]) => `<button aria-pressed="${p.deck === id}" data-deck="${id}">${esc(name)} <span class="mono" style="opacity:.6">${n}</span></button>`).join("");
   const deckDesc = p.deck === "all" ? "Toutes les cartes, paquets mélangés." : (CK_DECKS.find(d => d[0] === p.deck) || [])[2] || "";
   const allC = ckCounts("all"), needed = left > 1 ? Math.ceil(allC.fresh / (left - 1)) : allC.fresh;
@@ -2748,8 +2759,10 @@ function renderCardsHome() {
       <div class="tcell"><small>Nouvelles aujourd'hui</small><b>${c.newNow}</b></div>
       <div class="tcell"><small>Acquises (≥ 7 j)</small><b>${c.mature}<span class="note"> / ${c.total}</span></b></div>
     </div>
-    <h4>Paquet</h4>
-    <div class="subtabs" id="ck-decks">${chips}</div>
+    <h4>📒 Mes decks perso <span class="note" style="font-weight:400">· à part de ta séance du jour</span></h4>
+    <div class="subtabs ck-decks">${perso}</div>
+    <h4>Séance du jour</h4>
+    <div class="subtabs ck-decks" id="ck-decks">${chips}</div>
     <p class="note" style="margin-top:-6px">${esc(deckDesc)}</p>
     <div class="row" style="margin:6px 0 4px">
       <label class="note">Nouvelles cartes par jour <select id="ck-per">${[15, 20, 30, 40, 60].map(n => `<option ${n === p.perDay ? "selected" : ""}>${n}</option>`).join("")}</select></label>
@@ -2757,7 +2770,7 @@ function renderCardsHome() {
     </div>
     ${left > 1 && allC.fresh ? `<p class="note">Il reste <b>${allC.fresh}</b> cartes jamais vues et <b>${left - 1}</b> jours avant la veille de l'examen : au moins <b>${needed}</b> nouvelles par jour pour tout voir.${needed > p.perDay ? " Monte le réglage." : ""}</p>` : ""}
     <button class="btn primary ck-reveal" id="ck-start" ${todo ? "" : "disabled"}>${todo ? `Commencer · ${todo} carte${todo > 1 ? "s" : ""}` : "Rien à faire ici aujourd'hui"}</button>`;
-  $$("#ck-decks [data-deck]").forEach(b => b.onclick = () => { ckSetPrefs({ deck: b.dataset.deck }); renderCardsHome(); renderCardsBrowse(); });
+  $$(".ck-decks [data-deck]").forEach(b => b.onclick = () => { ckSetPrefs({ deck: b.dataset.deck }); renderCardsHome(); renderCardsBrowse(); });
   $("#ck-per").onchange = e => { ckSetPrefs({ perDay: +e.target.value }); renderCardsHome(); };
   $("#ck-dir").onchange = e => { ckSetPrefs({ dir: e.target.value }); };
   $("#ck-start").onclick = ckStart;
@@ -2788,9 +2801,9 @@ function ckRender() {
       <p>${ck.done} carte${ck.done > 1 ? "s" : ""} révisée${ck.done > 1 ? "s" : ""}${ck.again ? `, dont ${ck.again} ratée${ck.again > 1 ? "s" : ""} puis revue${ck.again > 1 ? "s" : ""}` : ""}.</p>
       <p class="note">Les cartes difficiles reviennent demain. Relis à voix haute les tournures ratées avant ton prochain essai.</p>
       <button class="btn primary" id="ck-back">Retour aux paquets</button></div>`;
-    $("#ck-back").onclick = ckEnd; autoDone("cards"); return;
+    $("#ck-back").onclick = ckEnd; autoDone(ckIsPerso(ckPrefs().deck) ? "cardsP" : "cards"); return;
   }
-  const c = ck.queue[ck.pos], s = ckState()[c.id], en = ckPrefs().dir === "en";
+  const c = ck.queue[ck.pos], s = ckState()[c.id], ty = ckTyped(c), en = ckPrefs().dir === "en" && !ty;
   const front = en ? c.en : c.fr, back = en ? c.fr : c.en;
   const pct = Math.round(ck.pos / ck.queue.length * 100);
   host.innerHTML = `
@@ -2799,6 +2812,8 @@ function ckRender() {
     <div class="ck-card">
       <div class="ck-deck">${esc(CK_NAME[c.d] || "")}</div>
       <div class="ck-front">${esc(front)}</div>
+      ${ty && !ck.shown ? `<input type="text" id="ck-type" class="ck-type" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Tape le mot en anglais" aria-label="Ta réponse">` : ""}
+      ${ty && ck.shown ? `<div class="ck-verdict ${ck.typedOk ? "ok" : "bad"}">${ck.typedOk ? "✓ Parfait" : "✗ Pas tout à fait : recopie-le dans ta tête lettre par lettre"}</div>` : ""}
       ${ck.shown ? `<div class="ck-back">
         <div class="ck-en">${esc(back)}</div>
         ${c.ex ? `<div class="ck-ex">${esc(c.ex)}</div>` : ""}
@@ -2809,23 +2824,28 @@ function ckRender() {
     ${ck.shown ? `<div class="ck-rate">${[[1, "again", "Raté"], [2, "", "Difficile"], [3, "", "Bien"], [4, "easy", "Facile"]].map(([r, cls, lab]) =>
         `<button class="btn ${cls}" data-r="${r}"><b>${lab}</b><small>${ckLabel(ckNext(s, r).iv)}</small></button>`).join("")}</div>
       <div class="ck-kbd">Clavier : 1 · 2 · 3 · 4</div>`
-    : `<button class="btn primary ck-reveal" id="ck-show">${en ? "Voir la traduction" : "Dis-le à voix haute, puis retourne"}</button><div class="ck-kbd">Clavier : Espace</div>`}`;
+    : `<button class="btn primary ck-reveal" id="ck-show">${ty ? "Vérifier" : en ? "Voir la traduction" : "Dis-le à voix haute, puis retourne"}</button><div class="ck-kbd">${ty ? "Clavier : Entrée" : "Clavier : Espace"}</div>`}`;
   $("#ck-quit").onclick = ckEnd;
   if (ck.shown) {
     $$(".ck-rate [data-r]").forEach(b => b.onclick = () => ckRate(+b.dataset.r));
     $("#ck-say").onclick = () => { unlockAudio(); try { speechSynthesis.cancel(); } catch (e) {} speakOne(c.en + (c.ex && c.ex !== c.en ? ". " + c.ex : ""), { lang: "en-GB", g: "f", rate: 0.95 }); };
-  } else $("#ck-show").onclick = () => { ck.shown = true; ckRender(); };
+  } else {
+    const reveal = () => { if (ty) { const v = ($("#ck-type").value || "").trim().toLowerCase().replace(/[’`]/g, "'"); ck.typedOk = v === c.en.toLowerCase(); } ck.shown = true; ckRender(); };
+    $("#ck-show").onclick = reveal;
+    if (ty) { const i = $("#ck-type"); i.focus(); i.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); reveal(); } }; }
+  }
+  if (ty && ck.shown) { const b = $(`.ck-rate [data-r="${ck.typedOk ? 3 : 1}"]`); if (b) b.classList.add("primary"); }
 }
 function ckRate(r) {
   const c = ck.queue[ck.pos], all = ckState(), prev = all[c.id];
-  if (!prev && !ck.seen[c.id]) store.set("cardsNew:" + ckToday(), ckNewToday() + 1);
+  if (!prev && !ck.seen[c.id]) store.set((ckIsPerso(c.d) ? "cardsNewP:" : "cardsNew:") + ckToday(), ckNewToday(c.d) + 1);
   ck.seen[c.id] = 1;
   const nx = ckNext(prev, r);
   all[c.id] = { iv: nx.iv, ef: Math.round(nx.ef * 100) / 100, reps: nx.reps, lapses: nx.lapses, due: ckAddDays(ckToday(), nx.iv) };
   store.set("cards", all);
   if (r === 1) { ck.again++; ck.queue.splice(Math.min(ck.queue.length, ck.pos + 4), 0, c); }
   else ck.done++;
-  ck.pos++; ck.shown = false; ckRender();
+  ck.pos++; ck.shown = false; ck.typedOk = false; ckRender();
 }
 document.addEventListener("keydown", e => {
   if (!ck || $("#tab-cards").hidden || /input|textarea|select/i.test((e.target.tagName || ""))) return;

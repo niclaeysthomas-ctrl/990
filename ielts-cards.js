@@ -22,7 +22,8 @@ window.IELTS_DECKS = [
   ["s2", "Speaking · Part 1 & 2", "Développer, raconter, décrire avec un lexique précis."],
   ["s3", "Speaking · Part 3", "Abstraire, spéculer, comparer, nuancer comme un locuteur C2."],
   ["sid", "Speaking · Idiomes naturels", "Des expressions idiomatiques qu'un natif emploie vraiment, au bon registre."],
-  ["t2sig", "Task 2 · Tes tournures signature & le budget", "Tirées de ta copie du 21/10 (espace) : les tournures qui font un 8+, une seule fois chacune par copie, et le lexique des dépenses publiques."]
+  ["t2sig", "📒 Mes copies · tournures & mots", "Ton deck perso, à part de la séance du jour : les tournures signature, les connecteurs, les mots qui t'ont fait tiquer et les phrases de tes copies corrigées.", "perso"],
+  ["ortho", "✍️ Mes copies · orthographe à réécrire", "Les mots que tu as mal écrits dans tes copies. Tu les TAPES, puis tu vérifies : la main retient l'orthographe mieux que l'œil.", "perso"]
 ];
 
 window.IELTS_CARDS = [
@@ -462,7 +463,7 @@ window.IELTS_CARDS = [
 ["sid","trouver le juste milieu","to strike a happy medium","It's about striking a happy medium.",""],
 ["sid","jouer la sécurité","to play it safe","I tend to play it safe with money.",""],
 ["sid","prendre du recul","to take a step back","Sometimes you need to take a step back.",""],
-/* ---------------- TASK 2 · TOURNURES SIGNATURE & BUDGET (copie du 21/10) ---------------- */
+/* ---------------- 📒 MES COPIES · TOURNURES & MOTS (deck perso) ---------------- */
 ["t2sig","c'est là que réside le problème","Herein lies the problem.","Most governments plan in four-year cycles, whereas research pays off over decades. Herein lies the problem.","Juste après avoir posé un paradoxe ou une tension, en tête de phrase. Une fois par copie, jamais en introduction."],
 ["t2sig","le nœud du problème, c'est que","The crux of the matter is that…","The crux of the matter is that poverty will never be eliminated altogether.","Pour recentrer sur l'argument décisif, souvent en milieu ou fin de paragraphe."],
 ["t2sig","cela ne veut pas dire que","This is not to say that…","This is not to say that poverty should be ignored.","La nuance qui protège ta position : idéale juste avant ou après une concession."],
@@ -485,5 +486,43 @@ window.IELTS_CARDS = [
 ["t2sig","les vaccins à ARN messager","mRNA vaccines","mRNA vaccines grew out of decades of fundamental research.","ARN = sigle français ; en anglais : RNA, mRNA."],
 ["t2sig","une énergie quasi illimitée et propre","an almost limitless supply of clean energy","Nuclear fusion could provide an almost limitless supply of clean energy.","supply of + nom : la collocation juste pour une ressource."],
 ["t2sig","reporter indéfiniment","to postpone indefinitely","Waiting until poverty ends would mean postponing exploration indefinitely.","Argument clé contre la condition du sujet : la pauvreté ne disparaît jamais totalement."],
-["t2sig","en conclusion, même si…, je reste convaincu que…","In conclusion, while…, I remain convinced that…","In conclusion, while poverty must remain a priority, I remain convinced that halting space exploration would be short-sighted.","La conclusion en une phrase : concession + même position que la thèse."]
+["t2sig","en conclusion, même si…, je reste convaincu que…","In conclusion, while…, I remain convinced that…","In conclusion, while poverty must remain a priority, I remain convinced that halting space exploration would be short-sighted.","La conclusion en une phrase : concession + même position que la thèse."],
+["t2sig","elle repose sur une condition qui ne pourra jamais être remplie","it rests on a condition that can never be met","This view is flawed, since it rests on a condition that can never be met.","Pour démonter un sujet avec « until » ou « only if » : attaque la condition elle-même."],
+["t2sig","négliger, passer à côté de (un argument)","to overlook","This argument overlooks the long-term benefits of research.","overlook = ne pas voir, négliger ; pas « oversee » (superviser)."],
+["t2sig","la raison la plus convaincante","the most compelling reason","The most compelling reason to fund space research is its unpredictable pay-off.","Ouverture de paragraphe, à la place de « Firstly »."],
+["t2sig","…, et pourtant certaines des plus…","…, yet some of the most…","Scientists cannot predict where their work will lead, yet some of the most transformative technologies emerged in precisely this way.","« yet » après une virgule oppose deux faits avec force, à l'intérieur de la phrase."],
+["t2sig","approfondir notre compréhension de","to deepen our understanding of","Space research could deepen our understanding of nuclear fusion.","deepen + understanding : la collocation exacte."],
+["t2sig","un autre élément à prendre en compte est que","A further consideration is that…","A further consideration is that the argument greatly overstates the cost of space research.","Ouverture du 2e argument, à la place de « Secondly »."],
+["t2sig","exagérer, surestimer (un coût, un risque)","to overstate","The argument greatly overstates the cost of space research.","overstate = exagérer en paroles ; overestimate = mal évaluer un chiffre. Les deux en un seul mot."],
+["t2sig","les sommes colossales consacrées à la défense","the colossal sums devoted to defence","NASA's budget is a tiny fraction compared with the colossal sums devoted to defence.","devoted TO ; « defence » avec un c en anglais britannique."],
+["t2sig","plutôt que d'abandonner la recherche spatiale, …","Rather than abandoning space research, …","Rather than abandoning space research, governments could divert a modest share of military spending.","Rather than + verbe en -ing ; abandoning : un seul n au milieu."],
+["t2sig","de plus, la pauvreté, aussi réduite soit-elle, ne sera sans doute jamais totalement éradiquée","Moreover, poverty, however much it is reduced, is unlikely ever to be eradicated altogether.","Moreover, poverty, however much it is reduced, is unlikely ever to be eradicated altogether.","« however much it is reduced » = aussi réduite soit-elle ; « unlikely ever to » = sans doute jamais."],
+["t2sig","s'attaquer à (un problème)","to tackle","Tackling poverty is undeniably urgent.","tackle a problem / an issue : registre écrit, très naturel."],
+["t2sig","je reste convaincu que","I remain convinced that…","I remain convinced that halting space exploration would be short-sighted.","Parfait en conclusion : montre que ta position n'a pas bougé depuis la thèse."],
+["t2sig","de même, dans la même logique","Similarly, … / By the same token, …","By the same token, medical research has often benefited from chance discoveries.","Pour un parallèle. « Conversely » est réservé à une relation inverse."],
+["t2sig","il s'ensuit que","It follows that…","It follows that postponing exploration would amount to abandoning it.","Tire une conséquence logique, registre soutenu."],
+["t2sig","d'autant plus que","all the more… since / as","This is all the more true since poverty will never disappear entirely.","all the more + adjectif + since."],
+["t2sig","certes… cependant…","Admittedly, … However, …","Admittedly, poverty must remain a priority. However, halting research would be short-sighted.","La concession en deux temps : reconnaître, puis réfuter."],
+["t2sig","en fin de compte","Ultimately, …","Ultimately, the question is one of short-term versus long-term gains.","Ramène au fond du débat. « Overall » se garde pour la conclusion ou l'overview."],
+["t2sig","la dépense publique (indénombrable)","public expenditure","Public expenditure on research has stagnated.","« expenditure » s'emploie sans article au sens général."],
+["t2sig","l'une des plus hautes priorités de l'État","one of the state's highest priorities","Fighting poverty should be one of the state's highest priorities.","Le possessif d'abord, l'adjectif ensuite : the state's highest."],
+["t2sig","voir la pauvreté chuter","to see poverty plummet","Few policies have seen poverty plummet so quickly.","see + objet + base verbale (plummet, pas de -s)."],
+["t2sig","plus que ne l'ont jamais fait les économies","more than savings ever have","Cheap energy would do far more to reduce poverty than savings ever have.","Comparaison jusqu'à aujourd'hui : present perfect (ever have)."],
+["t2sig","le savoir pour lui-même doit garder une place protégée","knowledge pursued for its own sake must retain a protected place","Knowledge pursued for its own sake must retain a protected place within universities.","Ta conclusion du sujet « universités » au bon registre."],
+["t2sig","certes, viser uniquement l'emploi risque de…","Admittedly, an exclusive focus on employability risks + -ing","Admittedly, an exclusive focus on employability risks training students for jobs that may disappear.","risk + verbe en -ing ; la concession qui te sert, suivie de « However »."],
+["t2sig","par exemple (à l'écrit)","for example / for instance / e.g.","Several scientists, for example Neil deGrasse Tyson, have made this point.","À l'écrit, jamais d'abréviation familière ; « e.g. » seulement entre parenthèses."],
+/* ---------------- ✍️ MES COPIES · ORTHOGRAPHE (on tape le mot) ---------------- */
+["ortho","journal (le quotidien papier)","newspaper","I read the newspaper every morning.","news + paper : un seul p au milieu."],
+["ortho","ne pourrait pas (contraction de could not)","couldn't","I couldn't agree more.","could + n't : l'apostrophe remplace le o de not."],
+["ortho","économiquement","economically","This policy is economically sound.","economic + ally : deux l à la fin."],
+["ortho","scientifiques (nom pluriel)","scientists","Scientists cannot predict where their work will lead.","sci-en-tists : le i vient avant le e, comme dans science."],
+["ortho","prévu, anticipé (participe passé de foresee)","foreseen","Few could have foreseen these changes.","fore + seen : deux e seulement."],
+["ortho","seuil","threshold","Funding remains below the necessary threshold.","thresh + old : un seul h au milieu."],
+["ortho","déraisonnable","unreasonable","The defence budget is arguably unreasonable.","un + reason + able."],
+["ortho","viabilité","viability","The viability of the project is in doubt.","via + bility : le b vient après le i."],
+["ortho","surestimer (en un seul mot)","overestimate","The argument overestimates the cost.","Un seul mot, sans trait d'union."],
+["ortho","abandonnant (forme en -ing)","abandoning","Rather than abandoning research, governments could divert funds.","Un seul n au milieu, contrairement au français « abandonner »."],
+["ortho","la défense (anglais britannique)","defence","The defence budget is colossal.","Avec un c en anglais britannique ; garde la même orthographe dans toute la copie."],
+["ortho","pauvreté","poverty","Tackling poverty is undeniably urgent.","pov-er-ty : le v, puis -erty."],
+["ortho","plutôt (rather than)","rather","Rather than cutting research, governments could act elsewhere.","ra-ther : th au milieu, -er à la fin."]
 ];
