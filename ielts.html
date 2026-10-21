@@ -2834,7 +2834,7 @@ function ckRender() {
     $("#ck-show").onclick = reveal;
     if (ty) { const i = $("#ck-type"); i.focus(); i.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); reveal(); } }; }
   }
-  if (ty && ck.shown) { const b = $(`.ck-rate [data-r="${ck.typedOk ? 3 : 1}"]`); if (b) b.classList.add("primary"); }
+  if (ty && ck.shown) { const b = $(`.ck-rate [data-r="${ck.typedOk ? 3 : 1}"]`); if (b) b.style.outline = "3px solid var(--accent)"; }
 }
 function ckRate(r) {
   const c = ck.queue[ck.pos], all = ckState(), prev = all[c.id];
