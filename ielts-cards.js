@@ -525,7 +525,7 @@ window.IELTS_CARDS = [
 ["t1x","deux fois plus de … que","twice as many / as much … as","Renewables produced twice as much electricity as nuclear power.","many (dénombrable), much (indénombrable), puis « as »."],
 ["t1x","trois fois plus élevé que","three times as high as / three times higher than","Coal's share was three times as high as that of nuclear power.","« that of » évite de répéter « the share »."],
 ["t1x","moitié moins que","half as much / many as","Nuclear power produced half as much as renewables.","« half as … as » : la tournure la plus élégante pour une moitié."],
-["t1x","4 points de pourcentage (pas 4 %)","rose by five percentage points","Gas rose by five percentage points, from 25% to 30%.","Quand on compare deux pourcentages : « percentage points ». « by 20 per cent » voudrait dire une hausse relative de 20 %."],
+["t1x","5 points de pourcentage (pas 5 %)","rose by five percentage points","Gas rose by five percentage points, from 25% to 30%.","Quand on compare deux pourcentages : « percentage points ». « by 20 per cent » voudrait dire une hausse relative de 20 %."],
 ["t1x","presque la moitié","almost / nearly half","Coal accounted for almost half of all electricity.","Varie : just under half (un peu moins), well over half (largement plus)."],
 ["t1x","un quart / près d'un tiers","a quarter / nearly a third","Gas rose from a quarter to nearly a third of the total.","Les fractions remplacent les pourcentages et varient ton lexique."],
 ["t1x","un sur cinq","one in five","One in five households owned a car.","Très naturel pour 20 %."],
