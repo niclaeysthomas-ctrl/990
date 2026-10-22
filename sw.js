@@ -1,5 +1,5 @@
 /* 990 — service worker : cache offline (app shell) */
-const CACHE = '990-v50-pieges';
+const CACHE = '990-v51-synchro';
 const ASSETS = [
   'index.html',
   'ielts.html',
@@ -53,7 +53,7 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  if (e.request.method !== 'GET') return;
+  if (e.request.method !== 'GET' || !e.request.url.startsWith(self.location.origin)) return;
   e.respondWith(
     caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
       const copy = res.clone();

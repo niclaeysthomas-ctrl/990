@@ -647,6 +647,7 @@ nav.tabs .lb-s{display:none}
 </section>
 </div>
 
+<script src="/forge/forge-sync.js"></script>
 <script src="ielts-cards.js?v=2"></script>
 <script>
 "use strict";
@@ -789,7 +790,7 @@ function autoDone(link) {
     const entry = PLAN.find(p => p[0] === Math.round((exam - today) / 86400000)); if (!entry) return;
     const key = isoDay(today), checks = store.get("planChecks", {}); let hit = false;
     entry[4].forEach((t, ti) => { if (t[2] === link && !checks[key + ":" + ti]) { checks[key + ":" + ti] = 1; hit = true; } });
-    if (hit) { store.set("planChecks", checks); renderPlan(); renderToday(); toast("Tâche du jour cochée"); }
+    if (hit) { store.set("planChecks", checks); if (window.AppsSync) AppsSync.soon(); renderPlan(); renderToday(); toast("Tâche du jour cochée"); }
   } catch (e) {}
 }
 
@@ -2443,7 +2444,7 @@ function goTo(link) {
 
 /* --- Aujourd'hui --- */
 function latestBands() { const l = {}; store.get("scores", []).forEach(e => l[e.k] = e); return l; }
-function toggleCheck(k, on) { const all = store.get("planChecks", {}); if (on) all[k] = 1; else delete all[k]; store.set("planChecks", all); renderPlan(); renderToday(); }
+function toggleCheck(k, on) { const all = store.get("planChecks", {}); if (on) all[k] = 1; else delete all[k]; store.set("planChecks", all); renderPlan(); renderToday(); if (window.AppsSync) AppsSync.soon(); }
 function renderToday() {
   const exam = parseDay(store.get("examDate", defaultExam())), today = parseDay(isoDay(new Date()));
   const left = Math.round((exam - today) / 86400000);
@@ -2877,6 +2878,12 @@ function goHash() { const m = /^#go=([^&]+)/.exec(location.hash || ""); if (!m) 
   try { goTo(decodeURIComponent(m[1])); } catch (e) {}
   try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} }
 window.addEventListener("hashchange", goHash); goHash();
+
+/* synchro téléphone ↔ ordi des cases du programme (même coffre que Le Pointage) */
+function appsSyncIelts(){ if (!window.AppsSync || !AppsSync.enabled()) return;
+  AppsSync.run().then(r => { if (r && r.changed) { try { renderPlan(); renderToday(); } catch (e) {} } }); }
+appsSyncIelts();
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") appsSyncIelts(); });
 </script>
 </body>
 </html>
