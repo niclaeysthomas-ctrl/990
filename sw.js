@@ -1,10 +1,10 @@
 /* 990 — service worker : cache offline (app shell) */
-const CACHE = '990-v51-synchro';
+const CACHE = '990-v52-synchrob';
 const ASSETS = [
   'index.html',
   'ielts.html',
   'ielts-cards.js?v=2',
-  'app.js?v=29',
+  'app.js?v=30',
   'lime.js?v=6',
   'diapason-data.js?v=1',
   'diapason.js?v=1',
