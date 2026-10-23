@@ -580,6 +580,7 @@ nav.tabs .lb-s{display:none}
       <div>
         <h3>La veille et le matin</h3>
         <ul class="tight">
+          <li><b>Ton samedi :</b> écrit à 9 h (sur place vers 8 h 15), oral à 15 h 20 (sur place vers 14 h 50). Entre les deux : déjeuner, marche, puis 15 min d'échauffement oral à 14 h.</li>
           <li>Relis ta convocation : heure d'arrivée, adresse, pièce d'identité exacte (celle de l'inscription), et si le Speaking a lieu le même jour.</li>
           <li>Sur place, tes affaires vont au vestiaire. En général, seuls la pièce d'identité, crayons, gomme et une bouteille d'eau transparente entrent dans la salle. Vérifie ce que dit ton centre.</li>
           <li>Le matin : 15 minutes d'anglais à voix haute ou un podcast en anglais, pour arriver déjà dans la langue. Rien de nouveau, aucun exercice noté.</li>
@@ -1963,16 +1964,24 @@ const PLAN = [
     [10, "Atelier · Connecteurs dans ta copie", "atelier:liens"],
     [10, "Atelier · Budget et dépenses publiques", "atelier:budget"],
     [10, "Atelier · Tournures signature (Herein lies the problem…)", "atelier:signature"]]],
-  [1, "Léger", "Arriver reposé. Rien de nouveau.", false, [
-    [20, "Listening : Part 2 QCM ici, pour garder l'oreille", "listening:p2b"],
-    [10, "Relis « Le jour J » et ta convocation", "plan"],
-    [10, "Prépare pièce d'identité, eau, crayons. Couche-toi tôt."],
-    [10, "Cartes : dernière séance, rien de nouveau", "cards"],
-    [20, "🚨 Cartes « Veille d'examen » : graphiques, overview, verbes, structures 8+", "cardsJ"],
-    [15, "Atelier · Copies modèles 8,5+ (Task 2 et Task 1 annotées)", "atelier:modele"],
-    [15, "Atelier · Copies modèles série 2 (discuss both views, camemberts, tableau, barres, processus)", "atelier:modele2"]]],
-  [0, "Examen", "Listening, Reading et Writing d'affilée. Speaking le même jour ou dans les sept jours.", true, [
-    [15, "Le matin : 15 min d'anglais à voix haute ou un podcast, puis départ avec 30 min d'avance"]]]
+  [1, "Veille", "Un dernier écrit chrono à 16 h, puis on charge les batteries. Rien de nouveau après 20 h.", false, [
+    [60, "16 h · Writing en conditions réelles : Task 2 « voiture contre transports » (40 min), puis Task 1 graphiques combinés (20 min). Stylo, chrono, sans pause", "writing:t2k"],
+    [10, "Relis tes deux copies avec la checklist : avis dès l'intro, même avis en conclusion, overview sans chiffres, une inversion max, orthographe", "today"],
+    [15, "Atelier · Copies modèles série 2 : la Task 2 « discuss both views » et les camemberts", "atelier:modele2"],
+    [20, "🚨 Cartes « Veille d'examen » : verbes, overview, structures 8+", "cardsJ"],
+    [20, "Listening : Part 2 QCM, pour garder l'oreille", "listening:p2b"],
+    [10, "Speaking : UNE carte de Part 2 à voix haute, 2 min chrono, sans te juger", "speaking:2"],
+    [10, "Sac prêt : pièce d'identité de l'inscription, convocation, eau en bouteille transparente, crayons, gomme"],
+    [5, "21 h 30 : écrans éteints. Réveil réglé à 6 h 45, téléphone hors de la chambre"]]],
+  [0, "Examen", "Écrit à 9 h (Listening, Reading, Writing d'affilée), Speaking à 15 h 20.", true, [
+    [15, "6 h 45 · Lever, grand verre d'eau, petit-déjeuner qui tient (pain complet, œufs). Pas de réseaux sociaux"],
+    [10, "7 h 30 · 10 min d'anglais à voix haute : relis une copie modèle. Aucun exercice noté", "atelier:modele"],
+    [10, "Sur place à 8 h 15 au plus tard pour l'écrit de 9 h (vérifie l'heure d'arrivée exacte sur ta convocation)"],
+    [165, "9 h · Listening, Reading, Writing d'affilée. Writing : Task 2 d'abord, 40 min ; Task 1 ensuite, 20 min"],
+    [30, "Midi · Déjeuner léger, 20 min de marche. Ne refais pas l'écrit dans ta tête : il est fini"],
+    [15, "14 h · Échauffement oral : deux cartes de Part 2 à voix haute, en anglais", "speaking:2"],
+    [10, "14 h 50 · Sur place pour l'oral (contrôle d'identité)"],
+    [14, "15 h 20 · Speaking, 11 à 14 min. Développe chaque réponse, et si tu n'as pas compris : « Could you repeat the question, please? »"]]]
 ];
 function isoDay(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
 function parseDay(s) { const [y, m, d] = String(s).split("-").map(Number); return new Date(y, (m || 1) - 1, d || 1); }
