@@ -280,7 +280,7 @@ function verbDueCount() {
   return n;
 }
 /* Files du jour : cap identique à l'esprit des autres decks */
-const VERB_NEW_PER_DAY = 12;
+const VERB_NEW_PER_DAY = 2;   // 12 → 2 le 2026-11-11 : le compte du jour est commun aux quatre paquets
 function buildVerbQueue(cat) {
   const now = Date.now();
   const due = [], news = [];

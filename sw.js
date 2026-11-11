@@ -1,24 +1,7 @@
 /* 990 — service worker : cache offline (app shell) */
-const CACHE = '990-v57-however';
+const CACHE = '990-v58-parler';
 const ASSETS = [
   'index.html',
-  'ielts.html',
-  'ielts-cards.js?v=2',
-  'app.js?v=30',
-  'lime.js?v=6',
-  'diapason-data.js?v=1',
-  'diapason.js?v=1',
-  'plume-data.js?v=2',
-  'plume.js?v=7',
-  'scalpel.js?v=1',
-  'moisson.js?v=2',
-  'verbs.js?v=20',
-  'zero-errors.js?v=1',
-  'prepositions.js?v=1',
-  'literary.js?v=2',
-  'hardexam.js?v=1',
-  'elevate.js?v=2',
-  'vocab-extra8.js?v=1',
   'data.js?v=10',
   'vocab-extra.js?v=16',
   'vocab-extra2.js?v=9',
@@ -28,14 +11,32 @@ const ASSETS = [
   'vocab-extra6.js?v=12',
   'vocab-future.js?v=13',
   'vocab-extra7.js?v=15',
-  'vocab-lectures.js?v=1',
-  'reading.js?v=22',
   'translations.js?v=9',
   'listening-long.js?v=9',
   'exam-data.js?v=10',
   'advanced.js?v=9',
   'future-grammar.js?v=13',
   'register.js?v=11',
+  'elevate.js?v=2',
+  'reading.js?v=22',
+  'zero-errors.js?v=1',
+  'prepositions.js?v=1',
+  'literary.js?v=2',
+  'vocab-extra8.js?v=1',
+  'vocab-lectures.js?v=1',
+  'verbs.js?v=21',
+  'moisson.js?v=2',
+  'scalpel.js?v=1',
+  'plume-data.js?v=2',
+  'plume.js?v=7',
+  'lime.js?v=7',
+  'diapason-data.js?v=1',
+  'diapason.js?v=2',
+  'tournures-data.js?v=1',
+  'tournures.js?v=1',
+  'micro-data.js?v=1',
+  'micro.js?v=1',
+  'app.js?v=31',
   'manifest.webmanifest',
   'icon-192.png',
   'icon-512.png'
@@ -47,7 +48,7 @@ self.addEventListener('install', e => {
 
 self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+    caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k.indexOf('990-') === 0).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });

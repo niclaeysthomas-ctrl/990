@@ -466,7 +466,7 @@ function dSeanceGo() {
 function dSeanceNext() { if (!DSE) return false; DSE.i++; dSeanceStep(); return true; }
 function dSeanceQuit() { DSE = null; renderDiapasonHome(); }
 function dSeanceEnd() {
-  DSE = null; markStudy(); touchDay(); save();
+  DSE = null; markSeance(); touchDay(); save();
   if (typeof checkAchievements === 'function') checkAchievements();
   app.innerHTML = `
     <div class="card big">
@@ -480,7 +480,7 @@ function dSeanceEnd() {
 }
 /* Chaque atelier finit par ici : soit on enchaîne la séance, soit on rend la main. */
 function dEndScreen(html, again, backLabel) {
-  markStudy(); touchDay(); save();
+  markSeance(); touchDay(); save();
   if (typeof checkAchievements === 'function') checkAchievements();
   if (DSE) { dSeanceNext(); return; }
   app.innerHTML = html + (again ? `<button class="btn" onclick="${again}">↻ Encore</button>` : '') +

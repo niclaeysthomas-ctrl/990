@@ -4,7 +4,13 @@
 'use strict';
 
 const DAY = 86400000;
-const NEW_PER_DAY = 25;         // nouvelles cartes par jour (15 → 25 le 13/09/2026 : il en veut plus, et le temps rendu par la prononciation y passe)
+/* Nouvelles cartes de vocabulaire par jour.
+   15 → 25 le 13/09/2026 (le volume rendu par l'oral était passé au vocabulaire),
+   puis 25 → 6 le 2026-11-11. Raison : quatre decks introduisaient 71 items
+   neufs chaque jour (25 vocab + 30 tournures + 12 verbes + 4 Lime), ce qui
+   produit, en régime, plusieurs centaines de révisions quotidiennes. L'examen
+   est passé ; la journée doit tenir en vingt minutes, parole comprise. */
+const NEW_PER_DAY = 6;
 const todayStr = () => new Date().toISOString().slice(0, 10);
 
 /* ---------- État persistant ---------- */
@@ -18,8 +24,8 @@ const DEFAULT = {
   newDate: todayStr(),
   reviewsDone: 0,       // total révisions cartes (stat)
   seenListen: 0,
-  placementDone: false, // test de niveau initial fait ?
-  estScore: null,       // dernière estimation /990
+  placementDone: false, // (hérité) test de niveau de l'ancien simulateur TOEIC
+  estScore: null,       // (hérité) dernière estimation /990 — plus alimentée
   level: 2,             // bande de difficulté visée (1 facile · 2 std · 3 difficile)
   history: [],          // [{ts, date, total, L, R, kind, diff, mins}]
   trans: {},            // index -> état SRS-lite des traductions
@@ -39,26 +45,41 @@ const DEFAULT = {
   lime: { srs: {}, extra: [], done: 0, newDate: todayStr(), newToday: 0 }, // LA LIME : exos quotidiens de production (voir lime.js)
   dia: { srs: {}, voice: 'us', lineDir: 'shadow', stats: {} }, // LE DIAPASON : accent & prononciation (voir diapason.js)
   audioSpeed: 'normal', // vitesse d'écoute : slow · normal · native
+  micro: { sessions: [], iM: 0, iC: 0, iE: 0 },  // LE MICRO : prises de parole (voir micro.js)
+  tourn: {},            // LES TOURNURES : SRS des 576 cartes de production (voir tournures.js)
+  tournDeck: 'all',     // paquet de tournures sélectionné
+  weekly: {},           // rendez-vous hebdomadaires cochés (ex. input: '2026-11-15')
   firstRun: true
 };
-// Objectifs quotidiens. Le 4e pilier (« parler à voix haute », arrivé avec
-// LE DIAPASON) a été retiré le 13/09/2026 à sa demande : l'examen qu'il
-// passe est un TOEIC Listening & Reading, où rien ne se produit à l'oral.
-// Le volume libéré est passé au vocabulaire — 30 cartes par jour au lieu
-// de 20, et 25 nouvelles au lieu de 15 (voir NEW_PER_DAY).
-const GOAL_CARDS = 30, GOAL_TRANS = 5, GOAL_SPEAK = 10;
+/* ============================================================
+   L'OBJECTIF DU JOUR — refondu le 2026-11-11
+   Avant : 30 cartes + 5 traductions + « étudier ». La parole, quatrième
+   pilier, avait été retirée le 13/09/2026 parce que l'examen visé ne
+   notait pas l'oral, et son temps versé au vocabulaire.
+   L'IELTS est obtenu (7.5, C1). Ce qui reste à gagner ne s'obtient pas
+   en reconnaissant des mots : il faut parler. Donc trois piliers, dans
+   cet ordre, et une journée qui tient en vingt minutes :
+     1. LA SÉANCE   — Le Diapason, oreille puis bouche (~12 min)
+     2. PARLER      — deux minutes enregistrées au Micro
+     3. LES CARTES  — dix, tous paquets confondus (30 → 10)
+   Les traductions, les essais, les lectures et les ateliers restent là,
+   accessibles, mais ne commandent plus la journée.
+   ============================================================ */
+const GOAL_CARDS = 10, GOAL_PARLER = 120, GOAL_PARLER_MIN = 100, GOAL_TRANS = 5;
 function resetDailyIfNeeded() {
-  if (!S.daily || S.daily.date !== todayStr()) S.daily = { date: todayStr(), cards: 0, trans: 0, study: 0, speak: 0 };
+  if (!S.daily || S.daily.date !== todayStr()) S.daily = { date: todayStr(), cards: 0, trans: 0, study: 0, seance: 0, parler: 0, speak: 0 };
 }
-function bumpDaily(field, n) { resetDailyIfNeeded(); S.daily[field] = (S.daily[field] || 0) + (n || 1); save(); checkDailyDone(); }
+function bumpDaily(field, n) { resetDailyIfNeeded(); S.daily[field] = (S.daily[field] || 0) + (n === undefined ? 1 : n); save(); checkDailyDone(); }
 function markStudy() { resetDailyIfNeeded(); S.daily.study = 1; save(); checkDailyDone(); }
+/* La séance du Diapason (et chacun de ses ateliers) valide le premier pilier. */
+function markSeance() { resetDailyIfNeeded(); S.daily.seance = 1; S.daily.study = 1; save(); checkDailyDone(); }
+function parleSecs() { resetDailyIfNeeded(); return (S.daily.parler || 0) + (S.daily.parleManuel === todayStr() ? GOAL_PARLER : 0); }
 function dailyProgress() {
   resetDailyIfNeeded();
+  const s = S.daily.seance ? 1 : 0;
+  const p = Math.min(1, parleSecs() / GOAL_PARLER_MIN);
   const c = Math.min(1, S.daily.cards / GOAL_CARDS);
-  const t = Math.min(1, S.daily.trans / GOAL_TRANS);
-  const s = S.daily.study ? 1 : 0;
-  const o = Math.min(1, (S.daily.speak || 0) / GOAL_SPEAK);   // conservé pour l'historique, plus compté
-  return { c, t, s, o, pct: Math.round((c + t + s) / 3 * 100), done: (c >= 1 && t >= 1 && s >= 1) };
+  return { s, p, c, pct: Math.round((s + p + c) / 3 * 100), done: (s >= 1 && p >= 1 && c >= 1) };
 }
 function checkDailyDone() {
   resetDailyIfNeeded();
@@ -67,6 +88,27 @@ function checkDailyDone() {
     toast('🏆 Objectif du jour atteint !');
     checkAchievements();
   }
+}
+/* ---------- Le rendez-vous du dimanche : de l'anglais réel dans l'oreille ----------
+   Tout l'audio de l'app est de la synthèse vocale : des voix qui articulent
+   trop proprement et ne mangent rien. À C1 c'est un plafond. Une fois par
+   semaine, quinze minutes d'écoute libre — podcast, série en version
+   originale sans sous-titres français — et trois tournures rapportées. */
+function semaineISO(d) {
+  const t = new Date(d || Date.now());
+  const j = (t.getDay() + 6) % 7;            // lundi = 0
+  t.setDate(t.getDate() - j);
+  return t.toISOString().slice(0, 10);       // le lundi de la semaine en cours
+}
+function inputFait() { if (!S.weekly) S.weekly = {}; return S.weekly.input === semaineISO(); }
+function marquerInput() {
+  if (!S.weekly) S.weekly = {};
+  if (S.weekly.input !== semaineISO()) S.inputSemaines = (S.inputSemaines || 0) + 1;
+  S.weekly.input = semaineISO();
+  addXp(30); touchDay(); save();
+  if (typeof checkAchievements === 'function') checkAchievements();
+  toast('🎧 Écoute réelle de la semaine ✓');
+  render();
 }
 
 /* Transfert de progression entre conteneurs de stockage (PWA installée vs Safari
@@ -203,13 +245,21 @@ function totalUnlearned() {
   for (const i of VOCAB_ORDER) if (!S.cards[i] || !S.cards[i].introduced) n++;
   return n;
 }
-const WAVE = 25; // taille d'une vague en mode sans plafond
+/* Le plafond de séance, remis dans le bon sens le 2026-11-11.
+   L'ancien code servait TOUTE la pile due d'un coup dès qu'on n'était pas
+   en mode « vague » — exactement l'inverse de ce qu'il annonçait, et la
+   raison pour laquelle une séance pouvait durer quarante minutes. Désormais
+   aucune séance ne dépasse WAVE cartes, et on n'introduit de nouvelles
+   cartes que si l'arriéré reste absorbable : une dette de cent cartes ne se
+   rattrape pas en en ajoutant six. */
+const WAVE = 20;
+const ARRIERE_MAX = 40;
 function buildQueue(unlimited) {
-  // révisions d'abord, puis nouvelles cartes.
-  // Sans plafond quotidien : on sert par VAGUES de 25 — une file de 300 cartes
-  // affichée d'un coup décourage et ne fait rien apprendre de plus.
-  const q = dueCards().concat(newAvailable(unlimited));
-  return unlimited ? q.slice(0, WAVE) : q;
+  const due = dueCards();
+  if (unlimited) return due.concat(newAvailable(true)).slice(0, WAVE);
+  const place = Math.max(0, WAVE - due.length);
+  const news = due.length > ARRIERE_MAX ? [] : newAvailable(false).slice(0, place);
+  return due.concat(news).slice(0, WAVE);
 }
 // File d'un thème précis (révisions dues + toutes les nouvelles du thème, sans plafond)
 function buildThemeQueue(theme) {
@@ -288,7 +338,6 @@ const app = document.getElementById('app');
 let view = 'home';
 
 function setView(v) {
-  if (v === 'ielts') { location.href = 'ielts.html'; return; }
   view = v;
   document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
   render();
@@ -305,10 +354,12 @@ function render() {
   document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('on', b.dataset.v === view));
   window.scrollTo(0, 0);
   if (view === 'home') return renderHome();
+  if (view === 'parler') return renderParlerHome();
+  if (view === 'cartes') return renderCartesHome();
+  if (view === 'produire') return renderProduireHome();
   if (view === 'grammar') return renderGrammarList();
   if (view === 'anki') return renderAnkiHome();
   if (view === 'listen') return renderListenHome();
-  if (view === 'exam') return renderExamHome();
   if (view === 'traduire') return renderTransHome();
 }
 
@@ -316,7 +367,7 @@ function render() {
    TROPHÉES
    ============================================================ */
 const ACHIEVEMENTS = [
-  { id: 'first', ic: '🎯', title: 'Premiers pas', desc: 'Passer le test de niveau', test: () => S.placementDone },
+  { id: 'parle1', ic: '🎙️', title: 'Première prise', desc: 'Parler deux minutes au Micro', test: () => typeof micDone === 'function' && micDone() >= 1 },
   { id: 'streak3', ic: '🔥', title: 'En rythme', desc: 'Série de 3 jours', test: () => S.streak >= 3 },
   { id: 'streak7', ic: '🔥', title: 'Une semaine !', desc: 'Série de 7 jours', test: () => S.streak >= 7 },
   { id: 'streak30', ic: '🔥', title: 'Machine', desc: 'Série de 30 jours', test: () => S.streak >= 30 },
@@ -334,10 +385,15 @@ const ACHIEVEMENTS = [
   { id: 'plumefmt', ic: '🎨', title: 'Tous les formats', desc: 'Un écrit dans chacun des 7 formats', test: () => typeof pEssays === 'function' && Object.keys(window.PLUME_FORMATS || {}).every(k => pEssays().some(e => e.fmt === k && e.done)) },
   { id: 'plumeclean', ic: '💎', title: 'Copie propre', desc: 'Un essai sans aucune faute détectée', test: () => typeof pEssays === 'function' && pEssays().some(e => e.relu && e.relu.score >= 90) },
   { id: 'scalpel', ic: '🔪', title: 'Au scalpel', desc: 'Les 10 leçons de haute précision validées', test: () => { const h = LESSONS.filter(l => l.hard); return h.length > 0 && h.every(l => S.lessons[l.id] && S.lessons[l.id].done); } },
-  { id: 'listen5', ic: '🎧', title: 'Bonne oreille', desc: '5 sessions Part 3/4', test: () => (S.longDone || 0) >= 5 },
-  { id: 'exam600', ic: '📈', title: 'Cap B2', desc: 'Score estimé ≥ 600', test: () => (S.estScore || 0) >= 600 },
-  { id: 'exam785', ic: '🎓', title: 'Objectif ESCP', desc: 'Score estimé ≥ 785', test: () => (S.estScore || 0) >= 785 },
-  { id: 'exam900', ic: '🏆', title: 'Excellence', desc: 'Score estimé ≥ 900', test: () => (S.estScore || 0) >= 900 },
+  { id: 'listen5', ic: '🎧', title: 'Bonne oreille', desc: '5 conversations longues écoutées', test: () => (S.longDone || 0) >= 5 },
+  { id: 'parle10', ic: '🗣️', title: 'Dix prises', desc: '10 prises de parole enregistrées', test: () => typeof micDone === 'function' && micDone() >= 10 },
+  { id: 'parle30', ic: '🎚️', title: 'Trente prises', desc: '30 prises de parole · une heure de ta voix', test: () => typeof micDone === 'function' && micDone() >= 30 },
+  { id: 'parledebit', ic: '🚀', title: 'Le débit y est', desc: '130 mots/minute de moyenne', test: () => typeof micWpmMoyen === 'function' && micWpmMoyen() >= 130 },
+  { id: 'parlecorr', ic: '✂️', title: 'Parole corrigée', desc: '5 prises de parole relues et corrigées', test: () => typeof micCorrigees === 'function' && micCorrigees() >= 5 },
+  { id: 'entretien', ic: '💼', title: "L'entretien en anglais", desc: 'Répondre à 8 questions de stage en anglais', test: () => typeof micSessions === 'function' && micSessions().filter(x => x.mode === 'entretien').length >= 8 },
+  { id: 'trn100', ic: '🗂️', title: 'Cent tournures', desc: '100 tournures de production vues', test: () => typeof trnSeen === 'function' && trnSeen() >= 100 },
+  { id: 'trnmat', ic: '💠', title: 'Elles sortent seules', desc: '100 tournures ancrées (≥21j)', test: () => typeof trnMastered === 'function' && trnMastered() >= 100 },
+  { id: 'input4', ic: '🎧', title: 'Oreille au réel', desc: "4 semaines d'écoute d'anglais réel", test: () => (S.inputSemaines || 0) >= 4 },
   { id: 'xp1000', ic: '⭐', title: 'Mille XP', desc: '1000 XP cumulés', test: () => S.xp >= 1000 },
   { id: 'moisson10', ic: '🌾', title: 'Chineur', desc: '10 tournures attrapées dans la nature', test: () => (S.mine || []).length >= 10 },
   { id: 'moisson25', ic: '🧺', title: 'Belle moisson', desc: '25 tournures à toi', test: () => (S.mine || []).length >= 25 },
@@ -394,100 +450,114 @@ function ringSvg(pct) {
 }
 
 /* Coach : recommandation du moment + point faible */
-function weakPoint() {
-  const h = S.history;
-  if (!h.length) return null;
-  const last = h[h.length - 1];
-  if (!last.lt || !last.rt) return null;
-  const lp = last.lc / last.lt, rp = last.rc / last.rt;
-  if (lp + 0.12 < rp) return '⚠️ Point faible : l\'écoute — enchaîne des Part 3/4.';
-  if (rp + 0.12 < lp) return '⚠️ Point faible : lecture & grammaire — traduis et fais des leçons.';
-  return null;
-}
+/* ============================================================
+   LE COACH — une seule chose à faire, dans l'ordre qui compte
+   La parole d'abord : c'est le seul exercice qui ne se rattrape pas
+   en lisant. Les cartes ferment la journée, elles ne l'ouvrent pas.
+   ============================================================ */
 function coachAdvice() {
-  const due = dueCards().length;
   const dp = dailyProgress();
-  if (due > 0) return { title: 'Priorité : réviser', msg: `${due} carte(s) sont dues. Les revoir à temps, c'est là que la mémoire se joue.`, btn: 'Réviser', action: 'startReview(false)' };
-  if (minePendingCount() >= 3 || (minePendingCount() >= 1 && minePendingAge() >= 4))
-    return { title: 'Tes tournures attendent', msg: `${minePendingCount()} tournure(s) que tu as attrapée(s) dorment sans explication${minePendingAge() >= 4 ? `, la plus vieille depuis ${minePendingAge()} jours` : ''}. Exporte-les et fais-les expliquer : c'est le vocabulaire que tu as choisi toi-même, celui qui reste.`, btn: 'Exporter ma moisson', action: 'renderMineExport(false)' };
-  if (typeof limePersoNew === 'function' && limePersoNew() >= 1)
-    return { title: 'Tes propres fautes t\'attendent', msg: `${limePersoNew()} exercice(s) sont nés de tes dernières corrections. Ce ne sont pas des règles générales : ce sont les tournures que TU as ratées, à reproduire correctement jusqu'à ce qu'elles sortent seules.`, btn: 'Les liner', action: "startLime('perso')" };
-  if (typeof pEssays === 'function') {
-    if (plume().draft) {
-      const sd = pSujet(plume().draft.sujet);
-      return { title: 'Ton brouillon t\'attend', msg: `Tu as commencé «\u00a0${sd ? sd.titre : 'un essai'}\u00a0» sans le finir. Un texte laissé en plan ne t'apprend rien : termine-le, même en dessous du nombre de mots.`, btn: 'Reprendre', action: 'renderPlumeChoix()' };
-    }
-    const nonNotes = pEssays().filter(e => e.done && !e.note);
-    if (nonNotes.length) return { title: 'Un essai attend sa note', msg: "Tu l'as écrit, l'app t'a relu — mais la note à la grille officielle et le paragraphe réécrit, c'est la correction qui les donne. C'est là que se trouve le vrai gain.", btn: 'Faire corriger', action: `renderPlumeExport(${nonNotes[nonNotes.length - 1].id})` };
-    if (pDue()) {
-      const d = pDaysSince();
-      return { title: d >= 99 ? 'Écris ton premier essai' : `Un essai à écrire (${d} j)`, msg: d >= 99
-        ? "L'expression écrite est la seule compétence qui ne se travaille pas en QCM. Un format court prend 10 minutes."
-        : `Dernier essai il y a ${d} jours. C'est le rythme — tous les deux ou trois jours — qui construit la main, pas les séances marathon.`, btn: 'Choisir un sujet', action: 'renderPlumeChoix()' };
-    }
+  if (!dp.s) return { title: 'La séance du jour', msg: "Douze minutes : l'oreille se règle d'abord (accent, paires minimales, rythme), puis la bouche produit. C'est l'ordre qui marche — on ne prononce pas un contraste qu'on n'entend pas.", btn: '▶ Lancer la séance', action: 'dSeanceStart()' };
+  if (dp.p < 1) {
+    const s2 = parleSecs();
+    return { title: s2 ? 'Encore un peu de parole' : 'Parler deux minutes', msg: s2
+      ? `${Math.round(s2)} secondes enregistrées aujourd'hui. Il en faut cent pour valider : reprends le sujet, ou enchaîne sur une question d'entretien.`
+      : "Un sujet imposé, une minute de notes, deux minutes de parole enregistrée. Personne pour te relancer : c'est exactement là que la fluidité se construit, et c'est le seul exercice que l'app ne pouvait pas te faire faire jusqu'à aujourd'hui.", btn: '🎙️ Au micro', action: "micStart('mono')" };
   }
-  if (typeof limeQueueCount === 'function' && limeQueueCount('all') >= 1)
-    return { title: 'La séance du jour', msg: `${limeQueueCount('all')} exercice(s) de production t'attendent. C'est le travail qui enlève l'accent français de ton écrit — on ne t'y montre jamais la forme fautive, tu produis la bonne.`, btn: 'Limer', action: "startLime('all')" };
+  if (dp.c < 1) {
+    const n = cartesDuesTotal();
+    return { title: 'Les dix cartes', msg: n ? `${n} carte(s) t'attendent, tous paquets confondus. Dix suffisent à fermer la journée.` : "Rien n'est dû : tu peux prendre dix nouvelles tournures, ou t'arrêter là.", btn: '🗂️ Les cartes du jour', action: 'cartesDuJour()' };
+  }
+  if (!inputFait()) return { title: "De l'anglais réel dans l'oreille", msg: "Tout l'audio de l'app est de la synthèse vocale : des voix qui articulent trop proprement. Une fois par semaine, quinze minutes de vrai anglais — un podcast, un épisode en VO sans sous-titres français — et trois tournures rapportées dans La Moisson.", btn: '🎧 Le rendez-vous de la semaine', action: 'renderInput()' };
+  if (typeof minePendingCount === 'function' && minePendingCount() >= 3)
+    return { title: 'Tes tournures attendent', msg: `${minePendingCount()} tournure(s) que tu as attrapée(s) dorment sans explication. Exporte-les et fais-les expliquer : c'est le vocabulaire que tu as choisi toi-même, celui qui reste.`, btn: 'Exporter ma moisson', action: 'renderMineExport(false)' };
+  if (typeof micSessions === 'function') {
+    const nc = micSessions().filter(x => x.note == null && (x.texte || '').length > 80);
+    if (nc.length) return { title: 'Une prise de parole attend sa correction', msg: "Tu l'as enregistrée, l'app a compté ton débit — mais ce qui te trahit à l'oral, il faut quelqu'un pour le nommer. Les corrections redescendent toutes seules dans La Lime.", btn: '📤 Faire corriger', action: `renderMicroExport(${nc[nc.length - 1].id})` };
+  }
+  if (typeof limePersoNew === 'function' && limePersoNew() >= 1)
+    return { title: "Tes propres fautes t'attendent", msg: `${limePersoNew()} exercice(s) sont nés de tes dernières corrections. Ce ne sont pas des règles générales : ce sont les tournures que TU as ratées, à reproduire correctement jusqu'à ce qu'elles sortent seules.`, btn: 'Les limer', action: "startLime('perso')" };
   if (mistakeCount() >= 3) return { title: 'Corrige tes erreurs', msg: `Tu as ${mistakeCount()} question(s) déjà ratée(s) en attente. Les rejouer jusqu'à les maîtriser, c'est le plus direct vers le sans-faute.`, btn: 'Revoir mes erreurs', action: 'startMistakes()' };
-  if (dp.t < 1 && buildTransQueue('Tous').length) return { title: 'Passe à la production', msg: 'Traduire des phrases rend ta grammaire active — le vrai déclic bilingue.', btn: 'Traduire', action: "setView('traduire')" };
-  if (!dp.s) return { title: 'Un peu d\'étude', msg: 'Une session d\'écoute ou une leçon de grammaire pour valider ta journée.', btn: 'Écouter', action: "setView('listen')" };
-  if (dp.c < 1) return { title: 'Apprends du vocabulaire', msg: 'De nouvelles cartes t\'attendent aujourd\'hui.', btn: 'Cartes', action: 'startReview(false)' };
-  return { title: 'Journée bouclée 🏆', msg: 'Tout est à jour. Un examen blanc pour mesurer tes progrès ?', btn: 'Examen blanc', action: "setView('exam')" };
+  return { title: 'Journée bouclée 🏆', msg: "Parlé, écouté, révisé. Si tu veux pousser : une question d'entretien en anglais, ou un essai à La Plume — mais la journée est faite.", btn: "💼 Une question d'entretien", action: "micStart('entretien')" };
+}
+
+/* Toutes les cartes dues, tous paquets confondus. */
+function cartesDuesTotal() {
+  let n = dueCards().length;
+  if (typeof trnCounts === 'function') n += trnCounts('all').due;
+  if (typeof verbDueCount === 'function') n += verbDueCount();
+  if (typeof mineDue === 'function') n += mineDue().length;
+  return n;
+}
+/* Un seul geste : on ouvre le paquet le plus en retard. */
+function cartesDuJour() {
+  const opts = [];
+  opts.push({ due: dueCards().length, go: () => startReview(false) });
+  if (typeof trnCounts === 'function') opts.push({ due: trnCounts('all').due, go: () => { S.tournDeck = 'all'; save(); startTourn(); } });
+  if (typeof verbDueCount === 'function') opts.push({ due: verbDueCount(), go: () => { if (typeof setVerbCat === 'function') verbCat = 'Tous'; startVerbs(); } });
+  if (typeof mineDue === 'function') opts.push({ due: mineDue().length, go: () => startMine() });
+  opts.sort((a, b) => b.due - a.due);
+  if (opts[0] && opts[0].due > 0) return opts[0].go();
+  if (buildQueue(false).length) return startReview(false);
+  if (typeof buildTrnQueue === 'function' && buildTrnQueue('all').length) { S.tournDeck = 'all'; save(); return startTourn(); }
+  setView('cartes');
 }
 
 /* ---------- ACCUEIL ---------- */
 function renderHome() {
   const L = levelFromXp(S.xp);
-  const due = dueCards().length;
-  const news = newAvailable().length;
-  const doneLessons = LESSONS.filter(l => S.lessons[l.id] && S.lessons[l.id].done).length;
   const pct = Math.round(L.into / L.need * 100);
-
-  const placementBanner = !S.placementDone ? `
-    <div class="banner">
-      <div class="t">🎯 Fais ton test de niveau</div>
-      <div class="d">Un test complet (écoute + lecture + grammaire) pour estimer ton score TOEIC actuel et démarrer ta courbe de progression.</div>
-      <button class="btn" onclick="startExam('placement')">Commencer le test de niveau</button>
-    </div>` : '';
-
-  const scoreCard = S.estScore != null ? `
-    <button class="tile" onclick="setView('exam')">
-      <div class="ic e">📈</div>
-      <div class="body"><div class="t">Score TOEIC estimé</div><div class="d">${scoreBand(S.estScore)} · ${S.history.length} test(s) passé(s)</div></div>
-      <div class="badge">${S.estScore}</div>
-    </button>` : '';
-
   const dp = dailyProgress();
-  const goalLine = (ok, txt, sub) =>
-    `<div class="goal ${ok ? 'ok' : ''}"><span class="gk">${ok ? '✅' : '⬜️'}</span><span class="gt">${txt}</span><span class="gs">${sub}</span></div>`;
+  const dim = new Date().getDay() === 0;
+  const goalLine = (ok, txt, sub, action) =>
+    `<div class="goal ${ok ? 'ok' : ''}" ${action ? `onclick="${action}" style="cursor:pointer"` : ''}><span class="gk">${ok ? '✅' : '⬜️'}</span><span class="gt">${txt}</span><span class="gs">${sub}</span></div>`;
+  const sec = Math.round(parleSecs());
   const objectiveCard = `
     <div class="card" style="display:flex;gap:16px;align-items:center">
       ${ringSvg(dp.pct)}
       <div style="flex:1;min-width:0">
         <h2 style="font-size:16px;margin-bottom:6px">Objectif du jour ${dp.done ? '🏆' : ''}</h2>
-        ${goalLine(dp.c >= 1, 'Réviser des cartes', `${Math.min(S.daily.cards, GOAL_CARDS)}/${GOAL_CARDS}`)}
-        ${goalLine(dp.t >= 1, 'Traduire des phrases', `${Math.min(S.daily.trans, GOAL_TRANS)}/${GOAL_TRANS}`)}
-        ${goalLine(dp.s >= 1, 'Étudier (grammaire/écoute)', dp.s ? 'fait' : '0/1')}
+        ${goalLine(dp.s >= 1, 'La séance · oreille, bouche', dp.s ? 'fait' : '12 min', 'dSeanceStart()')}
+        ${goalLine(dp.p >= 1, 'Parler deux minutes', `${Math.min(sec, GOAL_PARLER)}/${GOAL_PARLER} s`, "micStart('mono')")}
+        ${goalLine(dp.c >= 1, 'Dix cartes', `${Math.min(S.daily.cards, GOAL_CARDS)}/${GOAL_CARDS}`, 'cartesDuJour()')}
       </div>
     </div>`;
 
   const co = coachAdvice();
-  const wp = weakPoint();
   const coachCard = `
     <div class="card coach">
       <div class="coach-h">🧭 Le coach</div>
       <div class="coach-t">${co.title}</div>
       <div class="sub mt">${co.msg}</div>
-      ${wp ? `<div class="pill warn mt">${wp}</div>` : ''}
       <button class="btn mt" onclick="${co.action}">${co.btn}</button>
     </div>`;
-  const nBadges = (S.badges || []).length;
 
+  const inputCard = inputFait() ? '' : `
+    <div class="banner" ${dim ? '' : 'style="opacity:.92"'}>
+      <div class="t">🎧 ${dim ? 'Dimanche : de l\'anglais réel' : 'Cette semaine : de l\'anglais réel'}</div>
+      <div class="d">Quinze minutes d'écoute libre, sans exercice : un podcast, un épisode en VO sans sous-titres français. Puis trois tournures attrapées, versées dans La Moisson. C'est le seul endroit où l'app ne parle pas avec une voix de synthèse.</div>
+      <button class="btn" onclick="renderInput()">Voir les sources et cocher</button>
+    </div>`;
+
+  const nBadges = (S.badges || []).length;
   app.innerHTML = `
-    ${placementBanner}
     ${objectiveCard}
     ${coachCard}
-    <div class="xpwrap" onclick="renderAchievements()" style="cursor:pointer">
+    ${dim || dp.done ? inputCard : ''}
+
+    <button class="btn" onclick="dSeanceStart()">▶ La séance du jour · ~12 min</button>
+    <div class="sub center mb" style="margin-top:6px">oreille → paires → rythme → bouche → phrases</div>
+    <button class="btn sec" onclick="micStart('mono')">🎙️ Parler deux minutes${dp.p >= 1 ? ' ✓' : ''}</button>
+    <button class="btn sec mt" onclick="cartesDuJour()">🗂️ Les cartes du jour${cartesDuesTotal() ? ` · ${cartesDuesTotal()} due(s)` : ''}</button>
+
+    ${mistakeCount() > 0 ? `
+    <button class="tile mt" onclick="startMistakes()" style="border-color:var(--bad)">
+      <div class="ic" style="background:linear-gradient(135deg,#ff5c6c33,#ff5c6c11);color:var(--bad)">🎯</div>
+      <div class="body"><div class="t">Revoir mes erreurs</div><div class="d">Rejoue les questions ratées jusqu'à les maîtriser</div></div>
+      <div class="badge" style="background:var(--bad);color:#2a0509">${mistakeCount()}</div>
+    </button>` : ''}
+
+    <div class="xpwrap mt" onclick="renderAchievements()" style="cursor:pointer">
       <div class="lv"><b>Niveau ${L.lv}</b><span>${L.into} / ${L.need} XP</span></div>
       <div class="pbar mt"><i style="width:${pct}%"></i></div>
       <div class="sub mt" style="display:flex;justify-content:space-between">
@@ -496,62 +566,143 @@ function renderHome() {
       </div>
     </div>
 
-    <div class="sub mb" style="padding-left:4px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:12px">À faire aujourd'hui</div>
+    <details class="whyx mb">
+      <summary>Tout le reste, quand tu veux</summary>
+      <div style="padding:4px 0 0">
+        <div class="sub mb" style="font-size:12px">Rien ici n'est obligatoire. La journée est faite avec les trois lignes du haut ; ce qui suit est du rab, à prendre les jours où tu en as envie.</div>
+        <button class="tile" onclick="setView('parler')">
+          <div class="ic a">🎙️</div><div class="body"><div class="t">Parler</div><div class="d">Le Diapason (accent, rythme) et Le Micro</div></div><div class="badge zero">›</div></button>
+        <button class="tile" onclick="setView('cartes')">
+          <div class="ic g">🗂️</div><div class="body"><div class="t">Les cartes</div><div class="d">Vocabulaire, tournures, verbes, ta moisson</div></div><div class="badge ${cartesDuesTotal() ? '' : 'zero'}">${cartesDuesTotal() || '✓'}</div></button>
+        <button class="tile" onclick="setView('produire')">
+          <div class="ic l">🔧</div><div class="body"><div class="t">Produire</div><div class="d">La Lime, traduire, écrire, monter le registre</div></div><div class="badge ${typeof limeQueueCount === 'function' && limeQueueCount('all') ? '' : 'zero'}">${typeof limeQueueCount === 'function' ? (limeQueueCount('all') || '✓') : '›'}</div></button>
+        <button class="tile" onclick="setView('listen')">
+          <div class="ic l">🎧</div><div class="body"><div class="t">Écouter & lire</div><div class="d">Conversations, exposés, lecture bilingue du jour</div></div><div class="badge zero">›</div></button>
+        <button class="tile" onclick="setView('grammar')">
+          <div class="ic g">📘</div><div class="body"><div class="t">Grammaire</div><div class="d">${LESSONS.filter(l => S.lessons[l.id] && S.lessons[l.id].done).length} / ${LESSONS.length} leçons · drills 0 faute, prépositions</div></div><div class="badge zero">›</div></button>
+        <button class="btn ghost mt" onclick="renderInput()">🎧 L'écoute réelle de la semaine ${inputFait() ? '✓' : ''}</button>
+        <button class="btn ghost" onclick="transferLink()">📦 Transférer ma progression</button>
+      </div>
+    </details>
 
-    ${mistakeCount() > 0 ? `
-    <button class="tile" onclick="startMistakes()" style="border-color:var(--bad)">
-      <div class="ic" style="background:linear-gradient(135deg,#ff5c6c33,#ff5c6c11);color:var(--bad)">🎯</div>
-      <div class="body"><div class="t">Revoir mes erreurs</div><div class="d">Rejoue les questions ratées jusqu'à les maîtriser</div></div>
-      <div class="badge" style="background:var(--bad);color:#2a0509">${mistakeCount()}</div>
-    </button>` : ''}
+    <div class="card">
+      <h2>Ta progression</h2>
+      <div class="row2 mt">
+        <div><div class="logo" style="font-size:26px">${typeof micDone === 'function' ? micDone() : 0}</div><div class="sub">prises de parole</div></div>
+        <div><div class="logo" style="font-size:26px">${typeof micDaysSpoken === 'function' ? micDaysSpoken() : 0}</div><div class="sub">jours parlés</div></div>
+      </div>
+      <div class="row2 mt">
+        <div><div class="logo" style="font-size:26px">${learnedCount()}</div><div class="sub">mots vus</div></div>
+        <div><div class="logo" style="font-size:26px">${matureCount()}</div><div class="sub">mots ancrés (≥21j)</div></div>
+      </div>
+      <div class="row2 mt">
+        <div><div class="logo" style="font-size:26px">${typeof trnSeen === 'function' ? trnSeen() : 0}</div><div class="sub">tournures vues</div></div>
+        <div><div class="logo" style="font-size:26px">${S.perfectDays || 0}</div><div class="sub">journées pleines</div></div>
+      </div>
+    </div>
+  `;
+}
 
-    <button class="tile" onclick="setView('ielts')">
-      <div class="ic e">🎓</div>
-      <div class="body"><div class="t">IELTS · Salle d'examen</div><div class="d">Les 4 épreuves au format réel, chronométrées · plan 14 jours</div></div>
-      <div class="badge">C2</div>
+/* ============================================================
+   PARLER — le pôle qui n'existait pas
+   LE DIAPASON était écrit, chargé à chaque ouverture… et appelé
+   par aucun bouton : renderDiapasonHome() n'avait aucun point
+   d'entrée hors de son propre fichier. 175 Ko d'ateliers d'accent
+   inaccessibles, et quatre trophées impossibles à décrocher.
+   ============================================================ */
+function renderParlerHome() {
+  const dp = dailyProgress();
+  const sec = Math.round(parleSecs());
+  app.innerHTML = `
+    <div class="card">
+      <h2>🎙️ Parler</h2>
+      <div class="sub">Deux outils, dans cet ordre. <b style="color:var(--txt)">Le Diapason</b> règle l'oreille puis la bouche : accent de mot, paires minimales, rythme, mots-pièges. <b style="color:var(--txt)">Le Micro</b> te fait parler pour de vrai, au chrono, et t'enregistre. Le premier te donne les moyens, le second te met en situation.</div>
+      <div class="goal ${dp.s ? 'ok' : ''} mt"><span class="gk">${dp.s ? '✅' : '⬜️'}</span><span class="gt">La séance du jour</span><span class="gs">${dp.s ? 'fait' : '12 min'}</span></div>
+      <div class="goal ${dp.p >= 1 ? 'ok' : ''}"><span class="gk">${dp.p >= 1 ? '✅' : '⬜️'}</span><span class="gt">Parler deux minutes</span><span class="gs">${Math.min(sec, GOAL_PARLER)}/${GOAL_PARLER} s</span></div>
+    </div>
+
+    <button class="btn" onclick="dSeanceStart()">▶ La séance du jour · ~12 min</button>
+    <div class="sub center mb" style="margin-top:6px">oreille → paires → rythme → bouche → phrases</div>
+
+    <button class="tile" onclick="renderMicroHome()">
+      <div class="ic a">🎙️</div>
+      <div class="body"><div class="t">Le Micro</div><div class="d">${typeof micTuileTexte === 'function' ? micTuileTexte() : 'Parler deux minutes, enregistré'}</div></div>
+      <div class="badge ${dp.p >= 1 ? 'zero' : ''}">${dp.p >= 1 ? '✓' : '!'}</div>
     </button>
 
-    <button class="tile" onclick="startReview()">
-      <div class="ic a">🃏</div>
-      <div class="body"><div class="t">Réviser les cartes</div><div class="d">${due} révision(s) · ${news} nouvelle(s)</div></div>
-      <div class="badge ${(due+news)===0?'zero':''}">${due + news}</div>
+    <button class="tile" onclick="micStart('entretien')">
+      <div class="ic" style="background:linear-gradient(135deg,#4d8dff33,#4d8dff11);color:var(--blue)">💼</div>
+      <div class="body"><div class="t">L'entretien, en anglais</div><div class="d">${(window.MICRO && MICRO.entretien.length) || 0} questions de stage · « Walk me through a DCF »</div></div>
+      <div class="badge">EN</div>
     </button>
 
+    <button class="tile" onclick="renderDiapasonHome()">
+      <div class="ic l">👂</div>
+      <div class="body"><div class="t">Les ateliers du Diapason</div><div class="d">Accent, paires minimales, intonation, parole enchaînée, dictée multi-accents</div></div>
+      <div class="badge zero">11</div>
+    </button>
+
+    <button class="btn ghost mt" onclick="setView('home')">Retour</button>
+  `;
+}
+
+/* ============================================================
+   LES CARTES — quatre paquets, un seul compte du jour
+   ============================================================ */
+function renderCartesHome() {
+  const t = typeof trnCounts === 'function' ? trnCounts('all') : { due: 0, total: 0 };
+  const dp = dailyProgress();
+  app.innerHTML = `
+    <div class="card">
+      <h2>🗂️ Les cartes</h2>
+      <div class="sub">Quatre paquets, chacun avec sa propre mémoire espacée. Le compte du jour les additionne : <b style="color:var(--txt)">dix cartes suffisent</b>, d'où qu'elles viennent. Le plafond est volontaire — c'est en montant les quotas qu'on se retrouve avec deux cents cartes par jour et plus envie d'ouvrir l'app.</div>
+      <div class="goal ${dp.c >= 1 ? 'ok' : ''} mt"><span class="gk">${dp.c >= 1 ? '✅' : '⬜️'}</span><span class="gt">Cartes du jour</span><span class="gs">${Math.min(S.daily.cards, GOAL_CARDS)}/${GOAL_CARDS}</span></div>
+    </div>
+
+    <button class="btn" onclick="cartesDuJour()">${cartesDuesTotal() ? `Commencer · le paquet le plus en retard` : 'Prendre quelques cartes'}</button>
+
+    <button class="tile mt" onclick="renderTournHome()">
+      <div class="ic a">🗂️</div>
+      <div class="body"><div class="t">Les tournures</div><div class="d">${typeof trnTuileTexte === 'function' ? trnTuileTexte() : ''}</div></div>
+      <div class="badge ${t.due ? '' : 'zero'}">${t.due || '✓'}</div>
+    </button>
+
+    <button class="tile" onclick="setView('anki')">
+      <div class="ic g">🃏</div>
+      <div class="body"><div class="t">Vocabulaire</div><div class="d">${dueCards().length} à réviser · ${learnedCount()} / ${VOCAB.length} mots vus</div></div>
+      <div class="badge ${dueCards().length ? '' : 'zero'}">${dueCards().length || '✓'}</div>
+    </button>
 
     <button class="tile" onclick="renderVerbsHome()">
       <div class="ic" style="background:linear-gradient(135deg,#ff5c6c33,#ffb02011);color:var(--bad)">⚡</div>
-      <div class="body"><div class="t">Verbes irréguliers</div><div class="d">Deck Anki à part · prétérit + participe · l'oral qui pardonne pas</div></div>
-      <div class="badge ${buildVerbQueue('Tous').length===0?'zero':''}">${buildVerbQueue('Tous').length}</div>
+      <div class="body"><div class="t">Verbes irréguliers</div><div class="d">Prétérit + participe · l'oral ne pardonne pas</div></div>
+      <div class="badge ${typeof verbDueCount === 'function' && verbDueCount() ? '' : 'zero'}">${typeof verbDueCount === 'function' ? (verbDueCount() || '✓') : '›'}</div>
     </button>
 
     <button class="tile" onclick="renderMoissonHome()">
       <div class="ic e">🌾</div>
-      <div class="body"><div class="t">La Moisson</div><div class="d">${mine().length === 0 ? 'Ton deck à toi : les tournures que tu attrapes' : `${mine().length} tournure(s)${minePendingCount() ? ` · ${minePendingCount()} à faire expliquer` : ''}`}</div></div>
-      <div class="badge ${minePendingCount() ? '' : (mineQueueCount() ? '' : 'zero')}" ${minePendingCount() ? 'style="background:var(--blue);color:#04122e"' : ''}>${minePendingCount() || mineQueueCount() || '＋'}</div>
+      <div class="body"><div class="t">La Moisson</div><div class="d">${typeof mine === 'function' ? (mine().length === 0 ? 'Ton deck à toi : les tournures que tu attrapes' : `${mine().length} tournure(s)${typeof minePendingCount === 'function' && minePendingCount() ? ` · ${minePendingCount()} à faire expliquer` : ''}`) : ''}</div></div>
+      <div class="badge ${typeof mineQueueCount === 'function' && mineQueueCount() ? '' : 'zero'}">${typeof minePendingCount === 'function' && minePendingCount() ? minePendingCount() : (typeof mineQueueCount === 'function' ? (mineQueueCount() || '✓') : '＋')}</div>
     </button>
 
-    <button class="tile" onclick="renderPlumeHome()"${typeof pDue === 'function' && pDue() ? ' style="border-color:#ff7ab6"' : ''}>
-      <div class="ic" style="background:linear-gradient(135deg,#ff7ab633,#9d7bff11);color:#ff7ab6">✒️</div>
-      <div class="body"><div class="t">La Plume</div><div class="d">${plumeTuileTexte()}</div></div>
-      <div class="badge ${plumeAlerte() ? '' : 'zero'}">${plumeAlerte() ? '!' : '✓'}</div>
-    </button>
+    <button class="btn ghost mt" onclick="setView('home')">Retour</button>
+  `;
+}
 
-    <button class="tile" onclick="renderLimeHome()"${limePersoNew() ? ' style="border-color:#ff7ab6"' : ''}>
+/* ============================================================
+   PRODUIRE — écrire et traduire, sans commander la journée
+   ============================================================ */
+function renderProduireHome() {
+  app.innerHTML = `
+    <div class="card">
+      <h2>🔧 Produire</h2>
+      <div class="sub">Depuis le 2026-11-11, la production principale est <b style="color:var(--txt)">orale</b> : c'est Le Micro qui remplace l'essai quotidien. Ce qui est ici reste ouvert, sans rythme imposé — un essai le dimanche vaut mieux qu'un essai tous les deux jours abandonné au bout d'une semaine.</div>
+    </div>
+
+    <button class="tile" onclick="renderLimeHome()"${typeof limePersoNew === 'function' && limePersoNew() ? ' style="border-color:#ff7ab6"' : ''}>
       <div class="ic" style="background:linear-gradient(135deg,#9d7bff33,#4d8dff11);color:var(--purple)">🔧</div>
-      <div class="body"><div class="t">La Lime</div><div class="d">${limeTuileTexte()}</div></div>
-      <div class="badge ${limeQueueCount('all') ? '' : 'zero'}"${limePersoNew() ? ' style="background:#ff7ab6;color:#2a0518"' : ''}>${limeQueueCount('all') || '✓'}</div>
-    </button>
-
-    <button class="tile" onclick="setView('grammar')">
-      <div class="ic g">📘</div>
-      <div class="body"><div class="t">Grammaire Part 5</div><div class="d">${doneLessons} / ${LESSONS.length} leçons validées</div></div>
-      <div class="badge ${doneLessons===LESSONS.length?'':'zero'}">${doneLessons}/${LESSONS.length}</div>
-    </button>
-
-    <button class="tile" onclick="setView('listen')">
-      <div class="ic l">🎧</div>
-      <div class="body"><div class="t">Compréhension orale</div><div class="d">Part 2 · Part 3/4 (conversations & exposés)</div></div>
-      <div class="badge zero">${EXAM_LISTEN.length + CONVERSATIONS.length}</div>
+      <div class="body"><div class="t">La Lime</div><div class="d">${typeof limeTuileTexte === 'function' ? limeTuileTexte() : 'Exercices de production'}</div></div>
+      <div class="badge ${typeof limeQueueCount === 'function' && limeQueueCount('all') ? '' : 'zero'}">${typeof limeQueueCount === 'function' ? (limeQueueCount('all') || '✓') : '›'}</div>
     </button>
 
     <button class="tile" onclick="setView('traduire')">
@@ -560,37 +711,69 @@ function renderHome() {
       <div class="badge zero">${TRANSLATIONS.length}</div>
     </button>
 
+    <button class="tile" onclick="renderPlumeHome()">
+      <div class="ic" style="background:linear-gradient(135deg,#ff7ab633,#9d7bff11);color:#ff7ab6">✒️</div>
+      <div class="body"><div class="t">La Plume</div><div class="d">${typeof plumeTuileTexte === 'function' ? plumeTuileTexte() : "Expression écrite au chrono"}</div></div>
+      <div class="badge zero">›</div>
+    </button>
+
     <button class="tile" onclick="renderRegisterHome()">
       <div class="ic a">✨</div>
       <div class="body"><div class="t">Anglais soutenu</div><div class="d">Élever le registre : du neutre vers l'élégant</div></div>
       <div class="badge zero">${REGISTER.length}</div>
     </button>
+
     <button class="tile" onclick="renderLitHome()">
       <div class="ic l">✒️</div>
       <div class="body"><div class="t">L'anglais de Jane Eyre</div><div class="d">Le style littéraire : inversions, mots choisis, Brontë</div></div>
-      <div class="badge zero">✒️</div>
+      <div class="badge zero">›</div>
     </button>
 
-    <button class="tile" onclick="renderReadingHome()">
-      <div class="ic l">📖</div>
-      <div class="body"><div class="t">Lecture du jour</div><div class="d">${_readingOfDay().title} · texte bilingue EN ⇄ FR</div></div>
-      <div class="badge zero">${READINGS.length}</div>
-    </button>
-
-    ${scoreCard}
-
-    <div class="card mt">
-      <h2>Ta progression</h2>
-      <div class="row2 mt">
-        <div><div class="logo" style="font-size:26px">${learnedCount()}</div><div class="sub">mots vus</div></div>
-        <div><div class="logo" style="font-size:26px">${matureCount()}</div><div class="sub">mots ancrés (≥21j)</div></div>
-      </div>
-      <div class="row2 mt">
-        <div><div class="logo" style="font-size:26px">${S.reviewsDone}</div><div class="sub">révisions totales</div></div>
-        <div><div class="logo" style="font-size:26px">${VOCAB.length}</div><div class="sub">mots au total</div></div>
-      </div>
-    </div>
+    <button class="btn ghost mt" onclick="setView('home')">Retour</button>
   `;
+}
+
+/* ============================================================
+   L'ÉCOUTE RÉELLE — le rendez-vous hebdomadaire
+   Pas un exercice : une permission. Quinze minutes d'anglais que
+   personne n'a écrit pour un apprenant.
+   ============================================================ */
+const INPUT_SOURCES = [
+  ['BBC · 6 Minute English', "Six minutes, deux voix, une transcription. Le plus court chemin pour reprendre l'oreille un jour de flemme.", 'https://www.bbc.co.uk/learningenglish/english/features/6-minute-english'],
+  ['FT News Briefing', "Dix minutes de marchés chaque matin, débit de pro. C'est exactement l'anglais de tes entretiens de stage.", 'https://www.ft.com/news-briefing'],
+  ['The Economist · podcasts', "Money Talks, The Intelligence : de l'analyse économique à vitesse native, accents britanniques variés.", 'https://www.economist.com/podcasts'],
+  ['Odd Lots (Bloomberg)', "Deux journalistes et un invité qui parlent finance sans script. L'anglais spontané, hésitations comprises.", 'https://www.bloomberg.com/oddlots'],
+  ['Darknet Diaries', "Des histoires vraies racontées lentement et clairement. Idéal quand tu veux écouter sans effort de concentration.", 'https://darknetdiaries.com/'],
+  ['Une série en VO', "Sans sous-titres français — anglais ou rien. Un épisode compte. Succession pour l'anglais des affaires, Peaky Blinders pour l'accent du nord.", '']
+];
+function renderInput() {
+  const fait = inputFait();
+  app.innerHTML = `
+    <div class="card">
+      <h2>🎧 L'anglais réel de la semaine</h2>
+      <div class="sub">Tout le reste de l'app parle avec une voix de synthèse : utile pour isoler un son, inutile pour s'habituer aux gens. À ton niveau, c'est le plafond qui compte. Quinze minutes par semaine d'anglais que personne n'a écrit pour un apprenant, et <b style="color:var(--txt)">trois tournures rapportées</b> — c'est tout ce qui est demandé.</div>
+      <div class="goal ${fait ? 'ok' : ''} mt"><span class="gk">${fait ? '✅' : '⬜️'}</span><span class="gt">Semaine du ${new Date(semaineISO()).toLocaleDateString('fr-FR')}</span><span class="gs">${fait ? 'fait' : '15 min'}</span></div>
+    </div>
+
+    ${INPUT_SOURCES.map(([n, d, u]) => `
+      <div class="card" style="padding:14px">
+        <div style="font-weight:800;font-size:15px">${n}</div>
+        <div class="sub" style="margin-top:4px">${d}</div>
+        ${u ? `<a class="btn sec mt" style="display:block;text-decoration:none" href="${u}" target="_blank" rel="noopener">Ouvrir</a>` : ''}
+      </div>`).join('')}
+
+    <div class="card" style="border-color:var(--accent)">
+      <h2 style="font-size:15px">La règle des trois tournures</h2>
+      <div class="sub">Pendant l'écoute, note trois expressions que tu n'aurais pas produites toi-même. Pas des mots inconnus : des tournures que tu comprends et que tu n'emploies jamais. Elles vont dans La Moisson, et c'est La Moisson qui finit par changer ta façon de parler.</div>
+      <button class="btn mt sec" onclick="renderMineEdit(0)">🌾 Attraper une tournure</button>
+    </div>
+
+    ${fait
+      ? `<div class="expl ok">C'est coché pour cette semaine. Rien ne t'empêche d'en écouter plus — mais tu as fait ce qui était demandé.</div>`
+      : `<button class="btn" onclick="marquerInput()">✓ J'ai écouté quinze minutes</button>`}
+    <button class="btn ghost mt" onclick="setView('home')">Retour</button>
+  `;
+  window.scrollTo(0, 0);
 }
 
 /* ---------- GRAMMAIRE : liste ---------- */
@@ -726,7 +909,7 @@ function renderGrammarList() {
   }).join('');
   app.innerHTML = `
     <div class="card">
-      <h2>Grammaire — Part 5</h2>
+      <h2>Grammaire</h2>
       <div class="sub">Valide une leçon (≥ 70 %) pour débloquer la suivante. Chaque bonne réponse rapporte de l'XP.</div>
     </div>
     <div class="card" style="border-color:var(--good)">
@@ -773,7 +956,7 @@ function scalpelCard() {
   }).join('');
   return `<div class="card" style="border-color:var(--bad)">
       <h2 style="font-size:16px">🔪 LE SCALPEL · grammaire de haute précision</h2>
-      <div class="sub">Le cran au-dessus des leçons Part 5. Ici le <b style="color:var(--txt)">déclencheur est enfoui</b> dans la phrase, les <b style="color:var(--txt)">quatre options sont toutes de l'anglais correct</b> ailleurs, et chaque correction ouvre l'<b style="color:var(--txt)">autopsie des trois mauvaises réponses</b>. Pas de déblocage : attaque dans l'ordre que tu veux.</div>
+      <div class="sub">Le cran au-dessus des leçons de base. Ici le <b style="color:var(--txt)">déclencheur est enfoui</b> dans la phrase, les <b style="color:var(--txt)">quatre options sont toutes de l'anglais correct</b> ailleurs, et chaque correction ouvre l'<b style="color:var(--txt)">autopsie des trois mauvaises réponses</b>. Pas de déblocage : attaque dans l'ordre que tu veux.</div>
       <div class="pill warn mt">${done} / ${items.length} validées · +6 XP par bonne réponse</div>
       <div class="mt">${rows}</div>
     </div>`;
@@ -875,6 +1058,7 @@ function renderAnkiHome() {
   const due = dueCards().length;
   const news = newAvailable(false).length;         // nouvelles dispo aujourd'hui (plafonné)
   const total = due + news;
+  const jour = buildQueue(false).length;
   const remaining = totalUnlearned();              // toutes les cartes encore jamais vues
   const unlimitedTotal = due + remaining;
   // répartition par thème
@@ -894,9 +1078,9 @@ function renderAnkiHome() {
 
     <div class="card">
       <h2 style="font-size:16px">Session du jour</h2>
-      <div class="sub">Rythme régulier : révisions dues + ${NEW_PER_DAY} nouvelles cartes max. Le plus efficace pour la mémoire long terme.</div>
-      <button class="btn mt" onclick="startReview(false)" ${total === 0 ? 'disabled' : ''}>
-        ${total === 0 ? 'Rien à réviser pour aujourd’hui 🎉' : `Démarrer · ${total} carte(s)`}
+      <div class="sub">Révisions dues + ${NEW_PER_DAY} nouvelles au plus, et <b style="color:var(--txt)">${WAVE} cartes maximum</b> par séance : au-delà on ne retient plus, on subit.${due > ARRIERE_MAX ? ` Tu as ${due} cartes en retard : aucune nouvelle ne rentre tant que la pile n'est pas redescendue sous ${ARRIERE_MAX}.` : ''}</div>
+      <button class="btn mt" onclick="startReview(false)" ${jour === 0 ? 'disabled' : ''}>
+        ${jour === 0 ? 'Rien à réviser pour aujourd’hui 🎉' : `Démarrer · ${jour} carte(s)`}
       </button>
     </div>
 
@@ -1077,12 +1261,12 @@ function renderListenHome() {
     </div>
     <button class="tile" onclick="startListen()">
       <div class="ic l">🗣️</div>
-      <div class="body"><div class="t">Part 2 · Question → réponse</div><div class="d">Questions courtes, 3 réponses au choix</div></div>
+      <div class="body"><div class="t">Question → réponse</div><div class="d">Questions courtes, 3 réponses au choix</div></div>
       <div class="badge zero">${EXAM_LISTEN.length}</div>
     </button>
     <button class="tile" onclick="startLong()">
       <div class="ic l">💬</div>
-      <div class="body"><div class="t">Part 3/4 · Conversations & exposés</div><div class="d">Dialogues joués, puis questions de compréhension</div></div>
+      <div class="body"><div class="t">Conversations & exposés</div><div class="d">Dialogues joués, puis questions de compréhension</div></div>
       <div class="badge zero">${nConv + nTalk}</div>
     </button>
     <button class="tile" onclick="dDictStart()">
@@ -1100,7 +1284,7 @@ function renderListenHome() {
       <button class="${audioSpeed() === 'normal' ? 'on' : ''}" onclick="setSpeed('normal')">Normale<small>par défaut</small></button>
       <button class="${audioSpeed() === 'native' ? 'on' : ''}" onclick="setSpeed('native')">⚡ Native<small>vrai débit</small></button>
     </div>
-    <div class="sub center mt">Part 3/4, c'est là que se gagne le score Listening. La vitesse « native », elle, est ce qui te sépare d'une vraie conversation.</div>
+    <div class="sub center mt">Les conversations longues sont ce qui ressemble le plus à une vraie réunion. La vitesse « native » est ce qui te sépare d'une vraie conversation.</div>
   `;
 }
 function setSpeed(v) { S.audioSpeed = v; S.slowAudio = (v === 'slow'); save(); renderListenHome(); toast(v === 'slow' ? 'Écoute ralentie 🐢' : v === 'native' ? 'Débit natif ⚡' : 'Vitesse normale'); }
@@ -1116,7 +1300,7 @@ function renderListen() {
   const optHtml = opts.map((o, k) =>
     `<button class="opt" onclick="answerListen(${k},${correct})"><span class="lab">${'ABC'[k]}</span>${o}</button>`).join('');
   app.innerHTML = `
-    <div class="qmeta"><span>Part 2</span><span>${LST.i + 1} / ${EXAM_LISTEN.length}</span></div>
+    <div class="qmeta"><span>Question → réponse</span><span>${LST.i + 1} / ${EXAM_LISTEN.length}</span></div>
     <div class="pbar mb"><i style="width:${LST.i / EXAM_LISTEN.length * 100}%"></i></div>
     <button class="spk" onclick="speak('${q.replace(/'/g, "\\'")}')" style="width:88px;height:88px;font-size:34px">🔊</button>
     <div class="center sub mb">Touche pour (ré)écouter la question</div>
@@ -1138,7 +1322,7 @@ function answerListen(k, correct) {
   });
   const ok = k === correct;
   if (ok) { LST.correct++; addXp(3); }
-  else recordMistake({ kind: 'listen', q, opts, correct, cat: 'Écoute Part 2', audio: q });
+  else recordMistake({ kind: 'listen', q, opts, correct, cat: 'Écoute · question → réponse', audio: q });
   const last = LST.i === EXAM_LISTEN.length - 1;
   document.getElementById('after').innerHTML = `
     <div class="expl ${ok ? 'ok' : 'no'}">${ok ? '✅ Correct !' : '❌ Bonne réponse : ' + 'ABC'[correct]}<br><span class="sub">Question : « ${q} »</span></div>
@@ -1287,294 +1471,15 @@ function toast(msg) {
 }
 
 /* ============================================================
-   EXAMEN — test de niveau & examen blanc chronométré
+   L'EXAMEN BLANC TOEIC a été retiré le 2026-11-11.
+   L'app s'appelle 990 — le score maximum du TOEIC — mais Thomas n'a
+   jamais passé le TOEIC : il a passé l'IELTS, le 2026-10-24, et l'a
+   obtenu (7.5, C1). Un simulateur noté sur 990, un test de niveau et
+   une courbe de score estimé n'avaient donc plus d'objet. Le code et
+   la banque d'items restent dans l'historique git (commit 8c50ee2)
+   si un examen revient un jour.
+   EXAM_LISTEN, lui, sert toujours : c'est la matière du module d'écoute.
    ============================================================ */
-
-/* Conversion score : proportion correcte -> score de section TOEIC (5-495) */
-function sectionScore(p) {
-  return Math.max(5, Math.min(495, Math.round((5 + 490 * p) / 5) * 5));
-}
-function scoreBand(total) {
-  if (total >= 900) return 'Niveau visé ESCP atteint 🎯';
-  if (total >= 785) return 'Autonome (C1) — proche de la cible';
-  if (total >= 600) return 'Intermédiaire+ (B2)';
-  if (total >= 470) return 'Intermédiaire (B1)';
-  if (total >= 300) return 'Élémentaire (A2)';
-  return 'Débutant (A1)';
-}
-function levelFromScore(total) {
-  if (total >= 785) return 3;
-  if (total >= 550) return 2;
-  return 1;
-}
-
-/* Sélection filtrée par difficulté (avec repli si le vivier est trop petit) */
-function pickItems(pool, n, diff) {
-  let src = pool;
-  if (diff) {
-    const near = pool.filter(x => Math.abs(x._d - diff) <= 1);   // ±1 niveau
-    if (near.length >= n) src = near;
-  }
-  return shuffle(src.slice()).slice(0, n);
-}
-
-/* Construit un examen. kind = 'placement' | 'blanc' ; diff = 1|2|3|null */
-/* Sélection « dure » stricte : uniquement diff 3, repli sur diff 2 si le vivier manque */
-function pickHard(pool, n) {
-  let hard = shuffle(pool.filter(x => x._d >= 3));
-  if (hard.length < n) hard = hard.concat(shuffle(pool.filter(x => x._d === 2)));
-  return hard.slice(0, n);
-}
-function buildExam(kind, diff) {
-  const cfg = kind === 'placement'
-    ? { L: 8, G: 8, P: 4, mins: 15 }
-    : kind === 'defi'
-      ? { L: 6, G: 18, P: 6, mins: 20 }
-      : { L: 15, G: 15, P: 10, mins: 30 };
-  const hard = kind === 'defi';
-
-  // Écoute
-  const listenPool = EXAM_LISTEN.map(a => ({ _d: a[3], section: 'L', audio: a[0], opts: a[1], correct: a[2] }));
-  const listen = hard ? pickHard(listenPool, cfg.L) : pickItems(listenPool, cfg.L, diff);
-
-  // Grammaire / complétion (Reading)
-  const gPool = EXAM_GRAMMAR.map(a => ({ _d: a[4], section: 'R', stem: a[0], opts: a[1], correct: a[2], expl: a[3] }));
-  const grammar = hard ? pickHard(gPool, cfg.G) : pickItems(gPool, cfg.G, diff);
-
-  // Lecture Part 7 : on tire des passages entiers jusqu'au quota de questions
-  // (en mode Défi, on privilégie les passages les plus durs)
-  const passages = hard ? shuffle(READING.slice()).sort((a, b) => b.diff - a.diff) : shuffle(READING.slice());
-  const reading = [];
-  for (const p of passages) {
-    if (reading.length >= cfg.P) break;
-    for (const q of p.qs) {
-      reading.push({ _d: p.diff, section: 'R', passage: p.text, ptitle: p.title, stem: q[0], opts: q[1], correct: q[2], expl: q[3] });
-    }
-  }
-  const readingCut = reading.slice(0, Math.max(cfg.P, 0));
-
-  // Ordre : écoute d'abord (Part 2), puis lecture = grammaire mélangée, puis passages regroupés
-  const items = listen.concat(shuffle(grammar)).concat(readingCut);
-  return { items, mins: cfg.mins };
-}
-
-let EX = null, exTimer = null;
-function startExam(kind, diff) {
-  const d = diff || (kind === 'placement' ? null : S.level);
-  const built = buildExam(kind, d);
-  EX = { kind, diff: d, items: built.items, i: 0, answers: [], start: Date.now(), suggestMins: built.mins };
-  renderExamRun();
-  startExamTimer();
-}
-function startExamTimer() {
-  clearInterval(exTimer);
-  exTimer = setInterval(() => {
-    const el = document.getElementById('extime');
-    if (!el) { clearInterval(exTimer); return; }
-    const s = Math.floor((Date.now() - EX.start) / 1000);
-    el.textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
-  }, 1000);
-}
-function renderExamRun() {
-  const it = EX.items[EX.i];
-  const n = EX.items.length;
-  const secLabel = it.section === 'L' ? 'Écoute' : 'Lecture';
-  const isNewPassage = it.ptitle && (EX.i === 0 || EX.items[EX.i - 1].ptitle !== it.ptitle);
-  const passageHtml = it.passage
-    ? `<div class="passage"><div class="pt">${it.ptitle}</div>${escapeHtml(it.passage)}</div>` : '';
-  let body;
-  if (it.section === 'L') {
-    body = `
-      <button class="spk" onclick="speak('${it.audio.replace(/'/g, "\\'")}')" style="width:84px;height:84px;font-size:32px">🔊</button>
-      <div class="center sub mb">Touche pour (ré)écouter</div>`;
-  } else {
-    body = `${passageHtml}<div class="stem">${it.stem.replace('______', '<span class="blank">______</span>')}</div>`;
-  }
-  const nOpt = it.opts.length;
-  const optHtml = it.opts.map((o, k) =>
-    `<button class="opt" onclick="examAnswer(${k})"><span class="lab">${'ABCD'[k]}</span>${o}</button>`).join('');
-  const last = EX.i === n - 1;
-  app.innerHTML = `
-    <div class="exbar">
-      <span class="sec ${it.section}">${secLabel}</span>
-      <span class="timer">⏱ <span id="extime">00:00</span></span>
-      <span class="sub">${EX.i + 1} / ${n}</span>
-    </div>
-    <div class="pbar mb"><i style="width:${EX.i / n * 100}%"></i></div>
-    ${body}
-    <div id="opts">${optHtml}</div>
-    <div class="mt"><button class="btn ghost" onclick="quitExam()">Abandonner l'examen</button></div>
-  `;
-  if (it.section === 'L') setTimeout(() => speak(it.audio), 300);
-}
-function examAnswer(k) {
-  EX.answers[EX.i] = k;
-  if (EX.i === EX.items.length - 1) return finishExam();
-  EX.i++;
-  renderExamRun();
-  window.scrollTo(0, 0);
-}
-function quitExam() {
-  if (confirm('Abandonner l\'examen en cours ? Les réponses ne seront pas enregistrées.')) {
-    clearInterval(exTimer); speechSynthesis.cancel(); setView('exam');
-  }
-}
-function finishExam() {
-  clearInterval(exTimer); speechSynthesis.cancel();
-  const mins = Math.max(1, Math.round((Date.now() - EX.start) / 60000));
-  let lc = 0, lt = 0, rc = 0, rt = 0;
-  EX.items.forEach((it, idx) => {
-    const ok = EX.answers[idx] === it.correct;
-    if (it.section === 'L') { lt++; if (ok) lc++; } else { rt++; if (ok) rc++; }
-  });
-  const Lp = lt ? lc / lt : 0, Rp = rt ? rc / rt : 0;
-  const Lsc = sectionScore(Lp), Rsc = sectionScore(Rp), total = Lsc + Rsc;
-
-  const rec = { ts: Date.now(), date: todayStr(), total, L: Lsc, R: Rsc, kind: EX.kind, diff: EX.diff, mins,
-                lc, lt, rc, rt };
-  S.history.push(rec);
-  S.estScore = total;
-  S.level = levelFromScore(total);
-  if (EX.kind === 'placement') S.placementDone = true;
-  addXp(EX.kind === 'placement' ? 40 : 30);
-  markStudy(); touchDay(); save();
-
-  const prev = S.history.length >= 2 ? S.history[S.history.length - 2].total : null;
-  const delta = prev != null ? total - prev : null;
-  const deltaHtml = delta != null
-    ? `<div class="pill ${delta >= 0 ? '' : 'warn'}" style="margin-top:8px">${delta >= 0 ? '▲ +' : '▼ '}${delta} pts depuis le dernier</div>` : '';
-
-  EX._wrong = EX.items.map((it, idx) => ({ it, a: EX.answers[idx] })).filter(x => x.a !== x.it.correct);
-  EX._wrong.forEach(w => recordMistake({
-    kind: w.it.section === 'L' ? 'listen' : 'gram',
-    q: w.it.section === 'L' ? w.it.audio : w.it.stem,
-    opts: w.it.opts, correct: w.it.correct, expl: w.it.expl || '',
-    cat: w.it.section === 'L' ? 'Examen · écoute' : 'Examen · ' + (w.it.ptitle ? 'lecture' : 'grammaire'),
-    audio: w.it.section === 'L' ? w.it.audio : null
-  }));
-
-  app.innerHTML = `
-    <div class="card big">
-      <div class="em">${total >= 900 ? '🏆' : total >= 785 ? '🎉' : '📊'}</div>
-      <div class="score">${total}<span style="font-size:20px;color:var(--muted)"> /990</span></div>
-      <div class="lab">${scoreBand(total)}</div>
-      ${deltaHtml}
-    </div>
-    <div class="card">
-      <div class="scoreline">
-        <div><div class="v" style="color:var(--purple)">${Lsc}</div><div class="k">Écoute /495</div></div>
-        <div><div class="v" style="color:var(--blue)">${Rsc}</div><div class="k">Lecture /495</div></div>
-        <div><div class="v">${mins}′</div><div class="k">durée</div></div>
-      </div>
-      <div class="sub center">Écoute ${lc}/${lt} · Lecture ${rc}/${rt} bonnes réponses</div>
-    </div>
-    ${EX._wrong.length ? `<button class="btn sec" onclick="renderExamReview()">Revoir mes ${EX._wrong.length} erreur(s)</button>` : '<div class="card center">Sans-faute ! 🔥</div>'}
-    <button class="btn ghost mt" onclick="setView('exam')">Retour aux examens</button>
-    <div class="sub center mt">Estimation indicative pour suivre ta progression, pas un score officiel.</div>
-  `;
-}
-function renderExamReview() {
-  const rows = EX._wrong.map(w => {
-    const it = w.it;
-    const yourAns = w.a != null ? 'ABCD'[w.a] + '. ' + it.opts[w.a] : '(sans réponse)';
-    const good = 'ABCD'[it.correct] + '. ' + it.opts[it.correct];
-    const q = it.section === 'L' ? '🔊 ' + it.audio : (it.ptitle ? '📄 ' + it.stem : it.stem.replace('______', '____'));
-    return `<div class="review-item">
-      <div class="qq">${q}</div>
-      <div class="ans"><span class="ko">${yourAns}</span> → <span class="ok">${good}</span></div>
-      ${it.expl ? `<div class="sub mt">${it.expl}</div>` : ''}
-    </div>`;
-  }).join('');
-  app.innerHTML = `
-    <div class="card"><h2>Correction</h2><div class="sub">${EX._wrong.length} erreur(s) à revoir.</div></div>
-    ${rows}
-    <button class="btn ghost mt" onclick="setView('exam')">Terminé</button>
-  `;
-  window.scrollTo(0, 0);
-}
-
-/* Courbe de progression (SVG) */
-function progressChart() {
-  const h = S.history;
-  if (h.length < 1) return '';
-  const W = 320, H = 130, pad = 24;
-  const pts = h.map(r => r.total);
-  const min = Math.min(400, Math.min(...pts) - 40);
-  const max = Math.max(990, Math.max(...pts) + 40);
-  const x = i => pad + (h.length === 1 ? (W - 2 * pad) / 2 : i * (W - 2 * pad) / (h.length - 1));
-  const y = v => H - pad - (v - min) / (max - min) * (H - 2 * pad);
-  const line = pts.map((v, i) => `${x(i)},${y(v)}`).join(' ');
-  const dots = pts.map((v, i) => `<circle cx="${x(i)}" cy="${y(v)}" r="3.5" fill="var(--accent)"/>`).join('');
-  // ligne cible 900
-  const yTarget = y(900);
-  const targetLine = (900 >= min && 900 <= max)
-    ? `<line x1="${pad}" y1="${yTarget}" x2="${W - pad}" y2="${yTarget}" stroke="var(--good)" stroke-dasharray="4 4" stroke-width="1" opacity=".6"/>
-       <text x="${W - pad}" y="${yTarget - 4}" fill="var(--good)" font-size="9" text-anchor="end">cible 900</text>` : '';
-  return `
-    <svg class="donut" viewBox="0 0 ${W} ${H}" width="100%" style="max-width:360px">
-      ${targetLine}
-      ${h.length > 1 ? `<polyline points="${line}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>` : ''}
-      ${dots}
-      <text x="${x(0)}" y="${H - 6}" fill="var(--muted)" font-size="9" text-anchor="middle">1er</text>
-      <text x="${x(h.length - 1)}" y="${H - 6}" fill="var(--muted)" font-size="9" text-anchor="middle">actuel</text>
-    </svg>`;
-}
-
-/* Onglet Examen */
-function renderExamHome() {
-  if (!S.placementDone) {
-    app.innerHTML = `
-      <div class="card">
-        <h2>Test de niveau</h2>
-        <div class="sub">Avant tout : passe un test complet pour estimer ton score TOEIC de départ. Il combine écoute, grammaire et lecture, et démarre ta courbe de progression.</div>
-      </div>
-      <button class="btn" onclick="startExam('placement')">Passer le test de niveau (~15 min)</button>
-      <div class="sub center mt">20 questions · estimation /990</div>
-    `;
-    return;
-  }
-  const cur = S.level;
-  const segBtn = (d, name, sub) =>
-    `<button class="${cur === d ? 'on' : ''}" onclick="setExamDiff(${d})" data-d="${d}">${name}<small>${sub}</small></button>`;
-  const histRows = S.history.slice().reverse().slice(0, 8).map(r => `
-    <div class="hist">
-      <div><b>${r.total}</b> <span class="sub">/990</span><div class="d">${r.kind === 'placement' ? 'Test de niveau' : r.kind === 'defi' ? '🔥 Défi C2' : 'Examen blanc'} · ${r.date}</div></div>
-      <div class="sub" style="text-align:right">É ${r.L} · L ${r.R}<div class="d">${r.mins}′</div></div>
-    </div>`).join('');
-
-  app.innerHTML = `
-    <div class="card">
-      <div class="sub" style="text-transform:uppercase;letter-spacing:.06em;font-size:11px;font-weight:800">Score TOEIC estimé</div>
-      <div style="display:flex;align-items:baseline;gap:10px"><div class="logo" style="font-size:40px">${S.estScore}</div><div class="sub">/990</div></div>
-      <div class="pill mt">${scoreBand(S.estScore)}</div>
-      ${progressChart()}
-    </div>
-
-    <div class="card">
-      <h2 style="font-size:16px">Nouvel examen blanc</h2>
-      <div class="sub">40 questions chronométrées (écoute + lecture). Choisis la difficulté :</div>
-      <div class="seg" id="diffseg">
-        ${segBtn(1, 'Facile', 'A2–B1')}
-        ${segBtn(2, 'Standard', 'B1–B2')}
-        ${segBtn(3, 'Difficile', 'B2–C1')}
-      </div>
-      <button class="btn" onclick="startExam('blanc')">Démarrer l'examen blanc</button>
-    </div>
-
-    <div class="card" style="border:1px solid var(--accent)">
-      <h2 style="font-size:16px">🔥 Défi C2 — le mur</h2>
-      <div class="sub">30 questions, <b>uniquement les items les plus durs</b> : inversions, subjonctif, prépositions fines, accords pièges, lecture d'inférence. Chronométré (20 min). Le vrai test quand le 990 est déjà acquis — vise le sans-faute.</div>
-      <button class="btn" onclick="startExam('defi',3)">Relever le Défi C2</button>
-    </div>
-
-    ${histRows ? `<div class="card"><h2 style="font-size:16px">Historique</h2><div class="mt">${histRows}</div></div>` : ''}
-    <button class="btn ghost" onclick="startExam('placement')">Refaire un test de niveau</button>
-  `;
-}
-function setExamDiff(d) {
-  S.level = d; save();
-  document.querySelectorAll('#diffseg button').forEach(b => b.classList.toggle('on', +b.dataset.d === d));
-}
 
 function escapeHtml(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -1963,7 +1868,8 @@ if (!S.audioSpeed) S.audioSpeed = S.slowAudio ? 'slow' : 'normal';
 // Migration silencieuse : si des trophées sont déjà mérités mais jamais enregistrés, on les scelle sans notifier.
 if (S.badges.length === 0) { const pre = earnedIds(); if (pre.length) { S.badges = pre; save(); } }
 touchDay();
-if (S.firstRun && !S.placementDone) { S.firstRun = false; save(); view = 'exam'; }
+/* Première ouverture : on atterrit sur la parole, pas sur un test de niveau. */
+if (S.firstRun) { S.firstRun = false; save(); view = 'parler'; }
 render();
 
 /* ---------- Service worker ---------- */

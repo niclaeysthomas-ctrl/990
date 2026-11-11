@@ -1,35 +1,38 @@
 /* =========================================================
-   990 — IELTS · Cartes (répétition espacée, façon Anki) — niveau C2
+   990 — LES TOURNURES · cartes de production (répétition espacée)
    [paquet, indice FR (recto), expression EN (verso), exemple EN, note FR]
-   Recto en français : on PRODUIT l'anglais, comme à l'écrit et à l'oral.
+   Recto en français : on PRODUIT l'anglais, à voix haute de préférence.
+   Écrites pour un examen C2, gardées après lui le 2026-11-11 : ce sont
+   les tournures d'un anglais professionnel, et les paquets ont été
+   renommés pour ce qu'ils servent vraiment — décrire une courbe,
+   argumenter, nuancer, parler.
    RÈGLE DU PAQUET : on ne montre JAMAIS une forme fautive. Chaque carte,
    chaque exemple et chaque note ne contiennent que de l'anglais correct ;
    les pièges se travaillent en mémorisant la bonne forme, pas l'erreur.
    L'identifiant d'une carte = paquet + expression EN : on peut ajouter des
    cartes n'importe où sans casser la progression enregistrée.
    ========================================================= */
-window.IELTS_DECKS = [
-  ["t1trend", "Task 1 · Tendances", "Décrire une évolution avec précision : verbes, noms, adverbes, nuances de rythme."],
-  ["t1num", "Task 1 · Chiffres & comparaisons", "Proportions, approximations, écarts, classements — sans répéter un seul mot."],
-  ["t1proc", "Task 1 · Processus & plans", "Diagrammes de processus (passif, enchaînements) et cartes avant / après."],
-  ["t1ov", "Task 1 · Overview & structure", "L'introduction paraphrasée et un overview qui synthétise au lieu d'énumérer."],
-  ["t2str", "Task 2 · Architecture de l'essai", "Thèse, concession, réfutation, enchaînement logique, conclusion."],
-  ["t2nu", "Task 2 · Nuance & registre", "Affirmer avec mesure, dans un registre académique sans raideur."],
-  ["t2gr", "Task 2 · Grammaire C2", "Inversions, clivées, conditionnels mixtes, nominalisation, subjonctif."],
-  ["t2col", "Task 2 · Collocations C2 par thème", "Éducation, technologie, environnement, santé, travail, société, justice, culture, ville, médias."],
+window.TOURNURES_DECKS = [
+  ["t1trend", "Décrire une évolution", "Dire une hausse, une chute, un palier avec le bon verbe et la bonne intensité : ce qu'on dit devant une courbe, à l'oral comme à l'écrit."],
+  ["t1num", "Chiffres & comparaisons", "Proportions, approximations, écarts, classements, ordres de grandeur — sans répéter deux fois le même mot."],
+  ["t1proc", "Processus & schémas", "Décrire un enchaînement d'étapes (passif, connecteurs de séquence) et un avant / après."],
+  ["t1ov", "Annoncer et résumer", "La phrase d'ouverture qui dit l'essentiel avant le détail, et la synthèse qui ne se contente pas d'énumérer."],
+  ["t2str", "Architecture d'un argument", "Thèse, concession, réfutation, enchaînement logique, conclusion."],
+  ["t2nu", "Nuance & registre", "Affirmer avec mesure, dans un registre soutenu sans raideur."],
+  ["t2gr", "Grammaire C2", "Inversions, clivées, conditionnels mixtes, nominalisation, subjonctif."],
+  ["t2col", "Collocations C2 par thème", "Éducation, technologie, environnement, santé, travail, société, justice, culture, ville, médias."],
   ["prec", "Précision lexicale C2", "Les mots proches qu'un locuteur C2 ne confond jamais : chaque carte donne LE bon mot pour le sens visé."],
-  ["s1", "Speaking · Fluidité", "Gagner du temps avec naturel, reformuler, rebondir."],
-  ["s2", "Speaking · Part 1 & 2", "Développer, raconter, décrire avec un lexique précis."],
-  ["s3", "Speaking · Part 3", "Abstraire, spéculer, comparer, nuancer comme un locuteur C2."],
-  ["sid", "Speaking · Idiomes naturels", "Des expressions idiomatiques qu'un natif emploie vraiment, au bon registre."],
-  ["t2sig", "📒 Mes copies · tournures & mots", "Ton deck perso, à part de la séance du jour : les tournures signature, les connecteurs, les mots qui t'ont fait tiquer et les phrases de tes copies corrigées.", "perso"],
-  ["t1x", "📊 Task 1 · les chiffres qui démarquent", "Diviser par deux, par trois, multiplier par six, points de pourcentage, fractions, records : dire un chiffre de dix façons, sans jamais répéter « increase ».", "perso"],
-  ["piege", "🪤 Faux amis & pièges du francophone", "Les mots qui ressemblent au français mais disent autre chose, et les tournures orales à remplacer à l'écrit. C'est ce qui sépare un 7 d'un 8 en vocabulaire.", "perso"],
-  ["j1", "🚨 Veille d'examen · Task 1 & 2", "Le deck d'urgence : les 4 types de graphiques, l'overview, les années sujets, les verbes par intensité, les structures qui font un 8+ et les tournures de Task 2.", "perso"],
-  ["ortho", "✍️ Mes copies · orthographe à réécrire", "Les mots que tu as mal écrits dans tes copies. Tu les TAPES, puis tu vérifies : la main retient l'orthographe mieux que l'œil.", "perso"]
+  ["s1", "À l'oral · fluidité", "Gagner du temps avec naturel, reformuler, rebondir — les tournures qui évitent le silence."],
+  ["s2", "À l'oral · raconter & décrire", "Développer, raconter, décrire avec un lexique précis."],
+  ["s3", "À l'oral · abstraire & nuancer", "Abstraire, spéculer, comparer, nuancer comme un locuteur C2. C'est ce registre qu'on attend en entretien."],
+  ["sid", "À l'oral · idiomes naturels", "Des expressions idiomatiques qu'un natif emploie vraiment, au bon registre."],
+  ["t2sig", "📒 Mes copies · tournures & mots", "Ton deck perso : les tournures signature, les connecteurs, les mots qui t'ont fait tiquer et les phrases de tes copies corrigées.", "perso"],
+  ["t1x", "📊 Les chiffres qui démarquent", "Diviser par deux, par trois, multiplier par six, points de pourcentage, fractions, records : dire un chiffre de dix façons, sans jamais répéter « increase ».", "perso"],
+  ["piege", "🪤 Faux amis & pièges du francophone", "Les mots qui ressemblent au français mais disent autre chose, et les tournures orales à remplacer à l'écrit.", "perso"],
+  ["ortho", "✍️ Mes copies · orthographe à réécrire", "Les mots que tu as mal écrits. Tu les TAPES, puis tu vérifies : la main retient l'orthographe mieux que l'œil.", "perso"]
 ];
 
-window.IELTS_CARDS = [
+window.TOURNURES = [
 /* ---------------- TASK 1 · TENDANCES ---------------- */
 ["t1trend","augmenter brutalement","to surge / to soar","Sales surged from 20,000 to 55,000 units between 2010 and 2015.","surge = poussée soudaine ; soar = montée forte vers des niveaux élevés."],
 ["t1trend","grimper de façon soutenue","to climb steadily","Enrolments climbed steadily throughout the decade.","climb suggère un effort continu : plus imagé que rise."],
@@ -335,7 +338,7 @@ window.IELTS_CARDS = [
 ["prec","des preuves, un élément de preuve","evidence / a piece of evidence","There is growing evidence that…","evidence suggests (verbe au singulier)."],
 ["prec","la société (en général)","society","Technology has transformed society.","Sans article pour le sens général, comme nature, education, technology."],
 ["prec","la plupart des gens","most people","Most people agree that…","most of + déterminant : most of the people I know."],
-["prec","passer (se présenter à) un examen","to take / to sit an exam","I am sitting the IELTS on 24 October.","Le réussir : to pass."],
+["prec","passer (se présenter à) un examen","to take / to sit an exam","She is sitting her final exams in June.","Le réussir : to pass."],
 ["prec","assister à","to attend","to attend a lecture",""],
 ["prec","une librairie / une bibliothèque","a bookshop / a library","I borrowed it from the library and later bought it at a bookshop.",""],
 ["prec","sensible / raisonnable","sensitive / sensible","a sensitive issue; a sensible decision",""],
@@ -645,76 +648,4 @@ window.IELTS_CARDS = [
 ["ortho","le futur, l'avenir","future","The future of energy is renewable.","-ture, avec un e final."],
 ["ortho","une augmentation (nom)","increase","There was a modest increase in the share of gas.","Le nom anglais est « increase » (aussi : rise, growth, upturn). Le mot latin du français n'existe pas en anglais."],
 ["ortho","plutôt (rather than)","rather","Rather than cutting research, governments could act elsewhere.","ra-ther : th au milieu, -er à la fin."],
-/* ---------------- 🚨 VEILLE D'EXAMEN (23/10) ---------------- */
-["j1", "le graphique à courbes", "a line graph", "The line graph tracks electricity generation by source between 1990 and 2020.", "Aussi « line chart ». Verbes d'intro : tracks, charts, delineates, illustrates."],
-["j1", "le diagramme en barres", "a bar chart", "The bar chart compares household spending on five categories in 2010 and 2020.", "Verbe naturel : compares. Les barres = « bars », jamais « columns » à l'écrit."],
-["j1", "le camembert", "a pie chart", "The two pie charts illustrate how energy consumption was distributed in 2000 and 2020.", "Une part = a segment / a slice / a share. On parle de « proportion » et de « share », pas de « part »."],
-["j1", "le tableau", "a table", "The table provides a breakdown of student enrolments by faculty.", "Un tableau se lit en lignes (rows) et colonnes (columns). Sélectionne : ne recopie pas tous les chiffres."],
-["j1", "le graphique retrace l'évolution de…", "The line graph charts / delineates / tracks…", "The line graph delineates changes in the share of electricity generated from four sources.", "charts et tracks : neutres et sûrs. delineates : plus soutenu, une fois. Jamais « shows » deux fois de suite."],
-["j1", "le tableau fournit une répartition détaillée de…", "The table provides a breakdown of…", "The table provides a breakdown of household expenditure by income group.", "breakdown OF + by + critère. Parfait pour paraphraser « shows the amount of »."],
-["j1", "le schéma illustre les étapes de…", "The diagram illustrates the stages involved in…", "The diagram illustrates the stages involved in producing recycled paper.", "Pour un processus. Suite : « …, from X to Y » puis « There are N stages in total »."],
-["j1", "sur une période de vingt ans", "over a two-decade period", "Coal's share fell sharply over a two-decade period.", "two-decade (adjectif, sans s). De même : a ten-year period, a three-month spell."],
-["j1", "entre 2000 et 2020", "between 2000 and 2020 / from 2000 to 2020", "Output rose steadily from 2000 to 2020.", "between… AND, from… TO. Jamais « between 2000 to 2020 »."],
-["j1", "dans l'ensemble, le fait le plus frappant est que…", "Overall, the most striking feature is that…", "Overall, the most striking feature is that coal and renewables swapped places.", "Ouvre l'overview. Pas de chiffre dans l'overview : la grande tendance seulement."],
-["j1", "ce qui ressort, c'est que…", "What stands out is that…", "What stands out is that renewables rose from almost nothing to become the main source.", "Variante pour la 2e phrase d'overview, ou pour la Task 1 suivante."],
-["j1", "il apparaît clairement que X a dominé tout du long, alors que Y est resté marginal", "It is readily apparent that X dominated throughout, whereas Y remained marginal.", "It is readily apparent that fossil fuels dominated throughout, whereas solar power remained marginal.", "throughout = sur toute la période. whereas pour opposer deux tendances dans la même phrase."],
-["j1", "la période étudiée a été marquée par…", "The period under review was characterised by…", "The period under review was characterised by a steady shift away from coal.", "under review = étudiée. characterised : orthographe britannique en -ise."],
-["j1", "l'overview : des chiffres ou pas ?", "No figures in the overview: only the big picture.", "Overall, coal declined while renewables surged.", "Les chiffres vont dans les paragraphes de détail. Un overview chiffré est une liste, pas une synthèse."],
-["j1", "les années 1990 ont vu une forte hausse de…", "The 1990s witnessed / saw a sharp rise in…", "The 1990s witnessed a sharp rise in gas-fired generation.", "1990s sans apostrophe. witness (soutenu) / see (neutre) : la date devient sujet, c'est élégant."],
-["j1", "2010 a marqué un tournant", "2010 marked a turning point", "2010 marked a turning point, as nuclear output began to decline.", "marked a turning point / marked the peak of."],
-["j1", "la décennie suivante a vu le charbon perdre du terrain", "The following decade saw coal lose ground.", "The following decade saw coal lose ground to renewables.", "see + nom + verbe nu (saw coal lose), ou see + nom + -ing (saw coal losing)."],
-["j1", "l'année 2015 a apporté un essor des renouvelables", "2015 brought a surge in renewables.", "2015 brought a surge in renewable capacity.", "bring a surge / a slump in : très naturel avec une date sujet."],
-["j1", "à partir de 2005", "from 2005 onwards", "From 2005 onwards, renewables grew rapidly.", "onwards (britannique) ; « since 2005 » seulement avec le present perfect."],
-["j1", "bondir d'un coup (hausse soudaine, avec élan)", "to surge", "Renewables surged after 2005.", "Nom : a surge in. Idée de vague soudaine."],
-["j1", "s'envoler vers des niveaux élevés", "to soar", "House prices soared to a record high.", "Forte hausse ET niveau final élevé."],
-["j1", "grimper en flèche (le plus fort)", "to rocket", "Sales rocketed from 2 to 9 million in two years.", "Le plus fort de tous. Une fois par copie maximum."],
-["j1", "chuter à pic", "to plummet", "Coal's share plummeted to a mere 12%.", "plummet TO / BY. Pas de « down » après."],
-["j1", "plonger (chute brutale et soudaine)", "to plunge", "Exports plunged by 40% in 2009.", "Plus soudain que plummet. Nom : a plunge in."],
-["j1", "s'effondrer et rester bas", "to slump", "Car sales slumped during the recession.", "Idée de déprime durable. Nom : a slump."],
-["j1", "grimper régulièrement", "to climb steadily", "Gas climbed steadily throughout the period.", "Variante : rise steadily, grow consistently."],
-["j1", "diminuer régulièrement", "to decline steadily", "Oil consumption declined steadily after 2000.", "Variante : fall gradually, decrease consistently."],
-["j1", "s'essouffler, diminuer peu à peu jusqu'à presque s'arrêter", "to taper off", "Growth tapered off after 2015.", "Pour une tendance qui ralentit en fin de période."],
-["j1", "progresser légèrement", "to edge up / inch up / creep up", "Unemployment edged up to 5.2%.", "inch = très petit pas ; creep = lent, presque imperceptible."],
-["j1", "fléchir légèrement (puis remonter)", "to dip", "Sales dipped slightly in 2012 before recovering.", "Petite baisse temporaire. Nom : a dip."],
-["j1", "reculer légèrement", "to edge down / inch down", "The figure inched down to 18%.", "Symétrique de edge up / inch up."],
-["j1", "se stabiliser après une hausse ou une baisse", "to level off / to level out", "After years of growth, car ownership levelled off at around 60%.", "level off AT + chiffre. Orthographe britannique : levelled (deux l)."],
-["j1", "atteindre un plateau", "to plateau / to reach a plateau", "Demand plateaued at 40 units.", "plateau peut être un verbe en anglais."],
-["j1", "atteindre un pic de 30 % en 2010", "to peak at 30% in 2010 / to reach a peak of 30%", "Nuclear power peaked at 30% in 2010.", "peak AT (verbe), a peak OF (nom)."],
-["j1", "fluctuer autour de 20 %", "to fluctuate around 20%", "Prices fluctuated around 20 dollars.", "around / between X and Y."],
-["j1", "toucher le fond à…", "to bottom out at…", "The rate bottomed out at 3% in 2008.", "Le contraire de peak."],
-["j1", "le charbon dominait la production d'électricité", "Coal dominated electricity generation.", "Coal dominated electricity generation in 1990.", "« electricity generation » est le terme exact, plus précis que « production »."],
-["j1", "représentant un peu plus de la moitié de la production totale", "accounting for just over half of total output", "Coal dominated, accounting for just over half of total output.", "account for = représenter. total output sans article."],
-["j1", "pourtant sa part a chuté à seulement 12 %", "yet its share plummeted to a mere 12%", "…, yet its share plummeted to a mere 12% by 2020.", "a mere = seulement, avec insistance. yet = pourtant, après une virgule."],
-["j1", "suivre la trajectoire inverse", "to follow the opposite trajectory", "Renewables followed the opposite trajectory.", "Transition idéale entre deux séries qui se croisent."],
-["j1", "négligeable au départ", "negligible at the outset", "Negligible at the outset, they surged after 2005.", "at the outset = au tout début de la période."],
-["j1", "finir par dépasser largement le charbon", "eventually eclipsing coal by a considerable margin", "…, eventually eclipsing coal by a considerable margin.", "eventually = finalement (faux ami). eclipse = dépasser au point d'éclipser. by a wide / considerable margin."],
-["j1", "[Participiale] Représentant 40 % du total, le charbon restait la première source.", "Accounting for 40% of the total, coal remained the main source.", "Accounting for 40% of the total, coal remained the main source.", "Le sujet de la participiale doit être celui de la phrase (coal), sinon c'est une faute (dangling participle)."],
-["j1", "[Participiale au passé] Ayant atteint un pic en 2010, le nucléaire a ensuite décliné.", "Having peaked in 2010, nuclear power declined thereafter.", "Having peaked in 2010, nuclear power declined thereafter.", "Having + participe passé : action terminée avant la suivante."],
-["j1", "[Construction absolue] …, le nucléaire atteignant un pic de 30 % en 2010", "…, with nuclear power reaching a peak of 30% in 2010.", "Gas rose steadily, with nuclear power reaching a peak of 30% in 2010.", "with + nom + -ing : ajoute un 2e fait sans nouvelle phrase."],
-["j1", "[Construction absolue] …, les renouvelables restant marginales", "…, with renewables remaining marginal.", "Coal dominated, with renewables remaining marginal until 2005.", "Même moule : with + nom + -ing."],
-["j1", "[Relative non définissante] …, ce qui représentait un quadruplement", "…, which represented a fourfold increase.", "Output reached 40 units, which represented a fourfold increase.", "Virgule + which (jamais that). fourfold, threefold, twofold."],
-["j1", "[Nominalisation] Le charbon a fortement baissé.", "A sharp fall in coal use was recorded.", "A sharp fall in coal use was recorded in the 2010s.", "En alternance avec les verbes, pas partout. Aussi : There was a sharp fall in…"],
-["j1", "[Nominalisation] Le gaz a augmenté régulièrement.", "Gas saw a steady rise. / There was a steady rise in gas use.", "There was a steady rise in gas use over the period.", "adjectif + nom (a steady rise) = adverbe + verbe (rose steadily)."],
-["j1", "[Inversion, une fois max] Ce n'est qu'en 2015 que les renouvelables ont dépassé le gaz.", "Not until 2015 did renewables overtake gas.", "Not until 2015 did renewables overtake gas.", "Not until + date + did + sujet + verbe nu. Une seule par copie."],
-["j1", "[Inversion] Ce n'est qu'après 2005 que la tendance s'est inversée.", "Only after 2005 did the trend reverse.", "Only after 2005 did the trend reverse.", "Only after / Only in + date + did + sujet + verbe nu."],
-["j1", "[Task 2 · intro] S'il est vrai que…, je soutiendrais que…", "While it is true that…, I would argue that…", "While it is true that roads remain necessary, I would argue that public transport offers a better return.", "Concession + thèse dès l'intro : l'examinateur sait où tu vas (Task Response)."],
-["j1", "[Task 2] l'argument le plus convaincant tient à…", "The most compelling argument concerns…", "The most compelling argument concerns congestion itself.", "Phrase d'ouverture d'un paragraphe : annonce l'idée avant l'exemple."],
-["j1", "[Task 2] cela va de pair avec", "to go hand in hand with", "Heavy investment in trams has gone hand in hand with a better quality of life.", "Collocation naturelle, très appréciée en Lexical Resource."],
-["j1", "[Task 2] s'attaquer au problème à la racine", "to tackle the problem at its root", "Public transport tackles congestion at its root.", "tackle (pas « fight against ») + at its root."],
-["j1", "[Task 2] traiter le symptôme sans traiter la cause", "to treat the symptom rather than the cause", "Road-building treats the symptom while feeding the cause.", "Image claire pour critiquer une solution."],
-["j1", "[Task 2 · conclusion] Bien que…, je reste convaincu que…", "In conclusion, although…, I remain convinced that…", "In conclusion, although roads will always have a role, I remain convinced that public transport should come first.", "Même position que l'intro, concession comprise. Aucune idée nouvelle."],
-/* ---------------- 🚨 VEILLE · CONNECTEURS & HOWEVER ---------------- */
-["j1", "[Connecteur] d'où (+ nom)", "hence + nom", "Costs rose sharply, hence the need for reform.", "hence est suivi d'un NOM (hence the need, hence the decline). Pas de phrase complète après."],
-["j1", "[Connecteur] ainsi, par conséquent (+ phrase)", "thus", "Fewer cars are sold; thus, emissions fall.", "thus + phrase complète. Après un point-virgule ou en début de phrase, suivi d'une virgule."],
-["j1", "[Connecteur] néanmoins, malgré cela", "nevertheless / nonetheless", "The risks are real. Nevertheless, the benefits outweigh them.", "Plus fort que however : « malgré ce que je viens de dire ». En début de phrase + virgule."],
-["j1", "[Connecteur] certes, il faut l'admettre", "admittedly", "Admittedly, tuition fees encourage students to work harder.", "Ouvre une CONCESSION. La phrase suivante doit réfuter (However, …) sinon tu changes de camp."],
-["j1", "[Connecteur] de même, dans la même logique", "by the same token", "By the same token, fuel taxes could fund better buses.", "Ajoute un argument qui suit le même raisonnement. Plus élégant que « moreover »."],
-["j1", "[Connecteur] notamment", "notably", "Several countries, notably Germany, have abolished tuition fees.", "Entre virgules, juste avant l'exemple. Jamais « notably » en tête de phrase pour dire « en particulier »."],
-["j1", "[Connecteur] tout bien considéré", "all things considered", "All things considered, I believe the advantages prevail.", "Pour la conclusion. Variantes : on balance, ultimately."],
-["j1", "[However] cependant, en début de phrase", "However, + phrase.", "Cars offer freedom. However, they clog city centres.", "Point AVANT, virgule APRÈS. C'est la place la plus sûre."],
-["j1", "[However] cependant, au milieu de la phrase (plus élégant)", "Sujet, however, verbe…", "Renewables, however, surged after 2005.", "Entre deux virgules, juste après le sujet. Très naturel à l'écrit, parfait pour varier."],
-["j1", "[However] relier deux idées dans la même phrase", "…; however, …", "Public transport is cheap; however, it is often slow.", "Avec un POINT-VIRGULE avant. Jamais une simple virgule : « cheap, however it is slow » est une faute (comma splice)."],
-["j1", "[However] la faute à ne plus faire", "✗ It is cheap, however it is slow.", "✓ It is cheap, but it is slow. / ✓ It is cheap; however, it is slow.", "However n'est pas une conjonction comme « but ». Avec une virgule seule, utilise but ou yet."],
-["j1", "[However] aussi… que (However + adjectif)", "However + adjectif / adverbe + sujet + verbe", "However hard governments try, congestion persists.", "= « aussi fort que… ». Sens différent : « however » signifie ici « peu importe à quel point ». Pas de virgule après however."],
-["j1", "[However] mais ou cependant ?", "but (dans la phrase) / however (entre deux phrases)", "Prices rose, but demand held. → Prices rose. However, demand held.", "but relie deux propositions avec une virgule ; however ouvre une nouvelle phrase ou suit un point-virgule."]
 ];

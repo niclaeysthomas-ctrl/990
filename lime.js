@@ -674,7 +674,7 @@ function limeCat(id) { return LIME_CATS[id] || { n: id, ic: '•', c: 'var(--mut
    Ils passent devant, comme les 'perso' — voir buildLimeQueue. */
 const LIME_LOT = ['ie01','ie02','ie03','ie04','ie05','ie06','ie07','ie08','ie09','ie10','ie11','ie12'];
 const LIME_SESSION = 8;     // longueur d'une séance
-const LIME_NEW = 4;         // nouveaux exercices introduits par jour
+const LIME_NEW = 2;         // nouveaux exercices par jour (4 → 2 le 2026-11-11)
 function lSrs(id) {
   const st = limeState();
   if (!st.srs[id]) st.srs[id] = { ease: 2.5, interval: 0, reps: 0, due: 0, introduced: false, lapses: 0 };
